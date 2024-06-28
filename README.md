@@ -1,93 +1,102 @@
 # sabangnet-front
 
+# 프론트엔드 레포지토리 README
+
+## Intro
+
+안녕하세요 인턴 여러분 환영합니다. 🖐  
+이 README 파일은 ️여러분들이 인턴 기간동한 수행하게 될 과제를 위한  
+프론트엔드 구성에 대하여 간략한 설명을 담고 있습니다.
+
+## 기본 설정
+
+이 프로젝트는 아래와 같은 환경에서 동작합니다.
+
+### Javascript Runtime
+- **Node.js**: >= v20.x
+
+### Package Manager
+- **npm**: >= 10.x
 
 
-## Getting started
+## TOOL
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+- Node.js
+  - 👉🏻 [Node.js 다운로드 링크](https://nodejs.org/en)
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### IDE
+- front-end : Visual Studio Code
+    - 👉🏻 [VSCODE 다운로드 링크](https://code.visualstudio.com)
+- back-end : IntelliJ Community
+    - 👉🏻 [IntelliJ 다운로드 링크](https://www.jetbrains.com/idea/download/?section=windows)
 
-## Add your files
+### API 테스트
+- POSTMAN : Postman API Platform
+    - 👉🏻 [POSTMAN 다운로드 링크](https://www.postman.com/downloads/)
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### Packages
 
-```
-cd existing_repo
-git remote add origin http://sb-dev-intern-alb-410301540.ap-northeast-2.elb.amazonaws.com/daou-2024/sabangnet-front.git
-git branch -M main
-git push -uf origin main
-```
+프로젝트에는 다음과 같은 Gradle 의존성이 포함되어 있습니다:
 
-## Integrate with your tools
+| Dependency | 설명                                                                            |
+|------------|-------------------------------------------------------------------------------|
+| Vue3       | 프로그레시브 자바스크립트 프레임워크입니다.                                                       |
+| Vuetify    | Vue.js를 위한 Material Design 컴포넌트 라이브러리로, 다양한 UI 컴포넌트를 제공하여 개발 생산성을 향상시킵니다      |
+| Axios      | Promise 기반의 HTTP 클라이언트로, 브라우저와 node.js에서 사용하며, RESTful API를 쉽게 호출할 수 있게 해줍니다. |
+| VueUse     | Vue3를 위한 컴포지션 기능 컬렉션으로, 재사용 가능한 로직과 훅을 제공하여 Vue 컴포넌트의 작성을 돕습니다.               |
+| Lodash     | JavaScript 유틸리티 라이브러리로, 배열, 숫자, 객체, 문자열, 함수 등을 쉽고 효과적으로 처리할 수 있도록 도와줍니다.      |
+| Pinia      | Vue.js 애플리케이션의 상태 관리를 도와주는 라이브러리로, Vuex의 대안으로서, 개발자들에게 간단하고 직관적인 API를 제공합니다.  |
 
-- [ ] [Set up project integrations](http://sb-dev-intern-alb-410301540.ap-northeast-2.elb.amazonaws.com/daou-2024/sabangnet-front/-/settings/integrations)
+이 외 과제에 필요한 패키지를 추가로 설치하여 사용하시면 됩니다.
 
-## Collaborate with your team
+## 브랜치 전략
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+브랜치별 Jenkins pipeline 구축을 위해 구조화된 브랜치 전략을 따릅니다.
+메인 브랜치는 기본 브랜치이며, 과제에 따라 하기의 브랜치를 체크아웃하여 사용합니다.
 
-## Test and Deploy
+#### 풀필먼트 어드민
+- `develop-fulfillment-admin`
+#### 풀필먼트 운송장 출력 양식
+- `develop-fulfillment-shipping-label`
+#### 사방넷 쇼핑몰 연동
+- `develop-sabangnet`
 
-Use the built-in continuous integration in GitLab.
+각 서브 브랜치는 과제의 특정 측면을 다루며, 해당 작업이나 기능을 반영하는 이름으로 지정됩니다. (멘토 가이드에 따라 진행)
+ex)
+- `develop-fulfillment-admin-page`
+- `develop-sabangnet-external-validation`
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## 시작하기
 
-***
+1. **레포지토리 클론**:
+   ```bash
+   git clone http://sb-dev-intern-alb-410301540.ap-northeast-2.elb.amazonaws.com/daou-2024/sabangnet-front.git
+   cd <repository_directory>
+   ```
 
-# Editing this README
+2. **서브 브랜치 체크아웃**:
+   ```bash
+   git checkout -b <sub-branch-name>
+   ```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+3. **프로젝트 빌드**:
+   ```bash
+   npm run build
+   ```
 
-## Suggestions for a good README
+4. **프로젝트 실행**:
+   ```bash
+   npm run dev
+   ```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+## 연락처
 
-## Name
-Choose a self-explaining name for your project.
+질문이나 도움이 필요할 경우, 프로젝트 멘토에게 문의주세요😉
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+- `인턴활동 문의사항: 김민하 책임님`
+- `사방넷 과제: 정순영 책임님, 박겸손 선임님`
+- `사방넷 풀필먼트 과제: 김동현 선임님, 조민기 사원님`
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+---
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+다우기술 인턴기간이 즐거운 기억으로 남기를 바라며 화이팅하세요!🚀
