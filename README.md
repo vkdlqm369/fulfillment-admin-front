@@ -53,13 +53,13 @@
 
 #### ● 공식문서 링크
 - [\[Vue3 공식문서\]](https://v3.vuejs.org/guide/introduction.html)
-- [\[Vue3 한글\] 번역문서](https://v3.ko.vuejs.org/guide/introduction.html)
+- [\[Vue3 한글 번역문서\]](https://v3.ko.vuejs.org/guide/introduction.html)
 - [\[Vuetify 공식문서\]](https://vuetifyjs.com/en/introduction/why-vuetify)
 - [\[Axios 공식문서\]](https://axios-http.com/docs/intro)
 - [\[VueUse 공식문서\]](https://vueuse.org/guide/)
 - [\[Lodash 공식문서\]](https://lodash.com/docs)
 - [\[Pinia 공식문서\]](https://pinia.vuejs.org/introduction.html)
-- [\[Vue Router\] 공식문서](https://router.vuejs.org/introduction.html)
+- [\[Vue Router 공식문서\]](https://router.vuejs.org/introduction.html)
 
 ## 브랜치 전략
 
