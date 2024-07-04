@@ -1,5 +1,5 @@
 <template>
-  <HelloWorld />
+  <Table />
 </template>
 
 <script setup>
