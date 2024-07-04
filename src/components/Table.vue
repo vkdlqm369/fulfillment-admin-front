@@ -1,5 +1,6 @@
 <template>
-  <a-table :columns="columns" :data-source="data" @change="onChange"></a-table>
+  <a-table :columns="columns" :data-source="data" :pagination="paginationConfig" @change="onChange"> 
+  </a-table>
 </template>
 <script setup>
 
@@ -17,6 +18,9 @@ const columns = [
     sorter: (a, b) => a.ordNo - b.ordNo,
     align: 'center',
     width: '10%',
+    customCell: (_, index) => {
+      return { rowSpan: rowSpanData[index].rowSpan };
+    },
   },
   {
     title: '주문순번',
@@ -177,6 +181,223 @@ const rawData = [
     rcvrMphnNo: '010-1234-4893',
     ordDttm: "2024/07/04 11:57:40",
   },
+      {
+    key: '5',
+    ordNo: 202407040003,
+    ordPrdNo: 2,
+    prdNm: '센시안 힐링테라피 쿨링패치',
+    optVal : '옵션2',
+    rcvrNm: 'John Brown',
+    rcvrBaseAddr: '서울 금천구 가산디지털2로 108 (뉴티캐슬)',
+    rcvrDtlsAddr: '405호',
+    rcvrMphnNo: '010-1234-5678',
+    ordDttm: "2024/07/04 09:24:20",
+  },
+  {
+    key: '6',
+    ordNo: 202407040003,
+    ordPrdNo: 3,
+    prdNm: '다크비어 폼 트리트먼트',
+    optVal : '옵션1',
+    rcvrNm: 'Jim Green',
+    rcvrBaseAddr: '경기 안산시 상록구 한양대학로 55',
+    rcvrDtlsAddr: '제4공학관 1층 Smashroom',
+    rcvrMphnNo: '010-3333-5678',
+    ordDttm: "2024/07/04 09:24:20",
+  },
+  {
+    key: '7',
+    ordNo: 202407040003,
+    ordPrdNo: 4,
+    prdNm: '뉴트리플랜 고양이캔 흰살참치와 닭가슴살 160g',
+    optVal : '옵션2',
+    rcvrNm: 'Joe Black',
+    rcvrBaseAddr: '경기 성남시 수정구 금토로 69',
+    rcvrDtlsAddr: '8층 사방넷연동개발팀',
+    rcvrMphnNo: '010-1234-4312',
+    ordDttm: "2024/07/04 10:54:22",
+  },
+  {
+    key: '8',
+    ordNo: 202407040003,
+    ordPrdNo: 5,
+    prdNm: '로지나잇 리페어 앰플 트리트먼트',
+    rcvrNm: 'Jim Red',
+    optVal : '옵션1',
+    rcvrBaseAddr: '경기 안산시 상록구 한양대학로 55',
+    rcvrDtlsAddr: '제1공학관 305호',
+    rcvrMphnNo: '010-1234-4893',
+    ordDttm: "2024/07/04 11:57:40",
+  },
+    {
+    key: '9',
+    ordNo: 202407040004,
+    ordPrdNo: 1,
+    prdNm: '센시안 힐링테라피 쿨링패치',
+    optVal : '옵션2',
+    rcvrNm: 'John Brown',
+    rcvrBaseAddr: '서울 금천구 가산디지털2로 108 (뉴티캐슬)',
+    rcvrDtlsAddr: '405호',
+    rcvrMphnNo: '010-1234-5678',
+    ordDttm: "2024/07/04 09:24:20",
+  },
+  {
+    key: '10',
+    ordNo: 202407040004,
+    ordPrdNo: 2,
+    prdNm: '다크비어 폼 트리트먼트',
+    optVal : '옵션1',
+    rcvrNm: 'Jim Green',
+    rcvrBaseAddr: '경기 안산시 상록구 한양대학로 55',
+    rcvrDtlsAddr: '제4공학관 1층 Smashroom',
+    rcvrMphnNo: '010-3333-5678',
+    ordDttm: "2024/07/04 09:24:20",
+  },
+  {
+    key: '11',
+    ordNo: 202407040004,
+    ordPrdNo: 3,
+    prdNm: '뉴트리플랜 고양이캔 흰살참치와 닭가슴살 160g',
+    optVal : '옵션2',
+    rcvrNm: 'Joe Black',
+    rcvrBaseAddr: '경기 성남시 수정구 금토로 69',
+    rcvrDtlsAddr: '8층 사방넷연동개발팀',
+    rcvrMphnNo: '010-1234-4312',
+    ordDttm: "2024/07/04 10:54:22",
+  },
+  {
+    key: '12',
+    ordNo: 202407040004,
+    ordPrdNo: 5,
+    prdNm: '로지나잇 리페어 앰플 트리트먼트',
+    rcvrNm: 'Jim Red',
+    optVal : '옵션1',
+    rcvrBaseAddr: '경기 안산시 상록구 한양대학로 55',
+    rcvrDtlsAddr: '제1공학관 305호',
+    rcvrMphnNo: '010-1234-4893',
+    ordDttm: "2024/07/04 11:57:40",
+  },
+  {
+    key: '13',
+    ordNo: 202407040013,
+    ordPrdNo: 1,
+    prdNm: '센시안 힐링테라피 쿨링패치',
+    optVal : '옵션2',
+    rcvrNm: 'John Brown',
+    rcvrBaseAddr: '서울 금천구 가산디지털2로 108 (뉴티캐슬)',
+    rcvrDtlsAddr: '405호',
+    rcvrMphnNo: '010-1234-5678',
+    ordDttm: "2024/07/04 09:24:20",
+  },
+  {
+    key: '14',
+    ordNo: 202407040013,
+    ordPrdNo: 2,
+    prdNm: '다크비어 폼 트리트먼트',
+    optVal : '옵션1',
+    rcvrNm: 'Jim Green',
+    rcvrBaseAddr: '경기 안산시 상록구 한양대학로 55',
+    rcvrDtlsAddr: '제4공학관 1층 Smashroom',
+    rcvrMphnNo: '010-3333-5678',
+    ordDttm: "2024/07/04 09:24:20",
+  },
+  {
+    key: '15',
+    ordNo: 202407040013,
+    ordPrdNo: 3,
+    prdNm: '뉴트리플랜 고양이캔 흰살참치와 닭가슴살 160g',
+    optVal : '옵션2',
+    rcvrNm: 'Joe Black',
+    rcvrBaseAddr: '경기 성남시 수정구 금토로 69',
+    rcvrDtlsAddr: '8층 사방넷연동개발팀',
+    rcvrMphnNo: '010-1234-4312',
+    ordDttm: "2024/07/04 10:54:22",
+  },
+  {
+    key: '16',
+    ordNo: 202407040013,
+    ordPrdNo: 4,
+    prdNm: '로지나잇 리페어 앰플 트리트먼트',
+    rcvrNm: 'Jim Red',
+    optVal : '옵션1',
+    rcvrBaseAddr: '경기 안산시 상록구 한양대학로 55',
+    rcvrDtlsAddr: '제1공학관 305호',
+    rcvrMphnNo: '010-1234-4893',
+    ordDttm: "2024/07/04 11:57:40",
+  },
+    {
+    key: '17',
+    ordNo: 202407040016,
+    ordPrdNo: 1,
+    prdNm: '센시안 힐링테라피 쿨링패치',
+    optVal : '옵션2',
+    rcvrNm: 'John Brown',
+    rcvrBaseAddr: '서울 금천구 가산디지털2로 108 (뉴티캐슬)',
+    rcvrDtlsAddr: '405호',
+    rcvrMphnNo: '010-1234-5678',
+    ordDttm: "2024/07/04 09:24:20",
+  },
+      {
+    key: '18',
+    ordNo: 202407040018,
+    ordPrdNo: 1,
+    prdNm: '센시안 힐링테라피 쿨링패치',
+    optVal : '옵션2',
+    rcvrNm: 'John Brown',
+    rcvrBaseAddr: '서울 금천구 가산디지털2로 108 (뉴티캐슬)',
+    rcvrDtlsAddr: '405호',
+    rcvrMphnNo: '010-1234-5678',
+    ordDttm: "2024/07/04 09:24:20",
+  },
+  {
+    key: '19',
+    ordNo: 202407040018,
+    ordPrdNo: 2,
+    prdNm: '다크비어 폼 트리트먼트',
+    optVal : '옵션1',
+    rcvrNm: 'Jim Green',
+    rcvrBaseAddr: '경기 안산시 상록구 한양대학로 55',
+    rcvrDtlsAddr: '제4공학관 1층 Smashroom',
+    rcvrMphnNo: '010-3333-5678',
+    ordDttm: "2024/07/04 09:24:20",
+  },
+  {
+    key: '20',
+    ordNo: 202407040018,
+    ordPrdNo: 3,
+    prdNm: '뉴트리플랜 고양이캔 흰살참치와 닭가슴살 160g',
+    optVal : '옵션2',
+    rcvrNm: 'Joe Black',
+    rcvrBaseAddr: '경기 성남시 수정구 금토로 69',
+    rcvrDtlsAddr: '8층 사방넷연동개발팀',
+    rcvrMphnNo: '010-1234-4312',
+    ordDttm: "2024/07/04 10:54:22",
+  },
+  {
+    key: '21',
+    ordNo: 202407040018,
+    ordPrdNo: 4,
+    prdNm: '로지나잇 리페어 앰플 트리트먼트',
+    rcvrNm: 'Jim Red',
+    optVal : '옵션1',
+    rcvrBaseAddr: '경기 안산시 상록구 한양대학로 55',
+    rcvrDtlsAddr: '제1공학관 305호',
+    rcvrMphnNo: '010-1234-4893',
+    ordDttm: "2024/07/04 11:57:40",
+  },
+    {
+    key: '22',
+    ordNo: 202407040018,
+    ordPrdNo: 5,
+    prdNm: '센시안 힐링테라피 쿨링패치',
+    optVal : '옵션2',
+    rcvrNm: 'John Brown',
+    rcvrBaseAddr: '서울 금천구 가산디지털2로 108 (뉴티캐슬)',
+    rcvrDtlsAddr: '405호',
+    rcvrMphnNo: '010-1234-5678',
+    ordDttm: "2024/07/04 09:24:20",
+  },
+
 ];
 
 
@@ -189,4 +410,36 @@ function onChange(pagination, filters, sorter, extra) {
   console.log('params', pagination, filters, sorter, extra);
 }
 
+// 페이지네이션 설정
+const paginationConfig = {
+  position: ['bottomCenter'],
+  pageSize: 10,
+  showSizeChanger: false,
+  onChange: (page, pageSize) => {
+    console.log('Current Page:', page);
+    rowSpanData = calculateRowSpan(data.slice((page - 1) * pageSize, page * pageSize));
+  },
+};
+
+const calculateRowSpan = (data) => {
+  const rowSpanData = data.map((item, index) => {
+    let rowSpan = 1;
+    if (index === 0 || data[index].ordNo !== data[index - 1].ordNo) {
+      for (let i = index + 1; i < data.length; i++) {
+        if (data[index].ordNo === data[i].ordNo) {
+          rowSpan++;
+        } else {
+          break;
+        }
+      }
+    } else {
+      rowSpan = 0;
+    }
+    return { ...item, rowSpan };
+  });
+  return rowSpanData;
+};
+
+// 초기 데이터로 rowSpanData 계산
+let rowSpanData = calculateRowSpan(data);
 </script>
