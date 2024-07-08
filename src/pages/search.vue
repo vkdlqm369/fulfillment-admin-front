@@ -3,7 +3,6 @@
 import ResultTable from '../components/ResultTable.vue'
 import TextBlank from "../components/TextBlank.vue";
 import TextSelection from '../components/TextSelection.vue';
-import RegisterBtn from '../components/RegisterBtn.vue'
 import SearchBtn from '../components/SearchBtn.vue';
 import axios from 'axios'
 
@@ -88,14 +87,12 @@ import axios from 'axios'
     }
 ])
 
-const totalLists = ref(0)
 
 const components = {
     ResultTable, 
     TextBlank,
     TextSelection,
     SearchBtn,
-    RegisterBtn,
 }
 
 const headerss = [
@@ -120,10 +117,9 @@ const Input_Map_For_Search = ref({
   show_list : '10',
 }
 )
-
-
-const baseUrl = "http://localhost:8099"
+const baseUrl = "http://localhost:8099/api"
 const isSearch = ref(false)
+const totalLists = ref(0)
 
 const name = "app";
 const numOfPage = ref(0)
@@ -166,10 +162,6 @@ axios
   isSearch.value = true
 }
 
-function test(){
-  console.log("asdf")
-}
-
 </script>
 
 <template>
@@ -179,7 +171,7 @@ function test(){
       <v-row justify="start">
         <v-col cols="">
           <v-row>
-            <v-col   cols="12" md="2" sm="6">
+            <v-col  cols="12" md="2" sm="6">
               <TextBlank v-model:inputText="Input_Map_For_Search.id" labelName="아이디"/>
             </v-col>
             <v-col  cols="12" md="2" sm="6">
@@ -193,35 +185,37 @@ function test(){
              />
             </v-col>
             <v-col cols="12" md="2"  sm="6" >
-              <SearchBtn @click="SearchHandler" />
+              <SearchBtn class="mt-2" @click="SearchHandler" />
             </v-col>
           </v-row>
         </v-col>
       </v-row>
     </v-container>
-
+  
     <v-container>
-      <v-row v-if="isSearch" justify="start">
-        <p style="color : red;">{{totalLists}}</p>
-        <p>건 검색</p>
-      </v-row>
-
-      <v-row justify="end">
-        <v-col cols="auto">
-          <v-row>
-            <RegisterBtn/>
-            <TextSelection  v-model:selected="Input_Map_For_Search.show_list" :itemList="[
-              {name:'10개씩 보기', value : '10'},{name:'20개씩 보기', value:'20'}, {name:'50개씩 보기', value:'50'}, {name:'100개씩 보기', value:'100'}]"
+      <v-row>
+        <v-cols v-if="isSearch" cols="2" class="mt-8">
+          <span style="color : red;">{{totalLists}}</span>
+          <span>건 검색</span>
+        </v-cols>
+        <v-spacer></v-spacer>
+        <v-cols cols="4" class="d-flex d-flex-inline ga-4">
+            <v-btn class="mt-1" style="width:10px; height:50px;" @click="">등록</v-btn>
+            <TextSelection v-model:selected="Input_Map_For_Search.show_list" 
+            :itemList="[
+              {name:'10개씩 보기', value : '10'}, {name:'20개씩 보기', value:'20'}, {name:'50개씩 보기', value:'50'}, {name:'100개씩 보기', value:'100'}]"
               @update:modelValue="changeShowPage"/>
-          </v-row>
-        </v-col>
+        </v-cols>
+    
       </v-row>
     </v-container>
+
   </v-container>
+
   <v-container v-if="isSearch">
     <ResultTable :tableItems="tableItems" :headers="headerss" />
   </v-container>
   <v-container v-if="isSearch">
-      <v-pagination v-model="Input_Map_For_Search.page" :length="numOfPage" :limit='5' @click="SearchHandler" ></v-pagination>
+      <v-pagination v-model="Input_Map_For_Search.page" :length="numOfPage" :total-visible="8" @click="SearchHandler" ></v-pagination>
   </v-container>
 </template>
