@@ -92,7 +92,8 @@ const handleSearch = (selectedKeys, confirm, dataIndex) => {
   confirm();
   state.searchText = selectedKeys[0];
   state.searchedColumn = dataIndex;
-  calculateRowSpan();
+  rowSpanData = calculateRowSpan(filteredData.value);
+ 
 };
 
 // 검색 리셋 처리 함수
@@ -101,7 +102,7 @@ const handleReset = (clearFilters) => {
     confirm: true,
   });
   state.searchText = "";
-  calculateRowSpan();
+  rowSpanData = calculateRowSpan(filteredData.value);
 };
 
 //열 속성
@@ -504,6 +505,7 @@ const indexData = data.map((item, index) => ({
 // 로그 기록
 function onChange(pagination, filters, sorter, extra) {
   console.log("params", pagination, filters, sorter, extra);
+  rowSpanData = calculateRowSpan(extra.currentDataSource);
 }
 
 // 페이지네이션 설정
