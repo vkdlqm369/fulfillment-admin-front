@@ -28,8 +28,20 @@ export const columns = [
     // 수집상품명
     title: "수집상품명",
     dataIndex: "prdNm",
+    key: "prdNm",
     width: "20%",
     align: "center",
+    filterIcon: (filtered) => h(SearchOutlined),
+    customFilterDropdown: true,
+    onFilter: (value, record) =>
+      record.prdNm.toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => {
+          searchInput.value.focus();
+        }, 100);
+      }
+    },
   },
   {
     // 수집옵션명
@@ -42,14 +54,26 @@ export const columns = [
     // 수취인명
     title: "수취인명",
     dataIndex: "rcvrNm",
-
+    key: "rcvrNm",
     width: "10%",
     align: "center",
+    filterIcon: (filtered) => h(SearchOutlined),
+    customFilterDropdown: true,
+    onFilter: (value, record) =>
+      record.rcvrNm.toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => {
+          searchInput.value.focus();
+        }, 100);
+      }
+    },
   },
   {
     //수취인주소
     title: "수취인주소",
     dataIndex: "address",
+    filterDropdownOpen: state.filterDropdownVisible,
     filters: [
       {
         text: "서울",
@@ -149,7 +173,7 @@ export const columns = [
           },
           {
             text: "중구",
-            value: "중구",
+            value: "서울 중구",
           },
           {
             text: "중랑구",
@@ -163,7 +187,7 @@ export const columns = [
         children: [
           {
             text: "중구",
-            value: "중구",
+            value: "인천 중구",
           },
           {
             text: "동구",
@@ -335,8 +359,7 @@ export const columns = [
       },
     ],
     filterMode: "tree",
-    filterSearch: true,
-    onFilter: (value, record) => record.name.startsWith(value),
+    onFilter: (value, record) => record.address.includes(value),
     width: "20%",
     align: "center",
   },
