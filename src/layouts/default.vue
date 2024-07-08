@@ -23,14 +23,36 @@
 
           <template v-slot:append>
             <div class="ma-2">
-              <v-btn block> Logout </v-btn>
+              <v-btn block @click="dialog = true"> Logout </v-btn>
             </div>
           </template>
         </v-navigation-drawer>
         <v-main style="height: 100vh"><router-view /></v-main>
       </v-layout>
+
+      <v-dialog v-model="dialog" max-width="400" persistent>
+        <v-card class="pa-2">
+          <v-card-title>
+            <v-icon left>mdi-logout</v-icon>
+            로그아웃 하시겠습니까?
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="toggleDialog">아니오</v-btn>
+            <v-btn @click="toggleDialog">네</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </v-app>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+
+const dialog = ref(false);
+
+const toggleDialog = () => {
+  dialog.value = !dialog.value;
+};
+</script>
