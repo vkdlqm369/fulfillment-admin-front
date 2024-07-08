@@ -1,29 +1,47 @@
 <template>
   <v-app>
     <v-main class="main-background">
-      <router-view></router-view>
+      <div class="content-wrapper">
+        <TopButton />
+        <Footer />
+      </div>
     </v-main>
   </v-app>
 </template>
 
 <script>
+import TopButton from './components/TopButton.vue';
+import Footer from './components/Footer.vue';
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    TopButton,
+    Footer
+  }
 }
 </script>
 
 <style>
-/* 전역 스타일 */
 body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: #ffffff; /* 배경색을 흰색으로 설정 */
+  background-color: #ffffff; 
 }
 
 .main-background {
-  background-color: #ffffff; /* v-main의 배경색을 흰색으로 설정 */
-  min-height: 100vh; /* 화면 전체 높이를 차지하도록 설정 */
+  background-color: #ffffff; 
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; 
+}
+
+.content-wrapper {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 공간을 위아래로 나눔 */
 }
 </style>
