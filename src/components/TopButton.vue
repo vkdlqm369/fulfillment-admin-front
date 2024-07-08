@@ -1,36 +1,50 @@
 <template>
   <div>
-    <div class="header">
+
+    <div class="header"> <!--상단 헤드 영역-->
       <h4 class="header-text">타다닥 주문수집</h4>
     </div>
+
     <div class="filters">
+
       <div class="date-picker">
+
         <label for="startDate">수집기간</label>
-        <div class="date-inputs">
+
+        <div class="date-inputs"> 
+          <!--첫 번째 datepicker-->
           <flat-pickr 
-            v-model="startDate"
-            :config="startConfig"
+            v-model="startDate"  
+            :config="startConfig" 
             class="datepicker-input"
-            @input="updateStartDate"
-          />
+            @input="updateStartDate" 
+          /> 
+            <!-- @input : 날짜가 선택될 때, updateStartDate method 호출 -->
           <span>~</span>
+          <!--두 번째 datepicker-->
           <flat-pickr 
             v-model="endDate"
             :config="endConfig"
             class="datepicker-input"
             @input="updateEndDate"
           />
+            <!-- @input : 날짜가 선택될 때, updateEndDate method 호출 -->
         </div>
       </div>
+
       <div class="buttons">
+        <!-- @click : 클릭 시. collectOrders method 호출 -->
         <button @click="collectOrders">주문수집</button>
+        <!-- @click : 클릭 시. refreshPage method 호출 -->
         <button @click="refreshPage">새로고침</button>
       </div>
+
     </div>
   </div>
 </template>
 
-<script>
+
+<script> 
 import flatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
 
@@ -39,6 +53,7 @@ export default {
   components: {
     flatPickr,
   },
+
   data() {
     return {
       startDate: this.getSavedDate('startDate'),
@@ -56,48 +71,60 @@ export default {
       }
     };
   },
+
   watch: {
     startDate(newDate) {
-      this.endConfig.minDate = newDate;
+      this.endConfig.minDate = newDate; // 두 번째 날짜 >= 첫 번째 날짜 
     }
   },
+
   methods: {
+
     collectOrders() {
       if (this.startDate && this.endDate) {
-        alert(`${this.formatDate(this.startDate)} ~ ${this.formatDate(this.endDate)}의 데이터를 조회하겠습니다.`);
-      } else {
-        alert('날짜를 선택해 주세요.');
+        alert(`${this.formatDate(this.startDate)} ~ ${this.formatDate(this.endDate)}의 데이터를 조회하겠습니다.`); // 시작일&종료일 선택 O
+      } 
+      else {
+        alert('날짜를 선택해 주세요.'); // 시작일 or 종료일 선택 X
       }
     },
+
     refreshPage() {
-      window.location.reload();
+      window.location.reload(); // 새로고침
     },
+
     updateStartDate() {
-      this.saveDate('startDate', this.startDate);
-      this.endDate = null; // 시작일을 변경할 때 종료일 초기화
+      this.saveDate('startDate', this.startDate); // 시작일 변경 -> startDate를 저장
+      this.endDate = null; // endDate 초기화
     },
+
     updateEndDate() {
-      this.saveDate('endDate', this.endDate);
+      this.saveDate('endDate', this.endDate); // 종료일이 선택될 때 호출 endDate 저장
     },
+
     saveDate(key, date) {
-      sessionStorage.setItem(key, date);
+      sessionStorage.setItem(key, date); // sessionStorage에 날짜를 저장
     },
+
     getSavedDate(key) {
-      return sessionStorage.getItem(key);
+      return sessionStorage.getItem(key); // sessionStorage에서 날짜를 가져옴
     },
+
     formatDate(date) {
       if (!date) return '';
-      const [year, month, day] = date.split('-');
+      const [year, month, day] = date.split('-'); // xxxx-xx-xx format
       return `${year}-${month}-${day}`;
     }
   },
 };
 </script>
 
+
 <style scoped>
+/* header 영역(타다닥 주문 수집)의 스타일 정의 */
 .header {
   padding: 10px 20px;
-  background-color: #2c3e50;
+  background-color: #2c3e50; 
   margin-bottom: 10px;
   border-radius: 5px;
   border: 2px solid #000;
@@ -109,7 +136,7 @@ export default {
   text-align: left;
 }
 
-.filters {
+.filters { /* 수집기간 박스 */
   display: flex;
   align-items: center;
   padding: 20px;
@@ -119,12 +146,12 @@ export default {
   border: 2px solid #000;
 }
 
-.date-picker {
+.date-picker { /* datepicker 스타일 */
   display: flex;
   align-items: center;
 }
 
-.date-picker label {
+.date-picker label { /* datepicker 라벨 스타일 */
   margin-right: 10px;
   font-weight: bold;
   color: black;
@@ -132,7 +159,7 @@ export default {
   align-items: center;
 }
 
-.date-inputs {
+.date-inputs { 
   display: flex;
   align-items: center;
 }
@@ -142,7 +169,7 @@ export default {
   color: black;
 }
 
-.datepicker-input {
+.datepicker-input { /* datepicker 입력 필드 스타일 */
   padding: 5px;
   border: 2px solid #000;
   border-radius: 5px;
@@ -151,21 +178,23 @@ export default {
   width: 150px;
   box-sizing: border-box;
   display: flex;
+  text-align: center;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .datepicker-input::placeholder {
   color: black !important;
 }
 
-.buttons {
+.buttons { /* button 영역의 스타일 */
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.buttons button {
+.buttons button { /* 주문수집 button */
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -175,7 +204,7 @@ export default {
   cursor: pointer;
 }
 
-.buttons button:last-child {
+.buttons button:last-child { /* 새로고침 버튼 */
   background-color: #6c757d;
 }
 </style>
