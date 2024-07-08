@@ -38,8 +38,8 @@
           </v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="toggleDialog">아니오</v-btn>
-            <v-btn @click="toggleDialog">네</v-btn>
+            <v-btn @click="handleLogout(false)">아니오</v-btn>
+            <v-btn @click="handleLogout(true)">네</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -49,10 +49,26 @@
 
 <script setup>
 import { ref } from "vue";
+import commonAxios from "@/utils/commonAxios";
 
 const dialog = ref(false);
 
-const toggleDialog = () => {
-  dialog.value = !dialog.value;
+const handleLogout = (isLogout) => {
+  dialog.value = isLogout;
+
+  if (dialog.value) {
+    commonAxios
+      .get(`/logout`)
+      .then((res) => {
+        window.location.reload();
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        dialog.value = false;
+      });
+  }
 };
 </script>
