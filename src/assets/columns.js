@@ -73,7 +73,6 @@ export const columns = [
     //수취인주소
     title: "수취인주소",
     dataIndex: "address",
-    filterDropdownOpen: state.filterDropdownVisible,
     filters: [
       {
         text: "서울",

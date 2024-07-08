@@ -73,12 +73,10 @@
 </template>
 
 <script setup>
-
 //더미데이터 불러오기
 import { rawData as getrawData } from "../assets/rawData";
 import { ref, reactive } from "vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
-
 
 // 상태를 저장할 reactive 객체 정의
 const state = reactive({
@@ -95,7 +93,6 @@ const handleSearch = (selectedKeys, confirm, dataIndex) => {
   state.searchText = selectedKeys[0];
   state.searchedColumn = dataIndex;
   calculateRowSpan();
-  
 };
 
 // 검색 리셋 처리 함수
@@ -568,13 +565,15 @@ columns.forEach((column) => {
   }
 });
 
-
+// 필터링된 데이터로 rowSpanData 계산
+// 'computed'는 종속된 데이터에 따라 값을 자동으로 다시 계산
 const filteredData = computed(() => {
   if (!state.searchText) {
     return indexData;
   }
-
+  // 검색 텍스트와 특정 컬럼에 따라 데이터를 필터링하여 반환
   return indexData.filter((item) => {
+    // 검색할 컬럼이 지정되어 있으면 해당 컬럼의 데이터가 검색 텍스트를 포함하는지 확인
     if (state.searchedColumn) {
       return item[state.searchedColumn]
         .toString()
@@ -585,8 +584,9 @@ const filteredData = computed(() => {
   });
 });
 
+// 'watch'는 특정 데이터가 변경될 때마다 지정된 함수를 실행
 watch(filteredData, (newData) => {
+  // 'filteredData'가 변경될 때마다 'calculateRowSpan' 함수를 호출하여 'rowSpanData'를 다시 계산
   rowSpanData = calculateRowSpan(newData);
 });
-
 </script>
