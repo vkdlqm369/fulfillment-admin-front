@@ -8,82 +8,82 @@ import axios from 'axios'
 
   const tableItems = ref([
     {
-      user_id : '더미 데이터',
+      userId : '더미 데이터',
       id : '더미 데이터',
       name : '더미 데이터',
       email : '더미 데이터',
       department : '더미 데이터',
       memo : '더미 데이터',
-      registration_date : '더미 데이터',
-      last_login_time : '더미 데이터',
-      last_login_ip : '더미 데이터',
-      is_used : '더미 데이터',
+      registrationDate : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      isUsed : '더미 데이터',
     },    {
-      user_id : '더미 데이터',
+      userId : '더미 데이터',
       id : '더미 데이터',
       name : '더미 데이터',
       email : '더미 데이터',
       department : '더미 데이터',
       memo : '더미 데이터',
-      registration_date : '더미 데이터',
-      last_login_time : '더미 데이터',
-      last_login_ip : '더미 데이터',
-      is_used : '더미 데이터',
+      registrationDate : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      isUsed : '더미 데이터',
     },    {
-      user_id : '더미 데이터',
+      userId : '더미 데이터',
       id : '더미 데이터',
       name : '더미 데이터',
       email : '더미 데이터',
       department : '더미 데이터',
       memo : '더미 데이터',
-      registration_date : '더미 데이터',
-      last_login_time : '더미 데이터',
-      last_login_ip : '더미 데이터',
-      is_used : '더미 데이터',
+      registrationDate : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      isUsed : '더미 데이터',
     },    {
-      user_id : '더미 데이터',
+      userId : '더미 데이터',
       id : '더미 데이터',
       name : '더미 데이터',
       email : '더미 데이터',
       department : '더미 데이터',
       memo : '더미 데이터',
-      registration_date : '더미 데이터',
-      last_login_time : '더미 데이터',
-      last_login_ip : '더미 데이터',
-      is_used : '더미 데이터',
+      registrationDate : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      isUsed : '더미 데이터',
     },    {
-      user_id : '더미 데이터',
+      userId : '더미 데이터',
       id : '더미 데이터',
       name : '더미 데이터',
       email : '더미 데이터',
       department : '더미 데이터',
       memo : '더미 데이터',
-      registration_date : '더미 데이터',
-      last_login_time : '더미 데이터',
-      last_login_ip : '더미 데이터',
-      is_used : '더미 데이터',
+      registrationDate : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      isUsed : '더미 데이터',
     },    {
-      user_id : '더미 데이터',
+      userId : '더미 데이터',
       id : '더미 데이터',
       name : '더미 데이터',
       email : '더미 데이터',
       department : '더미 데이터',
       memo : '더미 데이터',
-      registration_date : '더미 데이터',
-      last_login_time : '더미 데이터',
-      last_login_ip : '더미 데이터',
-      is_used : '더미 데이터',
+      registrationDate : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      isUsed : '더미 데이터',
     },    {
-      user_id : '더미 데이터',
+      userId : '더미 데이터',
       id : '더미 데이터',
       name : '더미 데이터',
       email : '더미 데이터',
       department : '더미 데이터',
       memo : '더미 데이터',
-      registration_date : '더미 데이터',
-      last_login_time : '더미 데이터',
-      last_login_ip : '더미 데이터',
-      is_used : '더미 데이터',
+      registrationDate : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      lastLoginIp : '더미 데이터',
+      isUsed : '더미 데이터',
     }
 ])
 
@@ -96,27 +96,26 @@ const components = {
 }
 
 const headerss = [
-  { title : '관리자번호', value: 'user_id'},
+  { title : '관리자번호', value: 'userId'},
   { title : '아이디', value: 'id'},
   { title : '관리자명', value: 'name'},
   { title : '이메일', value: 'email'},
   { title : '부서', value: 'department'},
   { title : '메모', value: 'memo'},
-  { title : '등록일', value: 'registration_date'},
-  { title : '최종로그인', value: 'last_login_time'},
-  { title : '최종로그인 IP', value: 'last_login_ip'},
-  { title : '사용유무', value: 'is_used'}
+  { title : '등록일', value: 'registrationDate'},
+  { title : '최종로그인', value: 'lastLoginIp'},
+  { title : '최종로그인 IP', value: 'lastLoginIp'},
+  { title : '사용유무', value: 'isUsed'}
 ]
 
 const Input_Map_For_Search = ref({
   id : "",
   name : "",
   email : "",
-  is_used : "",
+  isUsed : "",
   page : 1,
-  show_list : '10',
-}
-)
+  showList : '10',
+})
 const baseUrl = "http://localhost:8099/api"
 const isSearch = ref(false)
 const totalLists = ref(0)
@@ -150,7 +149,7 @@ axios
   .then((res)=>{
     totalLists.value = res.totalLists
     tableItems.value = res.data.users
-    numOfPage.value = Math.ceil(totalLists.value / Input_Map_For_Search.value.show_list)
+    numOfPage.value = Math.ceil(totalLists.value / Input_Map_For_Search.value.showList)
     console.log("성공", res)
   })
   .catch((res)=>{
@@ -161,7 +160,7 @@ axios
     */
 
   totalLists.value = 52
-  numOfPage.value = Math.ceil(totalLists.value / Input_Map_For_Search.value.show_list)
+  numOfPage.value = Math.ceil(totalLists.value / Input_Map_For_Search.value.showList)
   isSearch.value = true
 }
 
@@ -184,7 +183,7 @@ axios
               <TextBlank v-model:inputText="Input_Map_For_Search.email" labelName="이메일"/>
             </v-col>
             <v-col  cols="12" md="2" sm="6">
-              <TextSelection  v-model:selected="Input_Map_For_Search.is_used" labelName="사용유뮤" :itemList="[{name:'사용', value: 'true' },{name:'미사용', value: 'false' }]"
+              <TextSelection  v-model:selected="Input_Map_For_Search.isUsed" labelName="사용유뮤" :itemList="[{name:'사용', value: 'true' },{name:'미사용', value: 'false' }]"
              />
             </v-col>
             <v-col cols="12" md="2"  sm="6" >
@@ -204,7 +203,7 @@ axios
         <v-spacer></v-spacer>
         <v-cols cols="4" class="d-flex d-flex-inline ga-4">
             <v-btn class="mt-1" style="width:10px; height:50px;" @click="">등록</v-btn>
-            <TextSelection v-model:selected="Input_Map_For_Search.show_list" 
+            <TextSelection v-model:selected="Input_Map_For_Search.showList" 
             :itemList="[
               {name:'10개씩 보기', value : '10'}, {name:'20개씩 보기', value:'20'}, {name:'50개씩 보기', value:'50'}, {name:'100개씩 보기', value:'100'}]"
               @update:modelValue="changeShowPage"/>
