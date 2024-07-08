@@ -74,7 +74,10 @@ export default {
 
   watch: {
     startDate(newDate) {
-      this.endConfig.minDate = newDate; // 두 번째 날짜 >= 첫 번째 날짜 
+      this.endConfig.minDate = newDate;
+      if (this.endDate && new Date(this.endDate) < new Date(newDate)) {
+        this.endDate = null; // 시작일 변경 시 종료일이 시작일 이전이면 초기화
+      }
     }
   },
 
@@ -94,8 +97,11 @@ export default {
     },
 
     updateStartDate() {
-      this.saveDate('startDate', this.startDate); // 시작일 변경 -> startDate를 저장
-      this.endDate = null; // endDate 초기화
+      this.saveDate('startDate', this.startDate);
+      this.endConfig.minDate = this.startDate; // 시작일 변경 시 minDate 업데이트
+      if (this.endDate && new Date(this.endDate) < new Date(this.startDate)) {
+        this.endDate = null; // 시작일을 변경할 때 종료일 초기화
+      }
     },
 
     updateEndDate() {
@@ -114,12 +120,18 @@ export default {
       if (!date) return '';
       const [year, month, day] = date.split('-'); // xxxx-xx-xx format
       return `${year}-${month}-${day}`;
+    },
+
+    mounted() {
+      if (this.startDate) {
+        this.endConfig.minDate = this.startDate; // 컴포넌트가 마운트될 때 minDate 설정
+      }
     }
   },
 };
+
+
 </script>
-
-
 <style scoped>
 /* header 영역(타다닥 주문 수집)의 스타일 정의 */
 .header {

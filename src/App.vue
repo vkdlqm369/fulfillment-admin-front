@@ -1,19 +1,14 @@
 <template>
   <v-app>
     <v-main class="main-background">
-      <TopButton />
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import TopButton from './components/TopButton.vue';
-
 export default {
-  name: 'App',
-  components: {
-    TopButton
-  }
+  name: 'App'
 }
 </script>
 

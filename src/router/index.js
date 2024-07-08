@@ -1,16 +1,23 @@
-/**
- * router/index.ts
- *
- * Automatic routes for `./src/pages/*.vue`
- */
+import { createRouter, createWebHistory } from 'vue-router'
+import LogIn from '../components/LogIn.vue'
+import TopButton from '../components/TopButton.vue'
 
-// Composables
-import { createRouter, createWebHistory } from 'vue-router/auto'
-import { setupLayouts } from 'virtual:generated-layouts'
+const routes = [
+  {
+    path: '/',
+    name: 'LogIn',
+    component: LogIn
+  },
+  {
+    path: '/topbutton',
+    name: 'TopButton',
+    component: TopButton
+  }
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  extendRoutes: setupLayouts,
+  routes // 기본 라우트 설정을 사용합니다.
 })
 
 export default router
