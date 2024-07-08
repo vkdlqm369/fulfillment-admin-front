@@ -46,8 +46,20 @@
 | VueUse     | Vue3를 위한 컴포지션 기능 컬렉션으로, 재사용 가능한 로직과 훅을 제공하여 Vue 컴포넌트의 작성을 돕습니다.               |
 | Lodash     | JavaScript 유틸리티 라이브러리로, 배열, 숫자, 객체, 문자열, 함수 등을 쉽고 효과적으로 처리할 수 있도록 도와줍니다.      |
 | Pinia      | Vue.js 애플리케이션의 상태 관리를 도와주는 라이브러리로, Vuex의 대안으로서, 개발자들에게 간단하고 직관적인 API를 제공합니다.  |
+| Vue Router | Vue.js에서 제공하는 공식 라이브러리로, 웹 애플리케이션의 라우팅을 수행하기 위해 사용                            |
+
 
 이 외 과제에 필요한 패키지를 추가로 설치하여 사용하시면 됩니다.
+
+#### ● 공식문서 링크
+- [\[Vue3 공식문서\]](https://v3.vuejs.org/guide/introduction.html)
+- [\[Vue3 한글 번역문서\]](https://v3.ko.vuejs.org/guide/introduction.html)
+- [\[Vuetify 공식문서\]](https://vuetifyjs.com/en/introduction/why-vuetify)
+- [\[Axios 공식문서\]](https://axios-http.com/docs/intro)
+- [\[VueUse 공식문서\]](https://vueuse.org/guide/)
+- [\[Lodash 공식문서\]](https://lodash.com/docs)
+- [\[Pinia 공식문서\]](https://pinia.vuejs.org/introduction.html)
+- [\[Vue Router 공식문서\]](https://router.vuejs.org/introduction.html)
 
 ## 브랜치 전략
 
