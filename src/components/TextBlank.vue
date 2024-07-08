@@ -1,7 +1,5 @@
 <script setup>
 
-import { defineModel, defineProps} from 'vue'
-
 const props = defineProps({
   labelName: {
     type: String,

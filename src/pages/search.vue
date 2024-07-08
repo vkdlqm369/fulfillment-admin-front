@@ -15,8 +15,8 @@ import axios from 'axios'
       department : '더미 데이터',
       memo : '더미 데이터',
       registration_date : '더미 데이터',
-      login_time : '더미 데이터',
-      login_ip : '더미 데이터',
+      last_login_time : '더미 데이터',
+      last_login_ip : '더미 데이터',
       is_used : '더미 데이터',
     },    {
       user_id : '더미 데이터',
@@ -26,8 +26,8 @@ import axios from 'axios'
       department : '더미 데이터',
       memo : '더미 데이터',
       registration_date : '더미 데이터',
-      login_time : '더미 데이터',
-      login_ip : '더미 데이터',
+      last_login_time : '더미 데이터',
+      last_login_ip : '더미 데이터',
       is_used : '더미 데이터',
     },    {
       user_id : '더미 데이터',
@@ -37,8 +37,8 @@ import axios from 'axios'
       department : '더미 데이터',
       memo : '더미 데이터',
       registration_date : '더미 데이터',
-      login_time : '더미 데이터',
-      login_ip : '더미 데이터',
+      last_login_time : '더미 데이터',
+      last_login_ip : '더미 데이터',
       is_used : '더미 데이터',
     },    {
       user_id : '더미 데이터',
@@ -48,8 +48,8 @@ import axios from 'axios'
       department : '더미 데이터',
       memo : '더미 데이터',
       registration_date : '더미 데이터',
-      login_time : '더미 데이터',
-      login_ip : '더미 데이터',
+      last_login_time : '더미 데이터',
+      last_login_ip : '더미 데이터',
       is_used : '더미 데이터',
     },    {
       user_id : '더미 데이터',
@@ -59,8 +59,8 @@ import axios from 'axios'
       department : '더미 데이터',
       memo : '더미 데이터',
       registration_date : '더미 데이터',
-      login_time : '더미 데이터',
-      login_ip : '더미 데이터',
+      last_login_time : '더미 데이터',
+      last_login_ip : '더미 데이터',
       is_used : '더미 데이터',
     },    {
       user_id : '더미 데이터',
@@ -70,8 +70,8 @@ import axios from 'axios'
       department : '더미 데이터',
       memo : '더미 데이터',
       registration_date : '더미 데이터',
-      login_time : '더미 데이터',
-      login_ip : '더미 데이터',
+      last_login_time : '더미 데이터',
+      last_login_ip : '더미 데이터',
       is_used : '더미 데이터',
     },    {
       user_id : '더미 데이터',
@@ -81,8 +81,8 @@ import axios from 'axios'
       department : '더미 데이터',
       memo : '더미 데이터',
       registration_date : '더미 데이터',
-      login_time : '더미 데이터',
-      login_ip : '더미 데이터',
+      last_login_time : '더미 데이터',
+      last_login_ip : '더미 데이터',
       is_used : '더미 데이터',
     }
 ])
@@ -103,8 +103,8 @@ const headerss = [
   { title : '부서', value: 'department'},
   { title : '메모', value: 'memo'},
   { title : '등록일', value: 'registration_date'},
-  { title : '최종로그인', value: 'login_time'},
-  { title : '최종로그인 IP', value: 'login_ip'},
+  { title : '최종로그인', value: 'last_login_time'},
+  { title : '최종로그인 IP', value: 'last_login_ip'},
   { title : '사용유무', value: 'is_used'}
 ]
 
@@ -125,8 +125,11 @@ const name = "app";
 const numOfPage = ref(0)
 
 function changeShowPage(){
-  if(isSearch.value)
+  if(isSearch.value){
+    Input_Map_For_Search.value.page = 1
     SearchHandler()
+  }
+
 }
 
 function SearchHandler(){
@@ -209,7 +212,6 @@ axios
     
       </v-row>
     </v-container>
-
   </v-container>
 
   <v-container v-if="isSearch">

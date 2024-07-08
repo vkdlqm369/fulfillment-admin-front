@@ -2,8 +2,6 @@
 
 const props = defineProps(['tableItems', 'headerss'])
 
-
-
 </script>
 
 <template>
