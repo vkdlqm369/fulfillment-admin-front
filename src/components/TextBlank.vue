@@ -1,12 +1,6 @@
 <script setup>
 
-const props = defineProps({
-  labelName: {
-    type: String,
-    default: "default"
-  }
-});
-
+const props = defineProps(['labelName']);
 const inputText = defineModel('inputText')
 
 </script>

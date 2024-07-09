@@ -2,7 +2,7 @@
   <v-app>
     <v-card>
       <v-layout>
-        <v-navigation-drawer class="pa-6" theme="dark" permanent>
+        <v-navigation-drawer  class="pa-6" theme="dark" permanent>
           <v-img
             src="https://wms.sbfulfillment.co.kr/wms/asset/images/logo_fbs_w.svg"
           ></v-img>
@@ -27,7 +27,7 @@
             </div>
           </template>
         </v-navigation-drawer>
-        <v-main style="height: 100vh"><router-view /></v-main>
+        <v-main style="min-height: 100vh"><router-view /></v-main>
       </v-layout>
 
       <v-dialog v-model="dialog" max-width="400" persistent>
