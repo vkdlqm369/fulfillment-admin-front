@@ -3,6 +3,7 @@
     <v-main class="main-background">
       <div class="content-wrapper">
         <TopButton />
+        <NewTable />
         <Footer />
       </div>
     </v-main>
@@ -11,13 +12,15 @@
 
 <script>
 import TopButton from './components/TopButton.vue';
+import NewTable from './components/NewTable.vue';
 import Footer from './components/Footer.vue';
 
 export default {
   name: 'App',
   components: {
     TopButton,
-    Footer
+    NewTable,
+    Footer,
   }
 }
 </script>
