@@ -168,8 +168,8 @@ function onChange(pagination, filters, sorter, extra) {
 // 페이지네이션 설정
 const paginationConfig = {
   position: ["bottomCenter"],
-  pageSize: 10,
-  showSizeChanger: false,
+  //pageSize: 10,
+  //showSizeChanger: false,
   // 현재 페이지에 해당하는 데이터 기반 rowSpan 다시 계산
   onChange: (page, pageSize) => {
     console.log("Current Page:", page);
