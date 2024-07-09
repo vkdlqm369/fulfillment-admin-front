@@ -19,7 +19,7 @@ const handleSearch = (selectedKeys, confirm, dataIndex) => {
   state.searchText = selectedKeys[0];
   state.searchedColumn = dataIndex;
   rowSpanData = calculateRowSpan(filteredData.value);
-  console.log("Search rowSpanData:", rowSpanData);
+ 
 };
 
 // 검색 리셋 처리 함수
@@ -29,7 +29,6 @@ const handleReset = (clearFilters) => {
   });
   state.searchText = "";
   rowSpanData = calculateRowSpan(filteredData.value);
-  console.log("Reset rowSpanData:", rowSpanData);
 };
 
 // filters 데이터를 tree 형식으로 변환
@@ -162,21 +161,26 @@ const indexData = data.map((item, index) => ({
 function onChange(pagination, filters, sorter, extra) {
   console.log("params", pagination, filters, sorter, extra);
   rowSpanData = calculateRowSpan(extra.currentDataSource);
-  console.log("Filter/Sort rowSpanData:", rowSpanData);
 }
 
 // 페이지네이션 설정
 const paginationConfig = {
   position: ["bottomCenter"],
-  //pageSize: 10,
-  //showSizeChanger: false,
+  pageSize: 10,
+  showSizeChanger: false,
   // 현재 페이지에 해당하는 데이터 기반 rowSpan 다시 계산
   onChange: (page, pageSize) => {
     console.log("Current Page:", page);
     rowSpanData = calculateRowSpan(
-      filteredData.value.slice((page - 1) * pageSize, page * pageSize)
+      // 현재 페이지 범위만큼 data배열 잘라내서 새로운 배열 반환
+
+      // (page - 1) * pageSize => 시작 인덱스 (현재 페이지 처음 인덱스)
+      // page * pageSize => 종료 인덱스 (현재 페이지 마지막 인덱스)
+
+      // ex) page == 1 => 0~9까지의 10개 항목
+
+      data.slice((page - 1) * pageSize, page * pageSize)
     );
-      console.log("Pagination rowSpanData:", rowSpanData); // rowSpanData 로그 출력
   },
 };
 
@@ -208,7 +212,6 @@ const calculateRowSpan = (data) => {
 
 // 초기 데이터로 rowSpanData 계산
 let rowSpanData = calculateRowSpan(indexData);
-console.log("Initial rowSpanData:", rowSpanData); // 초기 rowSpanData 로그 출력
 
 // columns 배열에 계산된 customCell 추가
 columns.forEach((column) => {
@@ -242,7 +245,6 @@ const filteredData = computed(() => {
 watch(filteredData, (newData) => {
   // 'filteredData'가 변경될 때마다 'calculateRowSpan' 함수를 호출하여 'rowSpanData'를 다시 계산
   rowSpanData = calculateRowSpan(newData);
-  console.log("Watched filteredData rowSpanData:", rowSpanData); // rowSpanData 로그 출력
 });
 
 export {
