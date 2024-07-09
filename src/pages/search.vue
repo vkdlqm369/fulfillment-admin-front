@@ -6,8 +6,7 @@ import TextSelection from '../components/TextSelection.vue';
 import SearchBtn from '../components/SearchBtn.vue';
 import commonAxios from '@/utils/commonAxios';
 
-  const tableItems = ref([])
-
+const tableItems = ref([])
 
 const components = {
     ResultTable, 
@@ -48,7 +47,6 @@ function changeShowPage(){
     Input_Map_For_Search.value.page = 1
     SearchHandler()
   }
-
 }
 
 function SearchHandler(){
@@ -59,9 +57,6 @@ const params = new URLSearchParams()
 for(let key in Input_Map_For_Search.value){
     params.append(key, Input_Map_For_Search.value[key])
 }
-
-console.log('/search?' + params.toString())
-
 
 commonAxios
   .get('/search?' + params.toString())
@@ -87,16 +82,16 @@ commonAxios
         <v-col cols="">
           <v-row>
             <v-col  cols="12" md="2" sm="6">
-              <TextBlank v-model:inputText="Input_Map_For_Search.id" labelName="아이디" @keyup.enter="SearchHandler"/>
+              <TextBlank v-model:inputText="Input_Map_For_Search.id" labelName="아이디" @change="Input_Map_For_Search.page=1" @keyup.enter="SearchHandler"/>
             </v-col>
             <v-col  cols="12" md="2" sm="6">
-              <TextBlank v-model:inputText="Input_Map_For_Search.name" labelName="관리자명" @keyup.enter="SearchHandler"/>
+              <TextBlank v-model:inputText="Input_Map_For_Search.name" labelName="관리자명" @change="Input_Map_For_Search.page=1" @keyup.enter="SearchHandler"/>
             </v-col>
             <v-col  cols="12" md="2" sm="6">
-              <TextBlank v-model:inputText="Input_Map_For_Search.email" labelName="이메일" @keyup.enter="SearchHandler"/>
+              <TextBlank v-model:inputText="Input_Map_For_Search.email" labelName="이메일" @change="Input_Map_For_Search.page=1" @keyup.enter="SearchHandler"/>
             </v-col>
             <v-col  cols="12" md="2" sm="6">
-              <TextSelection  v-model:selected="Input_Map_For_Search.isUsed" labelName="사용유뮤" :itemList="[{name: '선택', value: ''}, {name:'사용', value: 'TRUE' },{name:'미사용', value: 'FALSE' }]"
+              <TextSelection  v-model:selected="Input_Map_For_Search.isUsed" labelName="사용유뮤" :itemList="[{name: '선택', value: ''}, {name:'사용', value: 'TRUE' },{name:'미사용', value: 'FALSE' }]" @update:modelValue="Input_Map_For_Search.page=1"
              />
             </v-col>
             <v-col cols="12" md="2"  sm="6" >
@@ -119,7 +114,7 @@ commonAxios
             <TextSelection v-model:selected="Input_Map_For_Search.showList" 
             :itemList="[
               {name:'10개씩 보기', value : '10'}, {name:'20개씩 보기', value:'20'}, {name:'50개씩 보기', value:'50'}, {name:'100개씩 보기', value:'100'}]"
-              @update:modelValue="changeShowPage"/>
+              @update:modelValue="changeShowPage" @change="Input_Map_For_Search.page=1"/>
         </v-col>
     
       </v-row>
