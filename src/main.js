@@ -8,4 +8,5 @@ const app = createApp(App)
 registerPlugins(app)
 app.use(vuetify) // Vuetify를 사용
 
+
 app.mount('#app')
