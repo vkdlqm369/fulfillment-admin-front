@@ -11,33 +11,41 @@
 
         <div class="date-inputs">
           <!--첫 번째 datepicker-->
-          <flat-pickr
-            v-model="startDate"
-            :config="startConfig"
-            class="datepicker-input"
-            @input="updateStartDate"
-          />
-          <!-- @input : 날짜가 선택될 때, updateStartDate method 호출 -->
+          <div class="datepicker-wrapper">
+            <i class="fas fa-calendar-alt"></i>
+            <flat-pickr
+              v-model="startDate"
+              :config="startConfig"
+              class="datepicker-input"
+              @input="updateStartDate"
+            />
+          </div>
           <span>~</span>
           <!--두 번째 datepicker-->
-          <flat-pickr
-            v-model="endDate"
-            :config="endConfig"
-            class="datepicker-input"
-            @input="updateEndDate"
-          />
-          <!-- @input : 날짜가 선택될 때, updateEndDate method 호출 -->
+          <div class="datepicker-wrapper">
+            <i class="fas fa-calendar-alt"></i>
+            <flat-pickr
+              v-model="endDate"
+              :config="endConfig"
+              class="datepicker-input"
+              @input="updateEndDate"
+            />
+          </div>
         </div>
       </div>
 
       <div class="buttons">
-        <button class="btn collectOrders" @click="collectOrders">
+        <button class="btn btn-collectOrders" @click="collectOrders">
+          <i class="fas fa-shopping-cart"></i>
           <span>주문수집</span>
         </button>
         <!-- @click : 클릭 시. collectOrders method 호출 -->
+        <button class="btn btn-refreshPage" @click="refreshPage">
+          <i class="fas fa-sync-alt"></i>
+          <span>새로고침</span>
+        </button>
+        <!-- @click : 클릭 시. refreshPage method 호출 -->
       </div>
-      <!-- @click : 클릭 시. refreshPage method 호출 -->
-      <button @click="refreshPage">새로고침</button>
     </div>
   </div>
 </template>
@@ -130,6 +138,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 @import "@/assets/button.css";
 
@@ -184,9 +193,21 @@ export default {
   color: black;
 }
 
+.datepicker-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.datepicker-wrapper i {
+  position: absolute;
+  left: 10px;
+  color: #000;
+}
+
 .datepicker-input {
   /* datepicker 입력 필드 스타일 */
-  padding: 5px;
+  padding: 5px 5px 5px 25px; /* 아이콘 공간 확보 */
   border: 2px solid #000;
   border-radius: 5px;
   background-color: white;
@@ -211,8 +232,13 @@ export default {
   gap: 10px;
 }
 
-.buttons button:last-child {
-  /* 새로고침 버튼 */
-  background-color: #6c757d;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn i {
+  margin-right: 5px;
 }
 </style>

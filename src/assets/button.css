@@ -1,78 +1,50 @@
 @import url('https://fonts.googleapis.com/css?family=Amatic+SC');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
 
 body {
-  margin: 0;
-  height: 100%;
-  background-image: linear-gradient(to top, #d9afd9 0%, #97d9e1 100%);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-}
-
-.button_container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 30%;
-}
-
-.description, .link {
-  font-family: 'Amatic SC', cursive;
-  text-align: center;
-}
-
-.description {
-  font-size: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .btn {
-  border: none;
-  display: block;
-  text-align: center;
+  border: 2px solid;
+  color: #00aaff;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  border-radius: 5px;
+  background: transparent;
+  transition: background 0.3s, color 0.3s;
   cursor: pointer;
-  text-transform: uppercase;
-  outline: none;
-  overflow: hidden;
-  position: relative;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn i {
+  margin-right: 8px;
+}
+
+.btn-collectOrders {
+  border-color: #2b98ce;
+  color: #2b98ce;
+}
+
+.btn-collectOrders:hover {
+  background: #2b98ce;
   color: #fff;
-  font-weight: 700;
-  font-size: 15px;
-  background-color: #222;
-  padding: 17px 60px;
-  margin: 0 auto;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.20);
 }
 
-.btn span {
-  position: relative; 
-  z-index: 1;
+.btn-refreshPage {
+  border-color: #3f345e;
+  color: #3f345e;
 }
 
-.btn:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 490%;
-  width: 140%;
-  background: #78c7d2;
-  -webkit-transition: all .5s ease-in-out;
-  transition: all .5s ease-in-out;
-  -webkit-transform: translateX(-98%) translateY(-25%) rotate(45deg);
-  transform: translateX(-98%) translateY(-25%) rotate(45deg);
-}
-
-.btn:hover:after {
-  -webkit-transform: translateX(-9%) translateY(-25%) rotate(45deg);
-  transform: translateX(-9%) translateY(-25%) rotate(45deg);
-}
-
-.link {
-  font-size: 20px;
-  margin-top: 30px;
-}
-
-.link a {
-  color: #000;
-  font-size: 25px; 
+.btn-refreshPage:hover {
+  background: #3f345e;
+  color: #fff;
 }
