@@ -7,7 +7,6 @@ import Search from "@/pages/search.vue";
 import History from "@/pages/history.vue";
 import Register from "@/pages/register.vue";
 
-
 const routes = [
   {
     path: "/",
@@ -28,7 +27,8 @@ const routes = [
     path: "/history",
     component: History,
     meta: { layout: "default" },
-  },  {
+  },
+  {
     path: "/register",
     component: Register,
     meta: { layout: "default" },
@@ -41,10 +41,14 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const layout = to.meta.layout || "default";
-  to.meta.layoutComponent =
-    layout === "authentication" ? AuthenticationLayout : DefaultLayout;
-  next();
+  if (to.path === "/") {
+    next("/login");
+  } else {
+    const layout = to.meta.layout || "default";
+    to.meta.layoutComponent =
+      layout === "authentication" ? AuthenticationLayout : DefaultLayout;
+    next();
+  }
 });
 
 export default router;
