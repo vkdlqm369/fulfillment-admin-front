@@ -4,6 +4,7 @@
       <div class="content-wrapper">
         <TopButton />
         <NewTable />
+        <Pagination />
         <Footer />
       </div>
     </v-main>
@@ -13,13 +14,16 @@
 <script>
 import TopButton from './components/TopButton.vue';
 import NewTable from './components/NewTable.vue';
+import Pagination from './components/Pagination.vue';
 import Footer from './components/Footer.vue';
+
 
 export default {
   name: 'App',
   components: {
     TopButton,
     NewTable,
+    Pagination,
     Footer,
   }
 }

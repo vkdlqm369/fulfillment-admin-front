@@ -5,7 +5,7 @@
           <img src="@/assets/daou_logo.png" alt="DAOU 다우기술" class="footer-logo">
         </div>
         <div class="footer-right">
-          <p><span class="department">사방넷연동개발팀</span>  홍진수 학생인턴 | 정성윤 학생인턴</p>
+          <p><span class="department">사방넷연동개발팀</span> 홍진수 학생인턴 | 정성윤 학생인턴</p>
         </div>
       </div>
     </footer>
@@ -56,6 +56,7 @@
   .footer-right .department {
     font-size: 14px;
     font-weight: bold;
+    margin-right: 15px;
   }
   
   </style>
