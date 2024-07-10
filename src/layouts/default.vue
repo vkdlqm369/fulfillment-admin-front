@@ -2,7 +2,7 @@
   <v-app>
     <v-card>
       <v-layout>
-        <v-navigation-drawer  class="pa-6" theme="dark" permanent>
+        <v-navigation-drawer class="pa-6" theme="dark" permanent>
           <v-img
             src="https://wms.sbfulfillment.co.kr/wms/asset/images/logo_fbs_w.svg"
           ></v-img>
@@ -50,6 +50,9 @@
 <script setup>
 import { ref } from "vue";
 import commonAxios from "@/utils/commonAxios";
+import AppFooter from "@/components/AppFooter.vue";
+import Cookies from "js-cookie";
+import router from "@/router";
 
 const dialog = ref(false);
 
@@ -57,18 +60,22 @@ const handleLogout = (isLogout) => {
   dialog.value = isLogout;
 
   if (dialog.value) {
-    commonAxios
-      .get(`/logout`)
-      .then((res) => {
-        window.location.reload();
-        console.log(res);
-      })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => {
-        dialog.value = false;
-      });
+    Cookies.remove("accessToken");
+    delete commonAxios.defaults.headers.common.Authorization;
+    dialog.value = false;
+    router.push("/login");
+    // commonAxios
+    //   .get(`/logout`)
+    //   .then((res) => {
+    //     window.location.reload();
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   })
+    //   .finally(() => {
+    //     dialog.value = false;
+    //   });
   }
 };
 </script>
