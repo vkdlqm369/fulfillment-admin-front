@@ -5,6 +5,7 @@ import Login from "@/pages/login.vue";
 import Index from "@/pages/index.vue";
 import Search from "@/pages/search.vue";
 import History from "@/pages/history.vue";
+import Register from "@/pages/register.vue";
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
   {
     path: "/history",
     component: History,
+    meta: { layout: "default" },
+  },
+  {
+    path: "/register",
+    component: Register,
     meta: { layout: "default" },
   },
 ];
