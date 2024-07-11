@@ -99,6 +99,4 @@ const handleSubmit = () => {
       });
   }
 };
-
-navigator.medi;
 </script>
