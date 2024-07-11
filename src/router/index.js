@@ -6,6 +6,7 @@ import Index from "@/pages/index.vue";
 import Search from "@/pages/search.vue";
 import History from "@/pages/history.vue";
 import Register from "@/pages/register.vue";
+import Cookies from "js-cookie";
 
 const routes = [
   {
@@ -41,7 +42,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.path === "/") {
+  const accessToken = Cookies.get("accessToken");
+
+  if (to.path !== "/" && to.path !== "/login" && accessToken == null) {
+    next("/login");
+  } else if (to.path === "/") {
     next("/login");
   } else {
     const layout = to.meta.layout || "default";
