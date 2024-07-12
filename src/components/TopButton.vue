@@ -161,10 +161,10 @@ export default {
   /* 수집기간 박스 */
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 15px;
   background-color: #ffffff;
   border-radius: 5px;
-  gap: 20px;
+  gap: 40px; /*날짜 선택, 주문 버튼 */
   border: 2px solid #000;
 }
 
@@ -176,7 +176,7 @@ export default {
 
 .date-picker label {
   /* datepicker 라벨 스타일 */
-  margin-right: 10px;
+  margin-right: 50px;
   font-weight: bold;
   color: black;
   display: flex;
