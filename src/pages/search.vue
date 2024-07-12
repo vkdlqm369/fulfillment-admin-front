@@ -31,7 +31,6 @@ const inputMapForSearch = ref({
 
 const isSearch = ref(false);
 const totalLists = ref(0);
-const name = "app";
 const numOfPage = ref(0);
 const dirty = ref(false);
 

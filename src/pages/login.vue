@@ -84,10 +84,10 @@ const handleSubmit = () => {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          Cookies.set("accessToken", res.data.token);
+          Cookies.set("accessToken", res.headers.authorization);
           commonAxios.defaults.headers.common[
             "Authorization"
-          ] = `Bearer ${res.data.token}`;
+          ] = `${res.headers.authorization}`;
           router.push("/search");
         } else {
           alert("로그인 실패");
