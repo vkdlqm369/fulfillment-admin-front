@@ -21,7 +21,7 @@
             <v-spacer></v-spacer>
             <v-btn @click="dialog = true" to="/search">네</v-btn>
             <v-btn @click="dialog = false">아니오</v-btn>
-          </v-card-actions>-
+          </v-card-actions>
         </v-card>
       </v-dialog>
 
@@ -48,7 +48,6 @@
                         v-model="id"
                         :rules="idRules"
                       ></v-text-field>
-                      <!-- style="min-width: 330px;" 창 크기 조절시 일정 크기까지는 유지되게 -->
                     </v-col>
                   </v-row>
                   
@@ -93,9 +92,9 @@
                     <v-col cols="8">
                       <v-text-field
                         variant="outlined"
-                        hint="관리자 페이지 접근제한이 필요한 경우 관리자를 선택"
-                        persistent-hint
                         density="compact"
+                        v-model="name"
+                        :rules="nameRules"
                       ></v-text-field>
                     </v-col>
                   </v-row>
