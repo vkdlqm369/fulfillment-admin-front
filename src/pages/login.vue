@@ -43,11 +43,8 @@ const idRules = [
     if (!value) {
       return "아이디를 입력해주세요.";
     }
-    if (!/[a-zA-Z]/.test(value)) {
+    if (!/^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,60}$/.test(value)) {
       return "아이디는 영어를 반드시 포함해야 합니다.";
-    }
-    if (/[^a-zA-Z0-9]/.test(value)) {
-      return "아이디는 영어와 숫자만 사용할 수 있습니다.";
     }
     return true;
   },
