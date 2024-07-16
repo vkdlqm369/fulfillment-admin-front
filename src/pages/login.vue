@@ -32,10 +32,9 @@
 </template>
 
 <script setup>
-import commonAxios from "@/utils/commonAxios";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import Cookies from "js-cookie";
+import { postLogin } from "@/utils/api";
 
 const id = ref("");
 const idRules = [
@@ -76,24 +75,7 @@ const handleSubmit = () => {
     .find((error) => error !== true);
 
   if (!idError && !pwError) {
-    commonAxios
-      .post("/login", requestBody)
-      .then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-          Cookies.set("accessToken", res.headers.authorization);
-          commonAxios.defaults.headers.common[
-            "Authorization"
-          ] = `${res.headers.authorization}`;
-          router.push("/search");
-        } else {
-          alert("로그인 실패");
-        }
-      })
-      .catch((err) => {
-        alert(err);
-        console.error(err);
-      });
+    postLogin(requestBody);
   }
 };
 </script>

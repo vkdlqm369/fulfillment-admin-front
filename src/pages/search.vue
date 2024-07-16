@@ -3,7 +3,7 @@ import ResultTable from "../components/ResultTable.vue";
 import TextBlank from "../components/TextBlank.vue";
 import TextSelection from "../components/TextSelection.vue";
 import SearchBtn from "../components/SearchBtn.vue";
-import commonAxios from "@/utils/commonAxios";
+import { getSearch } from "@/utils/api";
 
 const tableItems = ref([]);
 
@@ -54,19 +54,7 @@ function SearchHandler() {
     params.append(key, inputMapForSearch.value[key]);
   }
 
-  commonAxios
-    .get("/search?" + params.toString())
-    .then((res) => {
-      totalLists.value = res.data.totalLists;
-      tableItems.value = res.data.users;
-      numOfPage.value = Math.ceil(
-        totalLists.value / inputMapForSearch.value.showList
-      );
-      console.log("성공", res);
-    })
-    .catch((res) => {
-      console.log("실패", res);
-    });
+  getSearch(params);
 
   isSearch.value = true;
 }
