@@ -22,15 +22,13 @@ export const postLogin = (requestBody) =>
       console.error(err);
     });
 
-export const getSearch = (params) =>
+export const getSearch = (params, totalLists, tableItems, numOfPage) =>
   commonAxios
     .get("/search?" + params.toString())
     .then((res) => {
       totalLists.value = res.data.totalLists;
       tableItems.value = res.data.users;
-      numOfPage.value = Math.ceil(
-        totalLists.value / inputMapForSearch.value.showList
-      );
+      numOfPage.value = res.data.totalPages;
       console.log("성공", res);
     })
     .catch((res) => {
