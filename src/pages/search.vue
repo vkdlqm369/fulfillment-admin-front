@@ -54,7 +54,7 @@ function SearchHandler() {
     params.append(key, inputMapForSearch.value[key]);
   }
 
-  getSearch(params);
+  getSearch(params, totalLists, tableItems, numOfPage);
 
   isSearch.value = true;
 }
@@ -123,16 +123,22 @@ function SearchHandler() {
     </v-container>
   </v-container>
 
-  <v-container v-if="isSearch" class="min-w-max-c">
-    <ResultTable :tableItems="tableItems" :headers="headers" />
-  </v-container>
-  <v-container v-if="isSearch">
-    <v-pagination
-      v-model="inputMapForSearch.page"
-      :length="numOfPage"
-      :total-visible="8"
-      @click="SearchHandler"
-    ></v-pagination>
+  <v-container v-if="isSearch" class="content-container">
+    <v-row>
+      <v-col class="result-container">
+        <ResultTable :tableItems="tableItems" :headers="headers" />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="pagination-container">
+        <v-pagination
+          v-model="inputMapForSearch.page"
+          :length="numOfPage"
+          :total-visible="8"
+          @click="SearchHandler"
+        ></v-pagination>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -155,5 +161,15 @@ function SearchHandler() {
 
 .min-w-max-c {
   min-width: max-content;
+}
+
+.result-container {
+  overflow-y: auto;
+  max-height: 60vh; 
+}
+
+.pagination-container {
+  overflow-y: auto;
+  max-height: 20vh;
 }
 </style>
