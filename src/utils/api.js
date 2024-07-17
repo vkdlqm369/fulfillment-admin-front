@@ -22,17 +22,38 @@ export const postLogin = (requestBody) =>
       console.error(err);
     });
 
-export const getSearch = (params, totalLists, tableItems, numOfPage) =>
-  commonAxios
-    .get("/search?" + params.toString())
-    .then((res) => {
-      totalLists.value = res.data.totalLists;
-      tableItems.value = res.data.users;
-      numOfPage.value = res.data.totalPages;
-      console.log("성공", res);
+  export const getSearch = (params, totalLists, tableItems, numOfPage) =>
+    commonAxios
+      .get("/search?" + params.toString())
+      .then((res) => {
+        totalLists.value = res.data.totalLists;
+        tableItems.value = res.data.users;
+        numOfPage.value = res.data.totalPages;
+        console.log("성공", res);
+      })
+      .catch((res) => {
+        console.log("실패", res);
+      });
+
+  export const getHistory = (params, totalLists, tableItems, numOfPage) =>
+    commonAxios
+    .get('/history?' + params.toString())
+    .then((res)=>{
+      totalLists.value = res.data.totalLists
+      tableItems.value = res.data.histories.map(histories => {
+        return {
+          'ID': histories.id,
+          'loginDevice': histories.loginDevice,
+          'loginIp': histories.loginIp,
+          'loginTime': histories.loginTime,
+          'name': histories.name
+        }
+      })
+      numOfPage.value = res.data.totalPages
+      console.log("성공", res)
     })
-    .catch((res) => {
-      console.log("실패", res);
+    .catch((res)=>{
+      console.log("실패", res)
     });
 
-// register와 history api는 통합 후 추가
+// register는 통합 후 추가

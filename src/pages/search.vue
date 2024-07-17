@@ -1,9 +1,9 @@
 <script setup>
-import ResultTable from "../components/ResultTable.vue";
 import TextBlank from "../components/TextBlank.vue";
 import TextSelection from "../components/TextSelection.vue";
 import SearchBtn from "../components/SearchBtn.vue";
 import { getSearch } from "@/utils/api";
+import { computed } from "vue";
 
 const tableItems = ref([]);
 
@@ -32,30 +32,21 @@ const inputMapForSearch = ref({
 const isSearch = ref(false);
 const totalLists = ref(0);
 const numOfPage = ref(0);
-const dirty = ref(false);
+const loading = ref(false);
 
-function changeShowPage() {
-  if (isSearch.value) {
-    inputMapForSearch.value.page = 1;
-    SearchHandler();
-  }
-}
 
-function SearchHandler() {
-  const path = ref("");
-  const params = new URLSearchParams();
+function SearchHandler(page=1){
 
-  if (dirty.value) {
-    dirty.value = false;
-    inputMapForSearch.value.page = 1;
-  }
+  inputMapForSearch.value.page = page
+  const path = ref('')
+  const params = new URLSearchParams()
 
   for (let key in inputMapForSearch.value) {
     params.append(key, inputMapForSearch.value[key]);
   }
-
+  loading.value = true
   getSearch(params, totalLists, tableItems, numOfPage);
-
+  loading.value = false
   isSearch.value = true;
 }
 
@@ -63,29 +54,27 @@ function SearchHandler() {
 
 <template>
   <v-container>
+    <h1 style="margin:15px">관리자 조회</h1>
     <v-container class="search-container">
       <TextBlank
         v-model:inputText="inputMapForSearch.id"
         labelName="아이디"
         style="max-width: 120px"
-        @change="dirty = true"
-        @keyup.enter="SearchHandler"
+        @keyup.enter="SearchHandler()"
       />
 
       <TextBlank
         v-model:inputText="inputMapForSearch.name"
         labelName="관리자명"
         style="max-width: 140px"
-        @change="dirty = true"
-        @keyup.enter="SearchHandler"
+        @keyup.enter="SearchHandler()"
       />
 
       <TextBlank
         v-model:inputText="inputMapForSearch.email"
         labelName="이메일"
         style="max-width: 200px"
-        @change="dirty = true"
-        @keyup.enter="SearchHandler"
+        @keyup.enter="SearchHandler()"
       />
 
       <TextSelection
@@ -97,9 +86,8 @@ function SearchHandler() {
           { name: '사용', value: 'TRUE' },
           { name: '미사용', value: 'FALSE' },
         ]"
-        @update:modelValue="dirty = true"
       />
-      <SearchBtn class="fixed-h" @click="SearchHandler" />
+      <SearchBtn class="fixed-h" @click="SearchHandler()" />
     </v-container>
 
     <v-container class="action-container">
@@ -117,8 +105,7 @@ function SearchHandler() {
           { name: '100개씩 보기', value: '100' },
         ]"
         style="max-width: fit-content"
-        @update:modelValue="changeShowPage"
-        @change="dirty = true"
+        @update:modelValue="SearchHandler()"
       />
     </v-container>
   </v-container>
@@ -126,20 +113,27 @@ function SearchHandler() {
   <v-container v-if="isSearch" class="content-container">
     <v-row>
       <v-col class="result-container">
-        <ResultTable :tableItems="tableItems" :headers="headers" />
+        <v-data-table-virtual 
+            :items="tableItems"
+            :headers="headers"
+            :loading="loading" 
+            loading-text="Loading... Please wait"
+        ></v-data-table-virtual>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="pagination-container">
-        <v-pagination
-          v-model="inputMapForSearch.page"
-          :length="numOfPage"
-          :total-visible="8"
-          @click="SearchHandler"
-        ></v-pagination>
+    <v-pagination
+      v-if="!loading"
+      v-model="inputMapForSearch.page"
+      :length="numOfPage"
+      :total-visible="8"
+      @click="SearchHandler(inputMapForSearch.page)"
+    ></v-pagination>
       </v-col>
     </v-row>
   </v-container>
+
 </template>
 
 <style scoped>
