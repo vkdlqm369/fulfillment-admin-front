@@ -50,32 +50,19 @@
 <script setup>
 import { ref } from "vue";
 import commonAxios from "@/utils/commonAxios";
-import AppFooter from "@/components/AppFooter.vue";
 import Cookies from "js-cookie";
 import router from "@/router";
 
 const dialog = ref(false);
 
-const handleLogout = (isLogout) => {
+const handleLogout = async (isLogout) => {
   dialog.value = isLogout;
 
   if (dialog.value) {
     Cookies.remove("accessToken");
     delete commonAxios.defaults.headers.common.Authorization;
     dialog.value = false;
-    router.push("/login");
-    // commonAxios
-    //   .get(`/logout`)
-    //   .then((res) => {
-    //     window.location.reload();
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   })
-    //   .finally(() => {
-    //     dialog.value = false;
-    //   });
+    await router.push("/login");
   }
 };
 </script>
