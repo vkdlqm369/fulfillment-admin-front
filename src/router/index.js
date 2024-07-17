@@ -6,6 +6,7 @@ import Index from "@/pages/index.vue";
 import Search from "@/pages/search.vue";
 import History from "@/pages/history.vue";
 import Register from "@/pages/register.vue";
+import MyPage from "@/pages/myPage.vue";
 
 const routes = [
   {
@@ -31,6 +32,12 @@ const routes = [
   {
     path: "/register",
     component: Register,
+    meta: { layout: "default" },
+  },
+
+  {
+    path: "/mypage",
+    component: MyPage,
     meta: { layout: "default" },
   },
 ];
