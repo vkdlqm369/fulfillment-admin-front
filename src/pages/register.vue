@@ -1,9 +1,9 @@
 
 <template>
   <v-app>
-    <v-container fluid>
-      <v-row justify="center">
-        <v-col cols="12" md="8" lg="6">
+    <v-container fluid class="fill-height py-0">
+      <v-row justify="center" class="fill-height" >
+        <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height overflow-auto">
           <v-toolbar flat>
             <v-toolbar-title>관리자 등록</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -27,21 +27,25 @@
 
           </v-toolbar>
 
-          <v-card>
+          <v-card 
+          class="flex-grow-1 overflow-y-auto" style="height: 100vh;">
             <v-card-text>
               <v-form ref="form" v-model="valid" @submit.prevent >
                 <!-- 기본정보 섹션 -->
                 <h3>기본정보</h3>
                 <v-container fluid>
 
-                  <v-row>
+                  <v-row class="py-2">
                     <v-col cols="4">
-                      <v-list-subheader>아이디(필수)</v-list-subheader>
+                      <v-list-subheader>
+                        <span>아이디</span>
+                        <span class="text-info">(필수)</span>
+                      </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
                       <v-text-field
                         label="예: test1234"
-                        hint="최소 3자리 이상의 영문 혹은 영문과 숫자를 조합"
+                        hint=" 3자리 이상의 영문 혹은 영문/숫자 조합"
                         persistent-hint
                         variant="outlined"
                         density="compact"
@@ -51,9 +55,12 @@
                     </v-col>
                   </v-row>
                   
-                  <v-row class="my-auto">
+                  <v-row class="py-2">
                     <v-col cols="4">
-                      <v-list-subheader>비밀번호(필수)</v-list-subheader>
+                      <v-list-subheader>
+                        <span>비밀번호</span>
+                        <span class="text-info">(필수)</span>
+                      </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
                       <v-text-field label="비밀번호를 입력하세요" 
@@ -68,9 +75,12 @@
                       :rules="passwordRules" ></v-text-field>
                     </v-col>
                   </v-row>
-                  <v-row class="my-auto">
+                  <v-row class="py-2">
                     <v-col cols="4">
-                      <v-list-subheader>비밀번호 확인(필수)</v-list-subheader>
+                      <v-list-subheader>
+                        <span>비밀번호 확인</span>
+                        <span class="text-info">(필수)</span>
+                      </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
                       <v-text-field 
@@ -85,9 +95,12 @@
                       :rules="confirmPasswordRules" ></v-text-field>
                     </v-col>
                   </v-row>
-                  <v-row class="my-auto">
+                  <v-row class="py-2">
                     <v-col cols="4">
-                      <v-list-subheader>관리자명(필수)</v-list-subheader>
+                      <v-list-subheader>
+                        <span>관리자명</span>
+                        <span class="text-info">(필수)</span>
+                      </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
                       <v-text-field
@@ -98,9 +111,12 @@
                       ></v-text-field>
                     </v-col>
                   </v-row>
-                  <v-row class="my-auto"> 
+                  <v-row class="py-2"> 
                     <v-col cols="4">
-                      <v-list-subheader>이메일(필수)</v-list-subheader>
+                      <v-list-subheader>
+                        <span>이메일</span>
+                        <span class="text-info">(필수)</span>
+                      </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
                       <v-text-field 
@@ -113,9 +129,12 @@
                     </v-col>
                   </v-row>
 
-                  <v-row class="my-auto">
+                  <v-row class="py-2">
                     <v-col cols="4">
-                      <v-list-subheader>권한(필수)</v-list-subheader>
+                      <v-list-subheader>
+                        <span>권한</span>
+                        <span class="text-info">(필수)</span>
+                      </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
                       <v-select api
@@ -134,7 +153,7 @@
 
                   <!-- 추가정보 섹션 -->
                   <h3>추가정보</h3>
-                  <v-row class="my-auto">
+                  <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>부서</v-list-subheader>
                     </v-col>
@@ -146,7 +165,7 @@
                     </v-col>
                   </v-row>
 
-                  <v-row  class = "my-auto">
+                  <v-row  class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>메모</v-list-subheader>
                     </v-col>
@@ -231,12 +250,12 @@ const items = [
 
 const idRules = [
   value => !!value || '아이디는 필수값입니다.',
-  value => /^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,60}$/.test(value) || '아이디는 3자리 이상의 영문 혹은 영문과 숫자를 조합해야 합니다.'
+  value => /^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,60}$/.test(value) || '아이디는 3자리 이상의 영문 혹은 영문/숫자를 입력해주세요.'
 ];
 
 const passwordRules = [
   value => !!value || '비밀번호는 필수값입니다.',
-  value => /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[a-z\d!@#$%^&*]{10,100}$/.test(value) || '비밀번호는 10자리 이상의 소문자/숫자/특수문자를 조합해야 합니다.'
+  value => /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[a-z\d!@#$%^&*]{10,100}$/.test(value) || '비밀번호는 10자리 이상의 소문자/숫자/특수문자를 입력해주세요.'
 ];
 
 const confirmPasswordRules = [

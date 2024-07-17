@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-card>
+    <v-card class="overflow-y-auto">
       <v-layout>
         <v-navigation-drawer class="pa-6" theme="dark" permanent>
           <v-img
@@ -27,7 +27,7 @@
             </div>
           </template>
         </v-navigation-drawer>
-        <v-main style="min-height: 100vh"><router-view /></v-main>
+        <v-main style="height: 100vh"><router-view /></v-main>
       </v-layout>
 
       <v-dialog v-model="dialog" max-width="400" persistent>
