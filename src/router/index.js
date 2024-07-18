@@ -7,6 +7,7 @@ import Search from "@/pages/search.vue";
 import History from "@/pages/history.vue";
 import Register from "@/pages/register.vue";
 import MyPage from "@/pages/myPage.vue";
+import update from "@/pages/update.vue";
 import Cookies from "js-cookie";
 
 const routes = [
@@ -39,6 +40,12 @@ const routes = [
   {
     path: "/mypage",
     component: MyPage,
+    meta: { layout: "default" },
+  },
+
+  {
+    path: "/update",
+    component: update,
     meta: { layout: "default" },
   },
 ];
