@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>my Page</h1>
+    <h1>History Page</h1>
   </div>
 </template>
 
