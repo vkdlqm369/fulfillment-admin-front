@@ -5,7 +5,7 @@
       <v-row justify="center" class="fill-height" >
         <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height overflow-auto">
           <v-toolbar flat>
-            <v-toolbar-title>My Page</v-toolbar-title>
+            <v-toolbar-title>회원 정보 수정</v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
 
@@ -33,8 +33,13 @@
                         <span>관리자명</span>
                       </v-list-subheader>
                     </v-col>
+
                     <v-col cols="8">
-                      <div>{{ name }}</div>
+                      <v-text-field
+                        variant="outlined"
+                        density="compact"
+                        v-model="name"
+                      ></v-text-field>
                     </v-col>
                   </v-row>
 
@@ -45,7 +50,12 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ email }}</div>
+                      <v-text-field 
+                      label="예: test1234@test.co.kr" 
+                      variant="outlined" 
+                      density="compact"
+                      v-model="email" 
+                      ></v-text-field>
                     </v-col>
                   </v-row>
 
@@ -67,7 +77,10 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ department }}</div>
+                      <v-text-field 
+                      variant="outlined" 
+                      density="compact" 
+                      v-model = "department"></v-text-field>
                     </v-col>
                   </v-row>
 
@@ -78,7 +91,10 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ memo }}</div>
+                      <v-text-field 
+                      variant="outlined" 
+                      density="compact" 
+                      v-model = "memo"></v-text-field>
                     </v-col>
                   </v-row>
 
@@ -126,31 +142,22 @@
                     </v-col>
                   </v-row>
                 </v-container>
-              
-
                 <v-row justify="center">
-                    <v-col cols="auto">
-                      <v-btn color="#546E7A" class="mt-2">회원 정보 수정</v-btn>
-                    </v-col>
-                    <v-col cols="auto">
-                      <v-btn color="#6D4C41" class="mt-2">비밀번호 수정</v-btn>
+                    <v-col cols="8">
+                      <v-btn color="primary" class="mt-2" block size="large">확인</v-btn>
                     </v-col>
                   </v-row>
-
-
-
             </v-card-text>
           </v-card>
-
+ 
         </v-col>
       </v-row>
     </v-container>
   </v-app>
 </template>
-
-  <script setup>
-  import { ref } from 'vue';
   
+  <script setup>
+
   const id = ref("user123");  // Placeholder
   const name = ref("홍길동");  // Placeholder
   const email = ref("example@123.com");  // Placeholder
@@ -161,11 +168,4 @@
   const isUsed = ref("Used");  // Placeholder
   const lastLoginTime = ref("Wed, 17 Jul 2024 15:00:00");  // Placeholder
   const lastLoginIp = ref("192.168.0.1");  // Placeholder
-  </script>
-  
-  <style scoped>
-  .white--text {
-    color: white !important;
-  }
-  </style>
-  
+</script>
