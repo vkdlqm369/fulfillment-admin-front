@@ -1,4 +1,3 @@
-<script setup></script>
 <template>
   <v-container
     class="fill-height d-flex flex-column align-center justify-center"
@@ -35,6 +34,7 @@
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { postLogin } from "@/utils/api";
+import router from "@/router";
 
 const id = ref("");
 const idRules = [
@@ -59,9 +59,7 @@ const pwRules = [
   },
 ];
 
-const router = useRouter();
-
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const requestBody = {
     id: id.value,
     password: password.value,
@@ -75,7 +73,11 @@ const handleSubmit = () => {
     .find((error) => error !== true);
 
   if (!idError && !pwError) {
-    postLogin(requestBody);
+    const response = await postLogin(requestBody);
+    localStorage.setItem("authority", response);
+    console.log(response);
+    console.log(localStorage.getItem("authority"));
+    router.push("/search");
   }
 };
 </script>
