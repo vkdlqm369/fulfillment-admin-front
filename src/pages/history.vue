@@ -38,19 +38,24 @@ const SearchHandler = async (page = 1) => {
     params.append(key, inputMapForSearch.value[key]);
   }
   loading.value = true;
-  const response = await getHistory(params);
-  loading.value = false;
-  totalLists.value = response.totalLists;
-  tableItems.value = response.histories.map((histories) => {
-    return {
-      ID: histories.id,
-      loginDevice: histories.loginDevice,
-      loginIp: histories.loginIp,
-      loginTime: histories.loginTime,
-      name: histories.name,
-    };
-  });
-  numOfPage.value = response.totalPages;
+
+  try {
+    const response = await getHistory(params);
+    loading.value = false;
+    totalLists.value = response.totalLists;
+    tableItems.value = response.histories.map((histories) => {
+      return {
+        ID: histories.id,
+        loginDevice: histories.loginDevice,
+        loginIp: histories.loginIp,
+        loginTime: histories.loginTime,
+        name: histories.name,
+      };
+    });
+    numOfPage.value = response.totalPages;
+  } catch {
+    //error 처리
+  }
 };
 </script>
 

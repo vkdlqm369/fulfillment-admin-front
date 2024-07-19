@@ -34,11 +34,17 @@ const handleSubmit = async () => {
       password: password.value,
     };
 
-    const response = await postLogin(requestBody);
-    Cookies.set("accessToken", response.token);
-    commonAxios.defaults.headers.common["Authorization"] = `${response.token}`;
-    localStorage.setItem("authority", response.token);
-    router.push("/search");
+    try {
+      const response = await postLogin(requestBody);
+      Cookies.set("accessToken", response.token);
+      commonAxios.defaults.headers.common[
+        "Authorization"
+      ] = `${response.token}`;
+      localStorage.setItem("authority", response.token);
+      router.push("/search");
+    } catch {
+      //error 처리
+    }
   }
 };
 </script>
