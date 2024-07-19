@@ -45,98 +45,161 @@
           <span>새로고침</span>
         </button>
         <!-- @click : 클릭 시. refreshPage method 호출 -->
+        <button class="btn btn-tmpcollectOrders" @click="tmpcollectOrders">
+          <i class="fas fa-sync-alt"></i>
+          <span>임시 주문수집</span>
+        </button>
       </div>
     </div>
+    <!-- 로딩 중일 때 표시 -->
+    <div v-if="loading" class="loading">Loading...</div>
+    <!-- 오류 메시지 표시 -->
+    <div v-if="error" class="error">{{ error }}</div>
+
+    <!-- 데이터를 자식 컴포넌트로 전달 -->
+    <new-table :grouped-data="groupedData"></new-table>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, watch } from 'vue';
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+import { useAxios } from '@vueuse/integrations/useAxios';
+import NewTable from './NewTable.vue'; // 자식 컴포넌트 import
+
+const startDate = ref(getSavedDate("startDate"));
+const endDate = ref(getSavedDate("endDate"));
+const startConfig = {
+  dateFormat: "Y-m-d",
+  allowInput: true,
+  onClose: updateStartDate,
+};
+const endConfig = {
+  dateFormat: "Y-m-d",
+  allowInput: true,
+  minDate: startDate.value,
+  onClose: updateEndDate,
+};
+
+const loading = ref(false);  // 로딩 상태를 저장하는 ref
+const error = ref(null);     // 오류 메시지를 저장하는 ref
+const groupedData = ref([]); // 데이터를 저장하는 ref
+
+watch(startDate, (newDate) => {
+  endConfig.minDate = newDate;
+  if (endDate.value && new Date(endDate.value) < new Date(newDate)) {
+    endDate.value = null; // 시작일 변경 시 종료일이 시작일 이전이면 초기화
+  }
+});
+
+function collectOrders() {
+  if (startDate.value && endDate.value) {
+    alert(
+      `${formatDate(startDate.value)} ~ ${formatDate(endDate.value)}의 데이터를 조회하겠습니다.`
+    ); // 시작일&종료일 선택 O
+  } else {
+    alert("날짜를 선택해 주세요."); // 시작일 or 종료일 선택 X
+  }
+}
+
+async function refreshPage() {
+  const currentPage = 0;
+  const url = '/api/table';
+  const params = { currentPage };
+
+  loading.value = true;
+  error.value = null;
+
+  try {
+    const { data, error } = await useAxios(url, { params });
+
+    if (data.value) {
+      console.log(data.value);
+      groupedData.value = data.value;
+      console.log(groupedData.value);
+    } else {
+      throw error.value;
+    }
+  } catch (err) {
+    error.value = `Error: ${err.message || err}`;
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function tmpcollectOrders() {
+  // 시작일과 종료일이 설정되어 있는지 확인
+  if (startDate.value && endDate.value) {
+    // REST API 요청을 보낼 URL
+    const sellerNo = 2644; // 실제 sellerNo로 변경
+    const status = "DELIVERED";
+    const url = `/api/order/${sellerNo}`;
+    
+    // 요청 매개변수 설정
+    const params = {
+      startDate: formatDate(startDate.value),
+      endDate: formatDate(endDate.value),
+      status: status,
+    };
+
+    loading.value = true;  // 로딩 시작
+    error.value = null;    // 이전 오류 초기화
+
+    try {
+      const { data, error } = await useAxios(url, { params });
+
+      if (data.value) {
+        alert(data.value);
+      } else {
+        throw error.value;
+      }
+    } catch (err) {
+      error.value = `Error: ${err.message || err}`;
+    } finally {
+      loading.value = false; // 로딩 종료
+    }
+
+  } else {
+    alert("날짜를 선택해 주세요."); // 시작일 or 종료일 선택 X
+  }
+}
+
+function updateStartDate() {
+  saveDate("startDate", startDate.value);
+  endConfig.minDate = startDate.value; // 시작일 변경 시 minDate 업데이트
+  if (endDate.value && new Date(endDate.value) < new Date(startDate.value)) {
+    endDate.value = null; // 시작일을 변경할 때 종료일 초기화
+  }
+}
+
+function updateEndDate() {
+  saveDate("endDate", endDate.value); // 종료일이 선택될 때 호출 endDate 저장
+}
+
+function saveDate(key, date) {
+  sessionStorage.setItem(key, date); // sessionStorage에 날짜를 저장
+}
+
+function getSavedDate(key) {
+  return sessionStorage.getItem(key); // sessionStorage에서 날짜를 가져옴
+}
+
+function formatDate(date) {
+  if (!date) return "";
+  const [year, month, day] = date.split("-"); // yyyy-mm-dd 형식에서 yyyy/mm/dd 형식으로 변환
+  return `${year}-${month}-${day}`;
+}
+</script>
+
+<script>
+import NewTable from './NewTable.vue';
 
 export default {
-  name: "TopButton",
   components: {
-    flatPickr,
-  },
-
-  data() {
-    return {
-      startDate: this.getSavedDate("startDate"),
-      endDate: this.getSavedDate("endDate"),
-      startConfig: {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        onClose: this.updateStartDate,
-      },
-      endConfig: {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        minDate: this.startDate,
-        onClose: this.updateEndDate,
-      },
-    };
-  },
-
-  watch: {
-    startDate(newDate) {
-      this.endConfig.minDate = newDate;
-      if (this.endDate && new Date(this.endDate) < new Date(newDate)) {
-        this.endDate = null; // 시작일 변경 시 종료일이 시작일 이전이면 초기화
-      }
-    },
-  },
-
-  methods: {
-    collectOrders() {
-      if (this.startDate && this.endDate) {
-        alert(
-          `${this.formatDate(this.startDate)} ~ ${this.formatDate(
-            this.endDate
-          )}의 데이터를 조회하겠습니다.`
-        ); // 시작일&종료일 선택 O
-      } else {
-        alert("날짜를 선택해 주세요."); // 시작일 or 종료일 선택 X
-      }
-    },
-
-    refreshPage() {
-      window.location.reload(); // 새로고침
-    },
-
-    updateStartDate() {
-      this.saveDate("startDate", this.startDate);
-      this.endConfig.minDate = this.startDate; // 시작일 변경 시 minDate 업데이트
-      if (this.endDate && new Date(this.endDate) < new Date(this.startDate)) {
-        this.endDate = null; // 시작일을 변경할 때 종료일 초기화
-      }
-    },
-
-    updateEndDate() {
-      this.saveDate("endDate", this.endDate); // 종료일이 선택될 때 호출 endDate 저장
-    },
-
-    saveDate(key, date) {
-      sessionStorage.setItem(key, date); // sessionStorage에 날짜를 저장
-    },
-
-    getSavedDate(key) {
-      return sessionStorage.getItem(key); // sessionStorage에서 날짜를 가져옴
-    },
-
-    formatDate(date) {
-      if (!date) return "";
-      const [year, month, day] = date.split("-"); // xxxx-xx-xx format
-      return `${year}-${month}-${day}`;
-    },
-
-    mounted() {
-      if (this.startDate) {
-        this.endConfig.minDate = this.startDate; // 컴포넌트가 마운트될 때 minDate 설정
-      }
-    },
-  },
-};
+    NewTable
+  }
+}
 </script>
 
 <style scoped>
@@ -240,5 +303,15 @@ export default {
 
 .btn i {
   margin-right: 5px;
+}
+
+.loading {
+  color: blue;
+  font-weight: bold;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
 }
 </style>

@@ -3,7 +3,6 @@
     <v-main class="main-background">
       <div class="content-wrapper">
         <TopButton />
-        <NewTable />
         <Pagination />
         <Footer />
       </div>

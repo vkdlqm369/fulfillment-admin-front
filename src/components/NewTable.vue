@@ -15,17 +15,17 @@
     </thead>
     <tbody>
       <template v-for="(group, ordNo) in groupedData" :key="ordNo">
-        <template v-for="(item, index) in group" :key="item.ordPrdNo">
+        <template v-for="(item, index) in group.ordersDetail" :key="item.ordPrdNo">
           <tr>
-            <td>{{ getOrderSequence() }}</td>
-            <td v-if="index === 0" :rowspan="group.length">{{ item.ordNo }}</td>
+            <td>{{ item.index }}</td>
+            <td v-if="index === 0" :rowspan="group.ordersDetail.length">{{ group.ordNo }}</td>
             <td>{{ item.ordPrdNo }}</td>
             <td>{{ item.prdNm }}</td>
             <td>{{ item.optVal }}</td>
-            <td>{{ item.rcvrNm }}</td>
-            <td>{{ getAddress(item) }}</td>
-            <td>{{ item.rcvrMphnNo }}</td>
-            <td>{{ item.ordDttm }}</td>
+            <td>{{ group.rcvrNm }}</td>
+            <td>{{ group.rcvrAddr }}</td>
+            <td>{{ group.rcvrMphnNo }}</td>
+            <td>{{ group.ordDttm }}</td>
           </tr>
         </template>
       </template>
@@ -34,40 +34,16 @@
 </template>
 
 <script>
-import { rawData } from "../assets/rawData";
-
 export default {
-  data() {
-    return {
-      groupedData: this.groupByOrderNo(rawData),
-      orderSequence: 1,
-    };
-  },
-  methods: {
-    groupByOrderNo(data) {
-      return data.reduce((acc, item) => {
-        if (!acc[item.ordNo]) {
-          acc[item.ordNo] = [];
-        }
-        acc[item.ordNo].push(item);
-        return acc;
-      }, {});
-    },
-    getAddress(item) {
-      return `${item.rcvrBaseAddr} ${item.rcvrDtlsAddr}`;
-    },
-    getOrderSequence() {
-      if (!this.currentSequence) {
-        this.currentSequence = 1;
-      }
-      return this.currentSequence++;
+  props: {
+    groupedData: {
+      type: Array,
+      required: true
     }
-  },
-  beforeMount() {
-    this.currentSequence = 1;
   }
 };
 </script>
+
 
 <style scoped>
 table {

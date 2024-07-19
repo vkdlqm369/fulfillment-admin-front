@@ -19,6 +19,7 @@
     "feather-icons": "^4.29.2",
     "flatpickr": "^4.6.13",
     "lodash": "^4.17.21",
+    "mitt": "^3.0.1",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
     "vue-datepicker-next": "^1.0.3",
