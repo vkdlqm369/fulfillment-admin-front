@@ -12,6 +12,7 @@ import {
 } from "@/utils/validationRules";
 import CheckDialog from "@/components/CheckDialog.vue";
 import ChooseDialog from "@/components/ChooseDialog.vue";
+import { postRegister } from "@/utils/api";
 
 const id = ref("");
 const password = ref("");
@@ -35,7 +36,7 @@ const items = [
 ];
 
 // 해당 함수는 필수값 입력 여부 검증
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const fieldsWithRules = [
     { value: id.value, rules: idRules },
     { value: password.value, rules: passwordRules },
@@ -60,6 +61,12 @@ const handleSubmit = () => {
       department: department.value,
       memo: memo.value,
     };
+
+    try {
+      const response = await postRegister(requestBody);
+    } catch {
+      //error 처리
+    }
 
     commonAxios.post("/register", requestBody).then((res) => {
       if (res.status === 200) {

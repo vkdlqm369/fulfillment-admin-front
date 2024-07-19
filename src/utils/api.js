@@ -1,17 +1,23 @@
 import commonAxios from "./commonAxios";
-import Cookies from "js-cookie";
 
 export const postLogin = async (requestBody) => {
   try {
     const res = await commonAxios.post("/login", requestBody);
     console.log("성공", res);
-    Cookies.set("accessToken", res.headers.authorization);
-    commonAxios.defaults.headers.common[
-      "Authorization"
-    ] = `${res.headers.authorization}`;
     return res.data;
   } catch (error) {
-    console.error("로그인 오류가 발생했습니다.", error);
+    console.error("로그인 오류가 발생했습니다.", error.response);
+    throw error;
+  }
+};
+
+export const postRegister = async (requestBody) => {
+  try {
+    const res = await commonAxios.post("/register", requestBody);
+    console.log("성공", res);
+    return res.data;
+  } catch (error) {
+    console.error("유저 등록 오류가 발생했습니다.", error.response);
     throw error;
   }
 };
@@ -22,7 +28,7 @@ export const getSearch = async (params) => {
     console.log("성공", res);
     return res.data;
   } catch (error) {
-    console.error("유저 조회 오류가 발생했습니다.", error);
+    console.error("유저 조회 오류가 발생했습니다.", error.response);
     throw error;
   }
 };
@@ -33,7 +39,18 @@ export const getHistory = async (params) => {
     console.log("성공", res);
     return res.data;
   } catch (error) {
-    console.error("히스토리 조회 오류가 발생했습니다.", error);
+    console.error("히스토리 조회 오류가 발생했습니다.", error.response);
+    throw error;
+  }
+};
+
+export const getAuthority = async () => {
+  try {
+    const res = await commonAxios.get("/authority");
+    console.log("성공", res);
+    return res.data;
+  } catch (error) {
+    console.error("권한 조회 오류가 발생했습니다.", error.response);
     throw error;
   }
 };

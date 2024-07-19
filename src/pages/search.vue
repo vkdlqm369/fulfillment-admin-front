@@ -2,7 +2,7 @@
 import TextBlank from "../components/TextBlank.vue";
 import TextSelection from "../components/TextSelection.vue";
 import SearchBtn from "../components/SearchBtn.vue";
-import { getSearch } from "@/utils/api";
+import { getSearch, getAuthority } from "@/utils/api";
 import { onMounted } from "vue";
 import { computed } from "vue";
 
@@ -35,6 +35,7 @@ const totalLists = ref(0);
 const numOfPage = ref(0);
 const loading = ref(false);
 const authority = ref("");
+const userId = ref("");
 
 const SearchHandler = async (page = 1) => {
   isSearch.value = true;
@@ -46,15 +47,24 @@ const SearchHandler = async (page = 1) => {
     params.append(key, inputMapForSearch.value[key]);
   }
   loading.value = true;
-  const response = await getSearch(params);
-  loading.value = false;
-  totalLists.value = response.totalLists;
-  tableItems.value = response.users;
-  numOfPage.value = response.totalPages;
+
+  try {
+    const response = await getSearch(params);
+    loading.value = false;
+    totalLists.value = response.totalLists;
+    tableItems.value = response.users;
+    numOfPage.value = response.totalPages;
+  } catch {
+    //error 처리
+  }
 };
 
 onMounted(() => {
-  authority.value = localStorage.getItem("authority");
+  authority.value = "MASTER";
+  // const response = getAuthority();
+  // authority.value = response.authority;
+  // userId.value = response.userId;
+  // console.log(response);
 });
 </script>
 
