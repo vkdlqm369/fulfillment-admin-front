@@ -1,3 +1,41 @@
+<script setup>
+import { ref } from "vue";
+import { postLogin } from "@/utils/api";
+import router from "@/router";
+import commonAxios from "@/utils/commonAxios";
+import Cookies from "js-cookie";
+import {
+  idRules,
+  passwordRulesWithoutNorm,
+  validateForm,
+} from "@/utils/validationRules";
+
+const id = ref("");
+const password = ref("");
+
+const handleSubmit = async () => {
+  const fieldsWithRules = [
+    { value: id.value, rules: idRules },
+    { value: password.value, rules: passwordRulesWithoutNorm },
+  ];
+
+  const message = validateForm(fieldsWithRules);
+  if (message !== true) {
+  } else {
+    const requestBody = {
+      id: id.value,
+      password: password.value,
+    };
+
+    const response = await postLogin(requestBody);
+    Cookies.set("accessToken", response.token);
+    commonAxios.defaults.headers.common["Authorization"] = `${response.token}`;
+    localStorage.setItem("authority", response.token);
+    router.push("/search");
+  }
+};
+</script>
+
 <template>
   <v-container
     class="fill-height d-flex flex-column align-center justify-center"
@@ -19,7 +57,7 @@
 
         <v-text-field
           v-model="password"
-          :rules="pwRules"
+          :rules="passwordRulesWithoutNorm"
           label="비밀번호"
           type="password"
           class="mb-7"
@@ -29,55 +67,3 @@
     </v-sheet>
   </v-container>
 </template>
-
-<script setup>
-import { useRouter } from "vue-router";
-import { ref } from "vue";
-import { postLogin } from "@/utils/api";
-import router from "@/router";
-
-const id = ref("");
-const idRules = [
-  (value) => {
-    if (!value) {
-      return "아이디를 입력해주세요.";
-    }
-    if (!/^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,60}$/.test(value)) {
-      return "아이디는 영어를 반드시 포함해야 합니다.";
-    }
-    return true;
-  },
-];
-
-const password = ref("");
-const pwRules = [
-  (value) => {
-    if (!value) {
-      return "비밀번호를 입력해주세요.";
-    }
-    return true;
-  },
-];
-
-const handleSubmit = async () => {
-  const requestBody = {
-    id: id.value,
-    password: password.value,
-  };
-
-  const idError = idRules
-    .map((rule) => rule(id.value))
-    .find((error) => error !== true);
-  const pwError = pwRules
-    .map((rule) => rule(password.value))
-    .find((error) => error !== true);
-
-  if (!idError && !pwError) {
-    const response = await postLogin(requestBody);
-    localStorage.setItem("authority", response);
-    console.log(response);
-    console.log(localStorage.getItem("authority"));
-    router.push("/search");
-  }
-};
-</script>
