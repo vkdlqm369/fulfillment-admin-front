@@ -9,9 +9,14 @@ import {
   passwordRulesWithoutNorm,
   validateForm,
 } from "@/utils/validationRules";
+import CheckDialog from "@/components/CheckDialog.vue";
 
 const id = ref("");
 const password = ref("");
+const validationDialog = ref(false);
+const message = ref("");
+
+const showPassword = ref(false);
 
 const handleSubmit = async () => {
   const fieldsWithRules = [
@@ -19,8 +24,10 @@ const handleSubmit = async () => {
     { value: password.value, rules: passwordRulesWithoutNorm },
   ];
 
-  const message = validateForm(fieldsWithRules);
-  if (message !== true) {
+  const validationMessage = validateForm(fieldsWithRules);
+  if (validationMessage !== true) {
+    message.value = validationMessage;
+    validationDialog.value = true;
   } else {
     const requestBody = {
       id: id.value,
@@ -52,18 +59,20 @@ const handleSubmit = async () => {
           v-model="id"
           :rules="idRules"
           label="아이디"
-          class="mb-4"
         ></v-text-field>
 
         <v-text-field
           v-model="password"
           :rules="passwordRulesWithoutNorm"
           label="비밀번호"
-          type="password"
           class="mb-7"
+          :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword ? 'text' : 'password'"
+          @click:append-inner="showPassword = !showPassword"
         ></v-text-field>
         <v-btn type="submit" block>LOGIN</v-btn>
       </v-form>
     </v-sheet>
+    <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>
   </v-container>
 </template>
