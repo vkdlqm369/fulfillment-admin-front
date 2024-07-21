@@ -2,9 +2,10 @@
   <v-app>
     <v-main class="main-background">
       <div class="content-wrapper">
-        <TopButton />
+        <TopButton @openPopup="openPopup" />
         <Pagination />
         <Footer />
+        <OrderCollectPopup :orders="orders" />
       </div>
     </v-main>
   </v-app>
@@ -15,7 +16,7 @@ import TopButton from './components/TopButton.vue';
 import NewTable from './components/NewTable.vue';
 import Pagination from './components/Pagination.vue';
 import Footer from './components/Footer.vue';
-
+import OrderCollectPopup from './components/OrderCollectPopup.vue';
 
 export default {
   name: 'App',
@@ -24,8 +25,19 @@ export default {
     NewTable,
     Pagination,
     Footer,
-  }
-}
+    OrderCollectPopup,
+  },
+  data() {
+    return {
+      orders: [],
+    };
+  },
+  methods: {
+    openPopup(orders) {
+      this.orders = orders;
+    },
+  },
+};
 </script>
 
 <style>
