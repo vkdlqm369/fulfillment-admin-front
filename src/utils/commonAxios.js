@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import router from "@/router";
 
 const commonAxios = axios.create({
   baseURL: "http://localhost:5173/api",
@@ -14,8 +15,7 @@ commonAxios.interceptors.response.use(
 
     if (error.response.status === 401) {
       Cookies.remove("accessToken");
-      alert(err.response.data.detail);
-      router.push("/login");
+      await router.push("/login");
     }
 
     return Promise.reject(error);
