@@ -1,3 +1,28 @@
+<script setup>
+import { ref } from "vue";
+import commonAxios from "@/utils/commonAxios";
+import Cookies from "js-cookie";
+import router from "@/router";
+
+const dialog = ref(false);
+const authority = ref("");
+
+const handleLogout = async (isLogout) => {
+  dialog.value = isLogout;
+
+  if (dialog.value) {
+    Cookies.remove("accessToken");
+    delete commonAxios.defaults.headers.common.Authorization;
+    dialog.value = false;
+    await router.push("/login");
+  }
+};
+
+onMounted(() => {
+  authority.value = localStorage.getItem("authority");
+});
+</script>
+
 <template>
   <v-app>
     <v-card class="overflow-y-auto">
@@ -15,9 +40,16 @@
             ></v-list-item>
             <v-list-item
               class="rounded-lg"
-              prepend-icon="mdi-archive-search"
+              prepend-icon="mdi-archive-search small=true"
               title="관리자 접속 이력"
               to="/history"
+            ></v-list-item>
+            <v-list-item
+              v-if="authority === 'MASTER'"
+              class="rounded-lg"
+              prepend-icon="mdi-tag-check small=true"
+              title="관리자 승인 관리"
+              to="/approve"
             ></v-list-item>
           </v-list>
 
@@ -46,23 +78,3 @@
     </v-card>
   </v-app>
 </template>
-
-<script setup>
-import { ref } from "vue";
-import commonAxios from "@/utils/commonAxios";
-import Cookies from "js-cookie";
-import router from "@/router";
-
-const dialog = ref(false);
-
-const handleLogout = async (isLogout) => {
-  dialog.value = isLogout;
-
-  if (dialog.value) {
-    Cookies.remove("accessToken");
-    delete commonAxios.defaults.headers.common.Authorization;
-    dialog.value = false;
-    await router.push("/login");
-  }
-};
-</script>

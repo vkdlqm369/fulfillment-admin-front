@@ -1,4 +1,54 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+import { postLogin } from "@/utils/api";
+import router from "@/router";
+import commonAxios from "@/utils/commonAxios";
+import Cookies from "js-cookie";
+import {
+  idRules,
+  passwordRulesWithoutNorm,
+  validateForm,
+} from "@/utils/validationRules";
+import CheckDialog from "@/components/CheckDialog.vue";
+
+const id = ref("");
+const password = ref("");
+const validationDialog = ref(false);
+const message = ref("");
+
+const showPassword = ref(false);
+
+const handleSubmit = async () => {
+  const fieldsWithRules = [
+    { value: id.value, rules: idRules },
+    { value: password.value, rules: passwordRulesWithoutNorm },
+  ];
+
+  const validationMessage = validateForm(fieldsWithRules);
+  if (validationMessage !== true) {
+    message.value = validationMessage;
+    validationDialog.value = true;
+  } else {
+    const requestBody = {
+      id: id.value,
+      password: password.value,
+    };
+
+    try {
+      const response = await postLogin(requestBody);
+      Cookies.set("accessToken", response.token);
+      commonAxios.defaults.headers.common[
+        "Authorization"
+      ] = `${response.token}`;
+      localStorage.setItem("authority", response.token);
+      router.push("/search");
+    } catch {
+      //error 처리
+    }
+  }
+};
+</script>
+
 <template>
   <v-container
     class="fill-height d-flex flex-column align-center justify-center"
@@ -15,67 +65,20 @@
           v-model="id"
           :rules="idRules"
           label="아이디"
-          class="mb-4"
         ></v-text-field>
 
         <v-text-field
           v-model="password"
-          :rules="pwRules"
+          :rules="passwordRulesWithoutNorm"
           label="비밀번호"
-          type="password"
           class="mb-7"
+          :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword ? 'text' : 'password'"
+          @click:append-inner="showPassword = !showPassword"
         ></v-text-field>
         <v-btn type="submit" block>LOGIN</v-btn>
       </v-form>
     </v-sheet>
+    <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>
   </v-container>
 </template>
-
-<script setup>
-import { useRouter } from "vue-router";
-import { ref } from "vue";
-import { postLogin } from "@/utils/api";
-
-const id = ref("");
-const idRules = [
-  (value) => {
-    if (!value) {
-      return "아이디를 입력해주세요.";
-    }
-    if (!/^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,60}$/.test(value)) {
-      return "아이디는 영어를 반드시 포함해야 합니다.";
-    }
-    return true;
-  },
-];
-
-const password = ref("");
-const pwRules = [
-  (value) => {
-    if (!value) {
-      return "비밀번호를 입력해주세요.";
-    }
-    return true;
-  },
-];
-
-const router = useRouter();
-
-const handleSubmit = () => {
-  const requestBody = {
-    id: id.value,
-    password: password.value,
-  };
-
-  const idError = idRules
-    .map((rule) => rule(id.value))
-    .find((error) => error !== true);
-  const pwError = pwRules
-    .map((rule) => rule(password.value))
-    .find((error) => error !== true);
-
-  if (!idError && !pwError) {
-    postLogin(requestBody);
-  }
-};
-</script>

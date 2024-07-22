@@ -2,7 +2,8 @@
 import TextBlank from "../components/TextBlank.vue";
 import TextSelection from "../components/TextSelection.vue";
 import SearchBtn from "../components/SearchBtn.vue";
-import { getSearch } from "@/utils/api";
+import { getSearch, getAuthority } from "@/utils/api";
+import { onMounted } from "vue";
 import { computed } from "vue";
 
 const tableItems = ref([]);
@@ -33,28 +34,43 @@ const isSearch = ref(false);
 const totalLists = ref(0);
 const numOfPage = ref(0);
 const loading = ref(false);
+const authority = ref("");
+const userId = ref("");
 
-
-function SearchHandler(page=1){
-
-  inputMapForSearch.value.page = page
-  const path = ref('')
-  const params = new URLSearchParams()
+const SearchHandler = async (page = 1) => {
+  isSearch.value = true;
+  inputMapForSearch.value.page = page;
+  tableItems.value = [];
+  const params = new URLSearchParams();
 
   for (let key in inputMapForSearch.value) {
     params.append(key, inputMapForSearch.value[key]);
   }
-  loading.value = true
-  getSearch(params, totalLists, tableItems, numOfPage);
-  loading.value = false
-  isSearch.value = true;
-}
+  loading.value = true;
 
+  try {
+    const response = await getSearch(params);
+    loading.value = false;
+    totalLists.value = response.totalLists;
+    tableItems.value = response.users;
+    numOfPage.value = response.totalPages;
+  } catch {
+    //error 처리
+  }
+};
+
+onMounted(() => {
+  authority.value = "MASTER";
+  // const response = getAuthority();
+  // authority.value = response.authority;
+  // userId.value = response.userId;
+  // console.log(response);
+});
 </script>
 
 <template>
   <v-container>
-    <h1 style="margin:15px">관리자 조회</h1>
+    <h1 style="margin: 15px" class="content-container">관리자 조회</h1>
     <v-container class="search-container">
       <TextBlank
         v-model:inputText="inputMapForSearch.id"
@@ -95,7 +111,13 @@ function SearchHandler(page=1){
         <span style="color: red">{{ totalLists }}</span>
         <span>건 검색</span>
       </v-container>
-      <v-btn color="info" class="fixed-h" to="/register">등록</v-btn>
+      <v-btn
+        v-if="authority === 'MASTER'"
+        color="info"
+        class="fixed-h"
+        to="/register"
+        >등록</v-btn
+      >
       <TextSelection
         v-model:selected="inputMapForSearch.showList"
         :itemList="[
@@ -113,27 +135,26 @@ function SearchHandler(page=1){
   <v-container v-if="isSearch" class="content-container">
     <v-row>
       <v-col class="result-container">
-        <v-data-table-virtual 
-            :items="tableItems"
-            :headers="headers"
-            :loading="loading" 
-            loading-text="Loading... Please wait"
+        <v-data-table-virtual
+          :items="tableItems"
+          :headers="headers"
+          :loading="loading"
+          loading-text="Loading... Please wait"
         ></v-data-table-virtual>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="pagination-container">
-    <v-pagination
-      v-if="!loading"
-      v-model="inputMapForSearch.page"
-      :length="numOfPage"
-      :total-visible="8"
-      @click="SearchHandler(inputMapForSearch.page)"
-    ></v-pagination>
+        <v-pagination
+          v-if="!loading"
+          v-model="inputMapForSearch.page"
+          :length="numOfPage"
+          :total-visible="8"
+          @click="SearchHandler(inputMapForSearch.page)"
+        ></v-pagination>
       </v-col>
     </v-row>
   </v-container>
-
 </template>
 
 <style scoped>
@@ -149,6 +170,11 @@ function SearchHandler(page=1){
   gap: 15px;
 }
 
+.content-container {
+  min-width: min-content;
+  word-break: keep-all;
+}
+
 .fixed-h {
   height: 55px;
 }
@@ -159,7 +185,7 @@ function SearchHandler(page=1){
 
 .result-container {
   overflow-y: auto;
-  max-height: 60vh; 
+  max-height: 60vh;
 }
 
 .pagination-container {
