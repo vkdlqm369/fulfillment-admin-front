@@ -7,8 +7,10 @@ import Search from "@/pages/search.vue";
 import History from "@/pages/history.vue";
 import Register from "@/pages/register.vue";
 import MyPage from "@/pages/myPage.vue";
-import update from "@/pages/update.vue";
 import Cookies from "js-cookie";
+import UpdateProfile from "@/pages/updateProfile.vue";
+import UpdatePassword from "@/pages/updatePassword.vue";
+import checkPassword from "@/pages/checkPassword.vue";
 
 const routes = [
   {
@@ -44,10 +46,18 @@ const routes = [
   },
 
   {
-    path: "/update",
-    component: update,
+    path: "/updateProfile",
+    component: UpdateProfile,
     meta: { layout: "default" },
   },
+
+  {
+    path: "/updatePassword",
+    component: UpdatePassword,
+    meta: { layout: "default" },
+  },
+
+
 ];
 
 const router = createRouter({
