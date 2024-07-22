@@ -24,7 +24,6 @@ export default {
 .success {
   color: green;
 }
-
 .failure {
   color: red;
 }

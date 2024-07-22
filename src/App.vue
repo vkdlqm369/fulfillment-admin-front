@@ -6,7 +6,7 @@
         <NavigationBar @openPopup="openPopup" />
         <Pagination />
         <Footer />
-        <OrderCollectPopup :orders="orders" />
+        <OrderCollectPopup v-if="showPopup" :orders="orders" @close="closePopup" />
       </div>
     </v-main>
   </v-app>
@@ -15,7 +15,6 @@
 <script>
 import Header from './components/Header.vue';
 import NavigationBar from './components/NavigationBar.vue';
-import NewTable from './components/NewTable.vue';
 import Pagination from './components/Pagination.vue';
 import Footer from './components/Footer.vue';
 import OrderCollectPopup from './components/OrderCollectPopup.vue';
@@ -25,7 +24,6 @@ export default {
   components: {
     Header,
     NavigationBar,
-    NewTable,
     Pagination,
     Footer,
     OrderCollectPopup,
@@ -33,11 +31,16 @@ export default {
   data() {
     return {
       orders: [],
+      showPopup: false,
     };
   },
   methods: {
     openPopup(orders) {
       this.orders = orders;
+      this.showPopup = true;
+    },
+    closePopup() {
+      this.showPopup = false;
     },
   },
 };
@@ -49,20 +52,20 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: #ffffff; 
+  background-color: #ffffff;
 }
 
 .main-background {
-  background-color: #ffffff; 
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  min-height: 100vh; 
+  min-height: 100vh;
 }
 
 .content-wrapper {
-  flex: 1; 
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* 공간을 위아래로 나눔 */
+  justify-content: space-between;
 }
 </style>

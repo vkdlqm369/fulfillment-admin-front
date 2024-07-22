@@ -3,9 +3,8 @@
     <div class="filters">
       <div class="date-picker">
         <label for="startDate">수집기간</label>
-
         <div class="date-inputs">
-           <!--첫 번째 datepicker-->
+          <!--첫 번째 datepicker-->
           <div class="datepicker-wrapper">
             <i class="fas fa-calendar-alt"></i>
             <flat-pickr
@@ -30,16 +29,16 @@
       </div>
 
       <div class="buttons">
-        <button class="btn btn-collectOrders" @click="collectOrders">
+        <button class="btn btn-collectOrders" @click="openPopupWindow">
           <i class="fas fa-shopping-cart"></i>
           <span>주문수집</span>
         </button>
-        <!-- @click : 클릭 시. collectOrders method 호출 -->
+        <!-- @click : 클릭 시. refreshPage method 호출 -->
         <button class="btn btn-refreshPage" @click="refreshPage">
           <i class="fas fa-sync-alt"></i>
           <span>새로고침</span>
         </button>
-        <!-- @click : 클릭 시. collectOrders method 호출 -->
+        <!-- @click : 클릭 시. tmpcollectOrders method 호출 -->
         <button class="btn btn-tmpcollectOrders" @click="tmpcollectOrders">
           <i class="fas fa-sync-alt"></i>
           <span>임시 주문수집</span>
@@ -61,8 +60,7 @@ import { ref, watch } from 'vue';
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import { useAxios } from '@vueuse/integrations/useAxios';
-import NewTable from './NewTable.vue'; // 자식 컴포넌트 import
-import Header from './Header.vue'; // 헤더 컴포넌트 import
+import NewTable from './NewTable.vue';
 
 const emit = defineEmits(['openPopup']); // 이벤트 정의
 
@@ -91,26 +89,9 @@ watch(startDate, (newDate) => {
   }
 });
 
-// 임시 데이터 삭제 예정
-function collectOrders() {
-  if (startDate.value && endDate.value) {
-    const orders = [
-      { id: 2018069545, status: '성공' },
-      { id: 2018069546, status: '성공' },
-      { id: 2018069547, status: '실패' },
-      { id: 2018069548, status: '실패' },
-      { id: 2018069549, status: '성공' },
-      { id: 2018069550, status: '성공' },
-      { id: 2018069551, status: '성공' },
-      { id: 2018069552, status: '실패' },
-      { id: 2018069553, status: '성공' },
-      { id: 2018069554, status: '성공' },
-    ];
-
-    emit('openPopup', orders);
-  } else {
-    alert("날짜를 선택해 주세요."); // 시작일 or 종료일 선택 X
-  }
+function openPopupWindow() {
+  const popupWindow = window.open('/order', '_blank', 'width=600,height=400');
+  console.log('Popup window opened:', popupWindow);  // 팝업 창이 열렸는지 확인
 }
 
 async function refreshPage() {
@@ -118,23 +99,21 @@ async function refreshPage() {
   const url = '/api/table';
   const params = { currentPage };
 
-  loading.value = true;
-  error.value = null;
+  loading.value = true; // 로딩 시작
+  error.value = null; // 이전 오류 초기화
 
   try {
     const { data, error } = await useAxios(url, { params });
 
     if (data.value) {
-      console.log(data.value);
       groupedData.value = data.value;
-      console.log(groupedData.value);
     } else {
       throw error.value;
     }
   } catch (err) {
     error.value = `Error: ${err.message || err}`;
   } finally {
-    loading.value = false;
+    loading.value = false; // 로딩 종료
   }
 }
 
@@ -198,18 +177,6 @@ function formatDate(date) {
   if (!date) return "";
   const [year, month, day] = date.split("-"); // yyyy-mm-dd 형식에서 yyyy/mm/dd 형식으로 변환
   return `${year}-${month}-${day}`;
-}
-</script>
-
-<script>
-import NewTable from './NewTable.vue';
-import Header from './Header.vue'; // 헤더 컴포넌트 import
-
-export default {
-  components: {
-    NewTable,
-    Header
-  }
 }
 </script>
 

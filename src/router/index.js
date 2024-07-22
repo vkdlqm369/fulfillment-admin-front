@@ -1,23 +1,26 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import LogIn from '../components/LogIn.vue'
-import TopButton from '../components/NavigationBar.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import LogIn from '../components/LogIn.vue';
+import NavigationBar from '../components/NavigationBar.vue';
+import OrderCollectPopup from '../components/OrderCollectPopup.vue';
 
 const routes = [
+  /*
   {
     path: '/',
     name: 'LogIn',
     component: LogIn
   },
+  */
   {
-    path: '/topbutton',
-    name: 'TopButton',
-    component: TopButton
+    path: '/order-collect-popup',
+    name: 'OrderCollectPopup',
+    component: () => import('../components/OrderCollectPopup.vue')
   }
-]
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes // 기본 라우트 설정을 사용.
-})
+  routes
+});
 
-export default router
+export default router;
