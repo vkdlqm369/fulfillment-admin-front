@@ -46,13 +46,6 @@
         </button>
       </div>
     </div>
-    <!-- 로딩 중일 때 표시 -->
-    <div v-if="loading" class="loading">Loading...</div>
-    <!-- 오류 메시지 표시 -->
-    <div v-if="error" class="error">{{ error }}</div>
-
-    <!-- 데이터를 자식 컴포넌트로 전달 -->
-    <new-table :grouped-data="groupedData"></new-table>
   </div>
 </template>
 
@@ -64,7 +57,7 @@ import { useAxios } from '@vueuse/integrations/useAxios';
 import NewTable from './NewTable.vue'; // 자식 컴포넌트 import
 import Header from './Header.vue'; // 헤더 컴포넌트 import
 
-const emit = defineEmits(['openPopup']); // 이벤트 정의
+const emit = defineEmits(['openPopup', 'refreshPage']);
 
 const startDate = ref(getSavedDate("startDate"));
 const endDate = ref(getSavedDate("endDate"));
@@ -82,7 +75,8 @@ const endConfig = {
 
 const loading = ref(false); // 로딩 상태를 저장하는 ref
 const error = ref(null); // 오류 메시지를 저장하는 ref
-const groupedData = ref([]); // 데이터를 저장하는 ref
+
+
 
 watch(startDate, (newDate) => {
   endConfig.minDate = newDate;
@@ -113,29 +107,9 @@ function collectOrders() {
   }
 }
 
-async function refreshPage() {
-  const currentPage = 0;
-  const url = '/api/table';
-  const params = { currentPage };
-
-  loading.value = true;
-  error.value = null;
-
-  try {
-    const { data, error } = await useAxios(url, { params });
-
-    if (data.value) {
-      console.log(data.value);
-      groupedData.value = data.value;
-      console.log(groupedData.value);
-    } else {
-      throw error.value;
-    }
-  } catch (err) {
-    error.value = `Error: ${err.message || err}`;
-  } finally {
-    loading.value = false;
-  }
+function refreshPage() {
+  console.log('Emitting refreshPage event');
+  emit('refreshPage'); // Emit the event to parent component
 }
 
 async function tmpcollectOrders() {
@@ -202,12 +176,12 @@ function formatDate(date) {
 </script>
 
 <script>
-import NewTable from './NewTable.vue';
+
 import Header from './Header.vue'; // 헤더 컴포넌트 import
 
 export default {
   components: {
-    NewTable,
+
     Header
   }
 }
