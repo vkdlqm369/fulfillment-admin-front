@@ -1,10 +1,5 @@
 <template>
   <div>
-    <div class="header">
-      <!--상단 헤드 영역-->
-      <h4 class="header-text">타다닥 주문수집</h4>
-    </div>
-
     <div class="filters">
       <div class="date-picker">
         <label for="startDate">수집기간</label>
@@ -67,6 +62,7 @@ import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import { useAxios } from '@vueuse/integrations/useAxios';
 import NewTable from './NewTable.vue'; // 자식 컴포넌트 import
+import Header from './Header.vue'; // 헤더 컴포넌트 import
 
 const emit = defineEmits(['openPopup']); // 이벤트 정의
 
@@ -207,31 +203,18 @@ function formatDate(date) {
 
 <script>
 import NewTable from './NewTable.vue';
+import Header from './Header.vue'; // 헤더 컴포넌트 import
 
 export default {
   components: {
-    NewTable
+    NewTable,
+    Header
   }
 }
 </script>
 
 <style scoped>
 @import "@/assets/button.css";
-
-/* header 영역(타다닥 주문 수집)의 스타일 정의 */
-.header {
-  padding: 10px 20px;
-  background-color: #2c3e50;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: 2px solid #000;
-}
-
-.header-text {
-  color: white;
-  margin: 0;
-  text-align: left;
-}
 
 /* 수집기간 박스 */
 .filters {

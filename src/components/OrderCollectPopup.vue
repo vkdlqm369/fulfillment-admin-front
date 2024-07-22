@@ -42,8 +42,6 @@ function openPopupWindow(orders) {
         </div>
         <div class="popup-results">
           <p>총 ${orders.length}건이 처리되었습니다.</p>
-          <p>수집 성공: ${orders.filter(order => order.status === '성공').length}건</p>
-          <p>수집 실패: ${orders.filter(order => order.status === '실패').length}건</p>
         </div>
         <div class="popup-close-button">
           <button onclick="window.close()">닫기</button>
@@ -55,10 +53,10 @@ function openPopupWindow(orders) {
 </script>
 
 <template>
-  <!-- OrderCollectPopup.vue는 팝업 창을 관리하는 역할만 합니다. -->
+  <!-- 팝업 창 관리 -->
   <div></div>
 </template>
 
 <style scoped>
-/* 필요에 따라 스타일을 추가할 수 있습니다. */
+/* 스타일 추가 */
 </style>

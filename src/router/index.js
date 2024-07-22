@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LogIn from '../components/LogIn.vue'
-import TopButton from '../components/TopButton.vue'
+import TopButton from '../components/NavigationBar.vue'
 
 const routes = [
   {

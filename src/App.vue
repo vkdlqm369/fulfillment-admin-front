@@ -2,7 +2,8 @@
   <v-app>
     <v-main class="main-background">
       <div class="content-wrapper">
-        <TopButton @openPopup="openPopup" />
+        <Header />
+        <NavigationBar @openPopup="openPopup" />
         <Pagination />
         <Footer />
         <OrderCollectPopup :orders="orders" />
@@ -12,7 +13,8 @@
 </template>
 
 <script>
-import TopButton from './components/TopButton.vue';
+import Header from './components/Header.vue';
+import NavigationBar from './components/NavigationBar.vue';
 import NewTable from './components/NewTable.vue';
 import Pagination from './components/Pagination.vue';
 import Footer from './components/Footer.vue';
@@ -21,7 +23,8 @@ import OrderCollectPopup from './components/OrderCollectPopup.vue';
 export default {
   name: 'App',
   components: {
-    TopButton,
+    Header,
+    NavigationBar,
     NewTable,
     Pagination,
     Footer,
