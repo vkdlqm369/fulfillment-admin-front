@@ -90,8 +90,7 @@ watch(startDate, (newDate) => {
 });
 
 function openPopupWindow() {
-  const popupWindow = window.open('/order', '_blank', 'width=600,height=400');
-  console.log('Popup window opened:', popupWindow);  // 팝업 창이 열렸는지 확인
+  window.open('/order-collect-popup', '_blank', 'width=600,height=700');
 }
 
 async function refreshPage() {
