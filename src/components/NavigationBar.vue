@@ -10,6 +10,7 @@
             <flat-pickr
               v-model="startDate"
               :config="startConfig"
+              placeholder="시작일"
               class="datepicker-input"
               @input="updateStartDate"
             />
@@ -21,6 +22,7 @@
             <flat-pickr
               v-model="endDate"
               :config="endConfig"
+              placeholder="종료일"
               class="datepicker-input"
               @input="updateEndDate"
             />
@@ -59,36 +61,57 @@ const emit = defineEmits(['openPopup', 'refreshPage']);
 
 const startDate = ref(getSavedDate("startDate"));
 const endDate = ref(getSavedDate("endDate"));
+
 const startConfig = {
   dateFormat: "Y-m-d",
-  allowInput: true,
+  allowInput: false,
   onClose: updateStartDate,
 };
+
 const endConfig = {
   dateFormat: "Y-m-d",
-  allowInput: true,
+  allowInput: false,
   minDate: startDate.value,
   onClose: updateEndDate,
 };
 
-
-
-
-
 watch(startDate, (newDate) => {
   endConfig.minDate = newDate;
   if (endDate.value && new Date(endDate.value) < new Date(newDate)) {
-    endDate.value = null; // 시작일 변경 시 종료일이 시작일 이전이면 초기화
+    endDate.value = newDate; // 시작일 변경 시 종료일이 시작일 이전이면 초기화
+  }
+  if (endDatePicker.value) {
+    endDatePicker.value.flatpickr.set('minDate', newDate);
   }
 });
 
-function openPopupWindow() {
-  window.open('/order-collect-popup', '_blank', 'width=600,height=700');
+function updateStartDate() {
+  saveDate("startDate", startDate.value);
+  endConfig.minDate = startDate.value; // 시작일 변경 시 minDate 업데이트
+  if (endDate.value && new Date(endDate.value) < new Date(startDate.value)) {
+    endDate.value = null; // 시작일을 변경할 때 종료일 초기화
+  }
+  if (endDatePicker.value) {
+    endDatePicker.value.flatpickr.set('minDate', startDate.value);
+  }
 }
 
-function refreshPage() {
-  console.log('Emitting refreshPage event');
-  emit('refreshPage'); 
+function updateEndDate() {
+  saveDate("endDate", endDate.value); // 종료일이 선택될 때 호출 endDate 저장
+}
+
+function saveDate(key, date) {
+  sessionStorage.setItem(key, date); // sessionStorage에 날짜를 저장
+}
+
+function getSavedDate(key) {
+  return sessionStorage.getItem(key); // sessionStorage에서 날짜를 가져옴
+}
+
+function formatDate(date) { 
+  if (!date) return "";
+  const [year, month, day] = date.split("-"); // yyyy-mm-dd 형식에서 yyyy/mm/dd 형식으로 변환
+  return `${year}-${month}-${day}`;
 }
 
 async function tmpcollectOrders() {
@@ -119,31 +142,54 @@ async function tmpcollectOrders() {
   }
 }
 
-function updateStartDate() {
-  saveDate("startDate", startDate.value);
-  endConfig.minDate = startDate.value; // 시작일 변경 시 minDate 업데이트
-  if (endDate.value && new Date(endDate.value) < new Date(startDate.value)) {
-    endDate.value = null; // 시작일을 변경할 때 종료일 초기화
+async function openPopupWindow() {
+    // 시작일과 종료일이 설정되어 있는지 확인
+    if (startDate.value && endDate.value) {
+
+      
+    window.open('/order-collect-popup', '_blank', 'width=600,height=700');
+    // REST API 요청을 보낼 URL
+    const sellerNo = 2644; // 실제 sellerNo로 변경
+    const status = "DELIVERED";
+    const url = `/api/order/${sellerNo}`;
+
+    // 요청 매개변수 설정
+    const params = {
+      startDate: formatDate(startDate.value),
+      endDate: formatDate(endDate.value),
+      status: status,
+    };
+
+      const { data, error } = await useAxios(url, { params });
+
+      if (data.value) {
+        alert(data.value)
+      } else {
+        throw error.value;
+      }
+    } 
+   else {
+    alert("날짜를 선택해 주세요."); // 시작일 or 종료일 선택 X
   }
+
 }
 
-function updateEndDate() {
-  saveDate("endDate", endDate.value); // 종료일이 선택될 때 호출 endDate 저장
+function refreshPage() {
+  console.log('Emitting refreshPage event');
+  emit('refreshPage'); 
 }
 
-function saveDate(key, date) {
-  sessionStorage.setItem(key, date); // sessionStorage에 날짜를 저장
-}
+const startDatePicker = ref(null);
+const endDatePicker = ref(null);
 
-function getSavedDate(key) {
-  return sessionStorage.getItem(key); // sessionStorage에서 날짜를 가져옴
-}
-
-function formatDate(date) { 
-  if (!date) return "";
-  const [year, month, day] = date.split("-"); // yyyy-mm-dd 형식에서 yyyy/mm/dd 형식으로 변환
-  return `${year}-${month}-${day}`;
-}
+onMounted(() => {
+  if (startDatePicker.value && startDate.value) {
+    startDatePicker.value.flatpickr.setDate(startDate.value);
+  }
+  if (endDatePicker.value && endDate.value) {
+    endDatePicker.value.flatpickr.setDate(endDate.value);
+  }
+});
 </script>
 
 <script>

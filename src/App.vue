@@ -55,6 +55,7 @@ export default {
   components: {
     Header,
     NavigationBar,
+    NewTable,
     Pagination,
     Footer,
     OrderCollectPopup,
