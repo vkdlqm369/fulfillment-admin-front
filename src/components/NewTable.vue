@@ -1,82 +1,51 @@
 <template>
   <div>
-    <table border="1">
-      <thead>
-        <tr>
-          <th class="order-sequence">No.</th>
-          <th class="order-number">쇼핑몰주문번호</th>
-          <th class="order-product-number">주문순번</th>
-          <th class="product-name">수집상품명</th>
-          <th class="option-name">수집옵션명</th>
-          <th class="receiver-name">수취인명</th>
-          <th class="receiver-address">수취인주소</th>
-          <th class="receiver-contact">수취인연락처</th>
-          <th class="collection-time">수집일시</th>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-for="(group, ordNo) in groupedData" :key="ordNo">
-          <template v-for="item in group.ordersDetail" :key="item.ordPrdNo">
-            <tr>
-              <td>{{ item.index }}</td>
-              <td v-if="item.rowspan > 0" :rowspan="item.rowspan">
-                {{ group.ordNo }}
-              </td>
-              <td>{{ item.ordPrdNo }}</td>
-              <td>{{ item.prdNm }}</td>
-              <td>{{ item.optVal }}</td>
-              <td>{{ group.rcvrNm }}</td>
-              <td>{{ group.rcvrAddr }}</td>
-              <td>{{ group.rcvrMphnNo }}</td>
-              <td>{{ group.ordCollectDttm }}</td>
-            </tr>
+    <template v-if="groupedData.length === 0">
+      <p class="no-data-message">해당 기간의 주문 내역 데이터가 존재하지 않습니다.</p>
+    </template>
+    <template v-else>
+      <table border="1">
+        <thead>
+          <tr>
+            <th class="order-sequence">No.</th>
+            <th class="order-number">쇼핑몰주문번호</th>
+            <th class="order-product-number">주문순번</th>
+            <th class="product-name">수집상품명</th>
+            <th class="option-name">수집옵션명</th>
+            <th class="receiver-name">수취인명</th>
+            <th class="receiver-address">수취인주소</th>
+            <th class="receiver-contact">수취인연락처</th>
+            <th class="collection-time">수집일시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-for="(group, ordNo) in groupedData" :key="ordNo">
+            <template v-for="item in group.ordersDetail" :key="item.ordPrdNo">
+              <tr>
+                <td class="order-sequence">{{ item.index }}</td>
+                <td v-if="item.rowspan > 0" :rowspan="item.rowspan" class="order-number">{{ group.ordNo }}</td>
+                <td class="order-product-number">{{ item.ordPrdNo }}</td>
+                <td class="product-name">{{ item.prdNm }}</td>
+                <td class="option-name">{{ item.optVal }}</td>
+                <td class="receiver-name">{{ group.rcvrNm }}</td>
+                <td class="receiver-address">{{ group.rcvrAddr }}</td>
+                <td class="receiver-contact">{{ group.rcvrMphnNo }}</td>
+                <td class="collection-time">{{ group.ordCollectDttm }}</td>
+              </tr>
+            </template>
           </template>
-        </template>
-      </tbody>
-    </table>
-    <div class="pagination-container">
-      <v-pagination
-        class="pagination-margin"
-        :modelValue="currentPage"
-        :length="totalPages"
-        :total-visible="6"
-        @update:modelValue="onPageChange"
-      ></v-pagination>
-    </div>
+        </tbody>
+      </table>
+    </template>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    groupedData: {
+  props: { 
+    groupedData: { 
       type: Array,
       required: true
-    },
-    totalPages: {
-      type: Number,
-      required: true
-    },
-    currentPage: {
-      type: Number,
-      required: true
-    }
-  },
-  methods: {
-    onPageChange(page) {
-      console.log('New page selected:', page);
-      this.$emit('pageChanged', page);
-    }
-  },
-  watch: {
-    groupedData(newVal) {
-      console.log('New groupedData:', newVal);
-    },
-    totalPages(newVal) {
-      console.log('New totalPages:', newVal);
-    },
-    currentPage(newVal) {
-      console.log('New currentPage:', newVal);
     }
   }
 };
@@ -87,14 +56,16 @@ table {
   width: 100%;
   text-align: center;
   border-collapse: collapse;
-  margin-top: 30px;
+  margin-top: 100px;
   margin-bottom: 30px;
 }
+
 th,
 td {
   padding: 8px;
   text-align: center;
   border: 1px solid #ddd;
+  white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
 }
 
 .order-sequence {
@@ -112,28 +83,31 @@ td {
 .product-name {
   width: 25%;
 }
+
 .option-name {
   width: 8%;
 }
+
 .receiver-name {
   width: 7%;
 }
+
 .receiver-address {
   width: 27%;
 }
+
 .receiver-contact {
   width: 8%;
 }
+
 .collection-time {
   width: 9%;
 }
-.pagination-container {
-  position: sticky;
-  bottom: 0;
-  background-color: white;
-  padding: 10px 0;
+
+.no-data-message {
   text-align: center;
-  width: 100%;
-  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  font-size: 1.2em;
+  color: #777;
 }
 </style>
