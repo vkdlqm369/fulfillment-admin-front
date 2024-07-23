@@ -2,20 +2,23 @@
   <v-app>
     <v-main class="main-background">
       <div class="content-wrapper">
-        <Header />
+        <Header v-if="!isPopupRoute" />
         <!-- 헤더 컴포넌트 삽입 -->
         <NavigationBar
+          v-if="!isPopupRoute"
           @openPopup="openPopup"
           @refreshPage="handleRefreshPage"
         />
         <!-- 네비게이션 바 컴포넌트, 팝업 열기와 새로고침 이벤트 핸들러 바인딩 -->
         <NewTable
+          v-if="!isPopupRoute"
           :groupedData="groupedData"
           :totalPages="totalPages"
           :currentPage="currentPage"
         />
         <div class="pagination-wrapper">
           <Pagination
+            v-if="!isPopupRoute"
             :currentPage="currentPage"
             :totalPages="totalPages"
             @pageChanged="handlePageChange"
@@ -23,9 +26,9 @@
           <!-- Pagination 컴포넌트에서 발생한 pageChanged 이벤트를 handlePageChange 메서드로 처리 + fetchTableData 메서드를 호출 -->
         </div>
         <div class="footer-wrapper">
-          <Footer />
+          <Footer v-if="!isPopupRoute"/>
         </div>
-        <OrderCollectPopup :orders="orders" />
+        <router-view></router-view>
       </div>
     </v-main>
   </v-app>
@@ -45,7 +48,6 @@ export default {
   components: {
     Header,
     NavigationBar,
-    NewTable,
     Pagination,
     Footer,
     OrderCollectPopup,
@@ -94,6 +96,12 @@ export default {
   created() {
     this.fetchTableData(); // 새로 로딩시, 첫 페이지 데이터 가져옴
   },
+  computed: {
+    isPopupRoute() {
+      const popupRoutes = ["OrderCollectPopup"]; // 팝업 창에서만 노출할 라우트 이름
+      return popupRoutes.includes(this.$route.name);
+    },
+  },
 };
 </script>
 
@@ -117,7 +125,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* 공간을 위아래로 나눔 */
+  justify-content: space-between;
 }
 
 .footer-wrapper {
