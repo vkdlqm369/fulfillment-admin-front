@@ -71,8 +71,7 @@ const endConfig = {
   onClose: updateEndDate,
 };
 
-const loading = ref(false); // 로딩 상태를 저장하는 ref
-const error = ref(null); // 오류 메시지를 저장하는 ref
+
 
 
 
@@ -107,10 +106,6 @@ async function tmpcollectOrders() {
       status: status,
     };
 
-    loading.value = true; // 로딩 시작
-    error.value = null; // 이전 오류 초기화
-
-    try {
       const { data, error } = await useAxios(url, { params });
 
       if (data.value) {
@@ -118,12 +113,8 @@ async function tmpcollectOrders() {
       } else {
         throw error.value;
       }
-    } catch (err) {
-      error.value = `Error: ${err.message || err}`;
-    } finally {
-      loading.value = false; // 로딩 종료
-    }
-  } else {
+    } 
+   else {
     alert("날짜를 선택해 주세요."); // 시작일 or 종료일 선택 X
   }
 }
@@ -251,15 +242,5 @@ export default {
 
 .btn i {
   margin-right: 5px;
-}
-
-.loading {
-  color: blue;
-  font-weight: bold;
-}
-
-.error {
-  color: red;
-  font-weight: bold;
 }
 </style>
