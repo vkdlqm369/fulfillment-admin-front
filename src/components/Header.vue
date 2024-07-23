@@ -15,7 +15,7 @@
   .header {
     padding: 10px 20px;
     background-color: #2c3e50;
-    margin-bottom: 0px;
+    margin-bottom: 13px;
     border-radius: 5px;
     border: 2px solid #000;
   }

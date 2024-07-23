@@ -56,7 +56,7 @@ table {
   width: 100%;
   text-align: center;
   border-collapse: collapse;
-  margin-top: 100px;
+  margin-top: 20px;
   margin-bottom: 30px;
 }
 

@@ -1,14 +1,18 @@
 <template>
   <v-app>
     <v-main class="main-background">
+
       <div class="content-wrapper">
+
         <Header v-if="!isPopupRoute" />
         <!-- 헤더 컴포넌트 삽입 -->
+        
         <NavigationBar
           v-if="!isPopupRoute"
           @openPopup="openPopup"
           @refreshPage="handleRefreshPage"
         />
+
         <!-- 네비게이션 바 컴포넌트, 팝업 열기와 새로고침 이벤트 핸들러 바인딩 -->
         <NewTable
           v-if="!isPopupRoute"
@@ -16,6 +20,7 @@
           :totalPages="totalPages"
           :currentPage="currentPage"
         />
+
         <div class="pagination-wrapper">
           <Pagination
             v-if="!isPopupRoute"
@@ -25,9 +30,11 @@
           />
           <!-- Pagination 컴포넌트에서 발생한 pageChanged 이벤트를 handlePageChange 메서드로 처리 + fetchTableData 메서드를 호출 -->
         </div>
-        <div class="footer-wrapper">
-          <Footer v-if="!isPopupRoute"/>
+
+        <div v-if="!isPopupRoute" class="footer-wrapper">
+          <Footer />
         </div>
+
         <router-view></router-view>
       </div>
     </v-main>
@@ -126,6 +133,11 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.popup-content {
+  justify-content: flex-start; /* 팝업 내용이 상단에 붙도록 설정 */
+  padding: 40px; /* 팝업 내용에 패딩 추가 */
 }
 
 .footer-wrapper {
