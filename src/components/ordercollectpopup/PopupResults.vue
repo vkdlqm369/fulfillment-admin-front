@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-//부모 컴포넌트로부터 전달받은 props를 정의
+//부모 컴포넌트로부터 전달받은 props Data( 동적 결과 데이터를 정의 )
 const props = defineProps({
   successCount: {
     type: Number,
