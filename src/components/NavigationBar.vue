@@ -115,44 +115,38 @@ function formatDate(date) {
   return `${year}-${month}-${day}`;
 }
 
-async function tmpcollectOrders() {
-  // 시작일과 종료일이 설정되어 있는지 확인
-  if (startDate.value && endDate.value) {
-    // REST API 요청을 보낼 URL
-    const sellerNo = 2644; // 실제 sellerNo로 변경
-    const status = "DELIVERED";
-    const url = `/api/order/${sellerNo}`;
-
-    // 요청 매개변수 설정
-    const params = {
-      startDate: formatDate(startDate.value),
-      endDate: formatDate(endDate.value),
-      status: status,
-    };
-
-      const { data, error } = await useAxios(url, { params });
-
-      if (data.value) {
-        alert(data.value)
-      } else {
-        throw error.value;
-      }
-    } 
-   else {
-    alert("날짜를 선택해 주세요."); // 시작일 or 종료일 선택 X
-  }
-}
-
 async function openPopupWindow() {
     // 시작일과 종료일이 설정되어 있는지 확인
     console.log("openPopupWindow called");
     if (startDate.value && endDate.value) {
-    window.open('/order-collect-popup', '_blank', 'width=600,height=700');
-    } else{
-      alert("날짜를 선택해 주세요.");
+        // REST API 요청을 보낼 URL
+        const sellerNo = 2644; // 실제 sellerNo로 변경
+        const status = "DELIVERED";
+        const url = `/api/order/${sellerNo}`;
+
+        // 요청 매개변수 설정
+        const params = {
+            startDate: formatDate(startDate.value),
+            endDate: formatDate(endDate.value),
+            status: status,
+        };
+
+        // API 요청 보내기
+        const { data, error } = await useAxios(url, { params });
+
+        if (data.value) {
+            // 데이터를 localStorage에 저장
+            localStorage.setItem('popupOrderData', JSON.stringify(data.value));
+
+            // 팝업 창 열기
+            window.open('/order-collect-popup', '_blank', 'width=600,height=700');
+        } else {
+            throw error.value;
+        }
+    } else {
+        alert("날짜를 선택해 주세요.");
     }
-   
-  }
+}
 
 function refreshPage() {
   console.log('Emitting refreshPage event');
@@ -172,15 +166,6 @@ onMounted(() => {
 });
 </script>
 
-<script>
-import Header from './Header.vue'; // 헤더 컴포넌트 import
-
-export default {
-  components: {
-    Header,
-  },
-}
-</script>
 
 <style scoped>
 @import "@/assets/button.css";

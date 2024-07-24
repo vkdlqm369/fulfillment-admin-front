@@ -1,6 +1,6 @@
 <template>
   <div class="popup-results">
-    <p>총 10건이 처리되었습니다.</p>
+    <p>총 {{ totalCount }}건이 처리되었습니다.</p>
     <p>수집 성공: {{ successCount }}건</p>
     <p>수집 실패: {{ failureCount }}건</p>
   </div>
@@ -18,6 +18,10 @@ const props = defineProps({
     required: true,
   },
   failureCount: {
+    type: Number,
+    required: true,
+  },
+  totalCount: {
     type: Number,
     required: true,
   },
