@@ -21,22 +21,22 @@
           :currentPage="currentPage"
         />
 
-        <div class="pagination-wrapper">
-          <Pagination
-            v-if="!isPopupRoute"
-            :currentPage="currentPage"
-            :totalPages="totalPages"
-            @pageChanged="handlePageChange"
-          />
-          <!-- Pagination 컴포넌트에서 발생한 pageChanged 이벤트를 handlePageChange 메서드로 처리 + fetchTableData 메서드를 호출 -->
+         <div class="footer-pagination-wrapper" v-if="!isPopupRoute">
+          <div class="pagination-wrapper">
+            <Pagination
+              :currentPage="currentPage"
+              :totalPages="totalPages"
+              @pageChanged="handlePageChange"
+            />
+          </div>
+
+          <div class="footer-wrapper">
+            <Footer />
+          </div>
         </div>
 
-        <div v-if="!isPopupRoute" class="footer-wrapper">
-          <Footer />
-        </div>
-
-        <router-view></router-view>
       </div>
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
@@ -55,6 +55,7 @@ export default {
   components: {
     Header,
     NavigationBar,
+    NewTable,
     Pagination,
     Footer,
     OrderCollectPopup,
@@ -140,15 +141,18 @@ body {
   padding: 40px; /* 팝업 내용에 패딩 추가 */
 }
 
-.footer-wrapper {
-  margin-top: auto; /* footer를 페이지 하단에 고정 */
+.footer-pagination-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto; /* footer-pagination-wrapper를 페이지 하단에 고정 */
 }
 
 .pagination-wrapper {
-  position: fixed;
-  bottom: 75px;
-  width: 100%;
-  padding: 10px 0;
   text-align: center;
+  padding: 10px 0;
+}
+
+.footer-wrapper {
+  margin-top: auto; /* footer를 페이지 하단에 고정 */
 }
 </style>
