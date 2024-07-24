@@ -60,6 +60,7 @@ const endDate = ref(getSavedDate("endDate"));
 const startConfig = {
   dateFormat: "Y-m-d",
   allowInput: false,
+  maxDate: "today",
   onClose: updateStartDate,
 };
 
@@ -67,6 +68,7 @@ const endConfig = {
   dateFormat: "Y-m-d",
   allowInput: false,
   minDate: startDate.value,
+  maxDate: "today",
   onClose: updateEndDate,
 };
 
