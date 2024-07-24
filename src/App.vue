@@ -70,7 +70,10 @@ export default {
   },
   methods: {
     openPopup(orders) {
-      this.orders = orders;
+    },
+
+    isPopup() {
+    return window.opener !== null && !window.opener.closed;
     },
 
     // 테이블 최신화 함수
@@ -100,9 +103,22 @@ export default {
       console.log("Refreshing page"); // 새로고침 할 때 마다 콘솔에 출력
       this.fetchTableData(1); // 첫 페이지 데이터 가져옴
     },
+    handlePopupMessage(event) {
+      if (event.data === 'refreshPage') {
+        this.handleRefreshPage();
+      }
+    }
   },
   created() {
+     if (!this.isPopup()) {
     this.fetchTableData(); // 새로 로딩시, 첫 페이지 데이터 가져옴
+  }
+      // 메시지 이벤트 리스너 추가
+    window.addEventListener('message', this.handlePopupMessage);
+  },
+  beforeDestroy() {
+    // 메시지 이벤트 리스너 제거
+    window.removeEventListener('message', this.handlePopupMessage); // 새로 로딩시, 첫 페이지 데이터 가져옴
   },
   computed: {
     isPopupRoute() {

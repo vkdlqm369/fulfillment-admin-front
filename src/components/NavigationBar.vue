@@ -47,6 +47,7 @@
         </button>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -58,7 +59,7 @@ import { useAxios } from '@vueuse/integrations/useAxios';
 import NewTable from './NewTable.vue';
 
 const emit = defineEmits(['openPopup', 'refreshPage']);
-
+ 
 const startDate = ref(getSavedDate("startDate"));
 const endDate = ref(getSavedDate("endDate"));
 
@@ -144,35 +145,14 @@ async function tmpcollectOrders() {
 
 async function openPopupWindow() {
     // 시작일과 종료일이 설정되어 있는지 확인
+    console.log("openPopupWindow called");
     if (startDate.value && endDate.value) {
-
-      
     window.open('/order-collect-popup', '_blank', 'width=600,height=700');
-    // REST API 요청을 보낼 URL
-    const sellerNo = 2644; // 실제 sellerNo로 변경
-    const status = "DELIVERED";
-    const url = `/api/order/${sellerNo}`;
-
-    // 요청 매개변수 설정
-    const params = {
-      startDate: formatDate(startDate.value),
-      endDate: formatDate(endDate.value),
-      status: status,
-    };
-
-      const { data, error } = await useAxios(url, { params });
-
-      if (data.value) {
-        alert(data.value)
-      } else {
-        throw error.value;
-      }
-    } 
-   else {
-    alert("날짜를 선택해 주세요."); // 시작일 or 종료일 선택 X
+    } else{
+      alert("날짜를 선택해 주세요.");
+    }
+   
   }
-
-}
 
 function refreshPage() {
   console.log('Emitting refreshPage event');
@@ -197,8 +177,8 @@ import Header from './Header.vue'; // 헤더 컴포넌트 import
 
 export default {
   components: {
-    Header
-  }
+    Header,
+  },
 }
 </script>
 
