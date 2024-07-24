@@ -2,7 +2,7 @@
   <v-app>
     <v-main class="main-background">
 
-      <div class="content-wrapper">
+      <div :class="['content-wrapper', { 'popup-active': isPopupRoute }]">
 
         <Header v-if="!isPopupRoute" />
         <!-- 헤더 컴포넌트 삽입 -->
@@ -130,7 +130,7 @@ body {
 }
 
 .content-wrapper {
-  flex: 0;
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -154,6 +154,10 @@ body {
 .popup-content {
   justify-content: flex-start; /* 팝업 내용이 상단에 붙도록 설정 */
   padding: 40px; /* 팝업 내용에 패딩 추가 */
+}
+
+.popup-active {
+  flex: none; /* 팝업이 활성화되었을 때 flex 속성을 무시 */
 }
 
 
