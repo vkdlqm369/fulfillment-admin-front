@@ -1,18 +1,14 @@
 <template>
   <div class="popup-results">
-    <p>총 {{ totalCount }}건이 처리되었습니다.</p>
-    <p>수집 성공: {{ successCount }}건</p>
-    <p>수집 실패: {{ failureCount }}건</p>
+    <p>[결과] 총 {{ totalCount }}건이 처리되었습니다.</p>
+    <p :class="{ success: true }">수집 성공: {{ successCount }}건</p>
+    <p :class="{ failure: true }">수집 실패: {{ failureCount }}건</p>
   </div>
 </template>
 
 <script setup>
 //부모 컴포넌트로부터 전달받은 props를 정의
 const props = defineProps({
-  orders: {
-    type: Array,
-    required: true,
-  },
   successCount: {
     type: Number,
     required: true,
@@ -33,4 +29,14 @@ const props = defineProps({
   margin-top: 20px;
   text-align: center;
 }
+
+.success {
+  color: blue;
+}
+
+.failure {
+  color: red;
+}
+
+
 </style>

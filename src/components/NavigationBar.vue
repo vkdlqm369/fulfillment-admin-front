@@ -40,26 +40,20 @@
           <i class="fas fa-sync-alt"></i>
           <span>새로고침</span>
         </button>
-        <!-- @click : 클릭 시. tmpcollectOrders method 호출 -->
-        <button class="btn btn-tmpcollectOrders" @click="tmpcollectOrders">
-          <i class="fas fa-sync-alt"></i>
-          <span>임시 주문수집</span>
-        </button>
       </div>
     </div>
-
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch } from "vue";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
-import { useAxios } from '@vueuse/integrations/useAxios';
-import NewTable from './NewTable.vue';
+import { useAxios } from "@vueuse/integrations/useAxios";
+import NewTable from "./NewTable.vue";
 
-const emit = defineEmits(['openPopup', 'refreshPage']);
- 
+const emit = defineEmits(["openPopup", "refreshPage"]);
+
 const startDate = ref(getSavedDate("startDate"));
 const endDate = ref(getSavedDate("endDate"));
 
@@ -82,7 +76,7 @@ watch(startDate, (newDate) => {
     endDate.value = newDate; // 시작일 변경 시 종료일이 시작일 이전이면 초기화
   }
   if (endDatePicker.value) {
-    endDatePicker.value.flatpickr.set('minDate', newDate);
+    endDatePicker.value.flatpickr.set("minDate", newDate);
   }
 });
 
@@ -93,7 +87,7 @@ function updateStartDate() {
     endDate.value = null; // 시작일을 변경할 때 종료일 초기화
   }
   if (endDatePicker.value) {
-    endDatePicker.value.flatpickr.set('minDate', startDate.value);
+    endDatePicker.value.flatpickr.set("minDate", startDate.value);
   }
 }
 
@@ -109,48 +103,52 @@ function getSavedDate(key) {
   return sessionStorage.getItem(key); // sessionStorage에서 날짜를 가져옴
 }
 
-function formatDate(date) { 
+function formatDate(date) {
   if (!date) return "";
   const [year, month, day] = date.split("-"); // yyyy-mm-dd 형식에서 yyyy/mm/dd 형식으로 변환
   return `${year}-${month}-${day}`;
 }
 
 async function openPopupWindow() {
-    // 시작일과 종료일이 설정되어 있는지 확인
-    console.log("openPopupWindow called");
-    if (startDate.value && endDate.value) {
-        // REST API 요청을 보낼 URL
-        const sellerNo = 2644; // 실제 sellerNo로 변경
-        const status = "DELIVERED";
-        const url = `/api/order/${sellerNo}`;
+  // 시작일과 종료일이 설정되어 있는지 확인
+  console.log("openPopupWindow called");
+  if (startDate.value && endDate.value) {
+    // 팝업 창 먼저 열기
+    const popup = window.open('/order-collect-popup', '_blank', 'width=600,height=700');
 
-        // 요청 매개변수 설정
-        const params = {
-            startDate: formatDate(startDate.value),
-            endDate: formatDate(endDate.value),
-            status: status,
-        };
+    // REST API 요청을 보낼 URL
+    const sellerNo = 2644; // 실제 sellerNo로 변경
+    const status = "DELIVERED";
+    const url = `/api/order/${sellerNo}`;
 
-        // API 요청 보내기
-        const { data, error } = await useAxios(url, { params });
+    // 요청 매개변수 설정
+    const params = {
+      startDate: formatDate(startDate.value),
+      endDate: formatDate(endDate.value),
+      status: status,
+    };
 
-        if (data.value) {
-            // 데이터를 localStorage에 저장
-            localStorage.setItem('popupOrderData', JSON.stringify(data.value));
+    // API 요청 보내기
+    const { data, error } = await useAxios(url, { params });
 
-            // 팝업 창 열기
-            window.open('/order-collect-popup', '_blank', 'width=600,height=700');
-        } else {
-            throw error.value;
-        }
+    if (data.value) {
+      console.log("Data received:", data.value);
+      // 데이터를 준비한 후 팝업 창에 메시지 전달
+      if (popup) {
+        popup.postMessage(JSON.stringify(data.value), '*');
+      }
     } else {
-        alert("날짜를 선택해 주세요.");
+      console.error("Error fetching data:", error.value);
+      throw error.value;
     }
+  } else {
+    alert("날짜를 선택해 주세요.");
+  }
 }
 
 function refreshPage() {
-  console.log('Emitting refreshPage event');
-  emit('refreshPage'); 
+  console.log("Emitting refreshPage event");
+  emit("refreshPage");
 }
 
 const startDatePicker = ref(null);
@@ -165,7 +163,6 @@ onMounted(() => {
   }
 });
 </script>
-
 
 <style scoped>
 @import "@/assets/button.css";
