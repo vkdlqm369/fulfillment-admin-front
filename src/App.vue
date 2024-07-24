@@ -130,15 +130,10 @@ body {
 }
 
 .content-wrapper {
-  flex: 1;
+  flex: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-
-.popup-content {
-  justify-content: flex-start; /* 팝업 내용이 상단에 붙도록 설정 */
-  padding: 40px; /* 팝업 내용에 패딩 추가 */
 }
 
 .footer-pagination-wrapper {
@@ -155,4 +150,11 @@ body {
 .footer-wrapper {
   margin-top: auto; /* footer를 페이지 하단에 고정 */
 }
+
+.popup-content {
+  justify-content: flex-start; /* 팝업 내용이 상단에 붙도록 설정 */
+  padding: 40px; /* 팝업 내용에 패딩 추가 */
+}
+
+
 </style>
