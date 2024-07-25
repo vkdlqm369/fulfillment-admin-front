@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.btn {
+  border: 2px solid;
+  color: #00aaff;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  border-radius: 5px;
+  background: transparent;
+  transition: background 0.3s, color 0.3s;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn i {
+  margin-right: 8px;
+}
+
+.btn-collectOrders {
+  border-color: #2b98ce;
+  color: #2b98ce;
+}
+
+.btn-collectOrders:hover {
+  background: #2b98ce;
+  color: #fff;
+}
+
+.btn-refreshPage {
+  border-color: #3f345e;
+  color: #3f345e;
+}
+
+.btn-refreshPage:hover {
+  background: #3f345e;
+  color: #fff;
+}

@@ -1,0 +1,254 @@
+<template>
+  <div>
+    <div class="filters">
+      <div class="date-picker">
+        <label for="startDate">수집기간</label>
+        <div class="date-inputs">
+          <!--첫 번째 datepicker-->
+          <div class="datepicker-wrapper">
+            <i class="fas fa-calendar-alt"></i>
+            <flat-pickr
+              v-model="startDate"
+              :config="startConfig"
+              placeholder="시작일"
+              class="datepicker-input"
+              @input="updateStartDate"
+            />
+          </div>
+          <span>~</span>
+          <!--두 번째 datepicker-->
+          <div class="datepicker-wrapper">
+            <i class="fas fa-calendar-alt"></i>
+            <flat-pickr
+              v-model="endDate"
+              :config="endConfig"
+              placeholder="종료일"
+              class="datepicker-input"
+              @input="updateEndDate"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn btn-collectOrders" @click="openPopupWindow">
+          <i class="fas fa-shopping-cart"></i>
+          <span>주문수집</span>
+        </button>
+        <!-- @click : 클릭 시. refreshPage method 호출 -->
+        <button class="btn btn-refreshPage" @click="refreshPage">
+          <i class="fas fa-sync-alt"></i>
+          <span>새로고침</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, watch } from "vue";
+import flatPickr from "vue-flatpickr-component";
+import "flatpickr/dist/flatpickr.css";
+import { useAxios } from "@vueuse/integrations/useAxios";
+import NewTable from "./NewTable.vue";
+
+const emit = defineEmits(["openPopup", "refreshPage"]);
+
+const startDate = ref(getSavedDate("startDate"));
+const endDate = ref(getSavedDate("endDate"));
+
+const startConfig = {
+  dateFormat: "Y-m-d",
+  allowInput: false,
+  onClose: updateStartDate,
+};
+
+const endConfig = {
+  dateFormat: "Y-m-d",
+  allowInput: false,
+  minDate: startDate.value,
+  onClose: updateEndDate,
+};
+
+watch(startDate, (newDate) => {
+  endConfig.minDate = newDate;
+  if (endDate.value && new Date(endDate.value) < new Date(newDate)) {
+    endDate.value = newDate; // 시작일 변경 시 종료일이 시작일 이전이면 초기화
+  }
+  if (endDatePicker.value) {
+    endDatePicker.value.flatpickr.set("minDate", newDate);
+  }
+});
+
+function updateStartDate() {
+  saveDate("startDate", startDate.value);
+  endConfig.minDate = startDate.value; // 시작일 변경 시 minDate 업데이트
+  if (endDate.value && new Date(endDate.value) < new Date(startDate.value)) {
+    endDate.value = null; // 시작일을 변경할 때 종료일 초기화
+  }
+  if (endDatePicker.value) {
+    endDatePicker.value.flatpickr.set("minDate", startDate.value);
+  }
+}
+
+function updateEndDate() {
+  saveDate("endDate", endDate.value); // 종료일이 선택될 때 호출 endDate 저장
+}
+
+function saveDate(key, date) {
+  sessionStorage.setItem(key, date); // sessionStorage에 날짜를 저장
+}
+
+function getSavedDate(key) {
+  return sessionStorage.getItem(key); // sessionStorage에서 날짜를 가져옴
+}
+
+function formatDate(date) {
+  if (!date) return "";
+  const [year, month, day] = date.split("-"); // yyyy-mm-dd 형식에서 yyyy/mm/dd 형식으로 변환
+  return `${year}-${month}-${day}`;
+}
+
+async function openPopupWindow() {
+  // 시작일과 종료일이 설정되어 있는지 확인
+  console.log("openPopupWindow called");
+  if (startDate.value && endDate.value) {
+    // 팝업 창 먼저 열기
+    const popup = window.open('/order-collect-popup', '_blank', 'width=600,height=700');
+
+    // REST API 요청을 보낼 URL
+    const sellerNo = 2644; // 실제 sellerNo로 변경
+    const status = "DELIVERED";
+    const url = `/api/order/${sellerNo}`;
+
+    // 요청 매개변수 설정
+    const params = {
+      startDate: formatDate(startDate.value),
+      endDate: formatDate(endDate.value),
+      status: status,
+    };
+
+    // API 요청 보내기
+    const { data, error } = await useAxios(url, { params });
+
+    if (data.value) {
+      console.log("Data received:", data.value);
+      // 데이터를 준비한 후 팝업 창에 메시지 전달
+      if (popup) {
+        popup.postMessage(JSON.stringify(data.value), '*');
+      }
+    } else {
+      console.error("Error fetching data:", error.value);
+      throw error.value;
+    }
+  } else {
+    alert("날짜를 선택해 주세요.");
+  }
+}
+
+function refreshPage() {
+  console.log("Emitting refreshPage event");
+  emit("refreshPage");
+}
+
+const startDatePicker = ref(null);
+const endDatePicker = ref(null);
+
+onMounted(() => {
+  if (startDatePicker.value && startDate.value) {
+    startDatePicker.value.flatpickr.setDate(startDate.value);
+  }
+  if (endDatePicker.value && endDate.value) {
+    endDatePicker.value.flatpickr.setDate(endDate.value);
+  }
+});
+</script>
+
+<style scoped>
+@import "@/assets/button.css";
+
+/* 수집기간 박스 */
+.filters {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  gap: 40px; /*날짜 선택, 주문 버튼 */
+  border: 2px solid #000;
+}
+
+/* datepicker 스타일 */
+.date-picker {
+  display: flex;
+  align-items: center;
+}
+
+/* datepicker 라벨 스타일 */
+.date-picker label {
+  margin-right: 50px;
+  font-weight: bold;
+  color: black;
+  display: flex;
+  align-items: center;
+}
+
+.date-inputs {
+  display: flex;
+  align-items: center;
+}
+
+.date-picker span {
+  margin: 0 10px;
+  color: black;
+}
+
+.datepicker-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.datepicker-wrapper i {
+  position: absolute;
+  left: 10px;
+  color: #000;
+}
+
+/* datepicker 입력 필드 스타일 */
+.datepicker-input {
+  padding: 5px 5px 5px 25px; /* 아이콘 공간 확보 */
+  border: 2px solid #000;
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+  width: 150px;
+  box-sizing: border-box;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.datepicker-input::placeholder {
+  color: black !important;
+}
+
+/* button 영역의 스타일 */
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn i {
+  margin-right: 5px;
+}
+</style>

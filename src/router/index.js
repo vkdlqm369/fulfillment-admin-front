@@ -1,16 +1,18 @@
-/**
- * router/index.ts
- *
- * Automatic routes for `./src/pages/*.vue`
- */
+import { createRouter, createWebHistory } from 'vue-router';
+import OrderCollectPopup from '../components/OrderCollectPopup.vue';
+import App from '../App.vue'
 
-// Composables
-import { createRouter, createWebHistory } from 'vue-router/auto'
-import { setupLayouts } from 'virtual:generated-layouts'
+const routes = [
+  {
+    path: '/order-collect-popup',
+    name: 'OrderCollectPopup',
+    component: OrderCollectPopup
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  extendRoutes: setupLayouts,
-})
+  routes
+});
 
-export default router
+export default router;
