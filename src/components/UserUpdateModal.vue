@@ -1,4 +1,9 @@
 <script setup>
+import {  
+  nameRules,
+  emailRules,
+  permissionRules,
+  validateForm,  } from "@/utils/validationRules"
 
   const props = defineProps(['authority'])
   const dialog = defineModel('dialog')
@@ -48,6 +53,7 @@
                             variant="outlined"
                             density="compact"
                             v-model="userInfo.name"
+                            :rules="nameRules"
                         ></v-text-field>
                         </v-col>
                     </v-row>
@@ -64,6 +70,7 @@
                         variant="outlined" 
                         density="compact"
                         v-model="userInfo.email" 
+                        :rules="emailRules"
                         ></v-text-field>
                         </v-col>
                     </v-row>

@@ -57,12 +57,7 @@ export const getAuthority = async () => {
 
 export const deleteUser = async (requestBody) => {
   try {
-    const res = await commonAxios.delete("/delete", {
-      data: {
-        ids : requestBody
-      }
-    })
-    ;
+    const res = await commonAxios.delete("/delete", requestBody)
     console.log("성공", res);
     return res.data;
   } catch (error) {

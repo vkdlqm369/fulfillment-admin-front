@@ -75,6 +75,10 @@ const dialogs = ref([
   {'updateSuccess': false}
 ])
 
+function isMaster(){
+  return (authority.value === 'MASTER')
+}
+
 
 async function loadUserInfo(item){
 
@@ -128,19 +132,24 @@ async function searchHandler(page = 1){
 
 
 function showDialog(){
-  if(selected.value.length == 0)
+  if(selected.value.length == 0){
     dialogs.value['nonSelect'] = true
-  else
-    if(selected.value.indexOf(id.value) != -1)
+  }
+  else{
+    if(selected.value.indexOf(id.value) != -1){
       dialogs.value['deleteMe'] = true;
-    else
+    }
+    else{
       dialogs.value['delete'] = true;
+    }
+  }
+
 }
 
 async function deleteHandler(){
-  console.log(selected.value)
+
  try {
-    const response = await deleteUser(selected.value);
+    const response = await deleteUser({data:{ids:selected.value}});
     dialogs.value['deleteSuccess'] = true
   } catch {
     //error 처리
@@ -224,8 +233,8 @@ async function updateOthersHandler(){
         <span style="color: red">{{ totalLists }}</span>
         <span>건 검색</span>
       </v-container>
-      <v-btn v-if="authority === 'MASTER'" color="info" class="fixed-h" to="/register">등록</v-btn>
-      <v-btn v-if="authority === 'MASTER'" color="red" class="fixed-h" style="font-weight:bold;" @click="showDialog">삭제</v-btn>
+      <v-btn v-if="isMaster()" color="info" class="fixed-h" to="/register">등록</v-btn>
+      <v-btn v-if="isMaster()" color="red" class="fixed-h" style="font-weight:bold;" @click="showDialog">삭제</v-btn>
           <v-dialog v-model="dialogs['delete']" max-width="500">
             <v-card class="pa-2">
               <v-card-title>
@@ -299,13 +308,13 @@ async function updateOthersHandler(){
             :headers="headers"
             :loading="loading"
             loading-text="Loading... Please wait"
-            :show-select="authority==='MASTER'"
+            :show-select="isMaster()"
             height="500"
             fixed-header
             bordered
           >
         <template v-slot:item.btn="row">
-          <v-btn v-if="authority === 'MASTER'" color="green" @click="loadUserInfo(row.item.id)">
+          <v-btn v-if="isMaster()" color="green" @click="loadUserInfo(row.item.id)">
           수정
           </v-btn></template>
         </v-data-table-virtual>
