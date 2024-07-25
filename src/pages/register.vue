@@ -1,13 +1,12 @@
 <script setup>
 import { ref } from "vue";
-import commonAxios from "@/utils/commonAxios";
 import {
   idRules,
   passwordRules,
   confirmPasswordRules,
   nameRules,
   emailRules,
-  permissionRules,
+  authorityRules,
   validateForm,
 } from "@/utils/validationRules";
 import CheckDialog from "@/components/CheckDialog.vue";
@@ -18,7 +17,7 @@ const id = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 const email = ref("");
-const permission = ref("");
+const authority = ref("");
 const name = ref("");
 const department = ref("");
 const memo = ref("");
@@ -48,7 +47,7 @@ const handleSubmit = async () => {
   ];
 
   const validationMessage = validateForm(fieldsWithRules);
-  if (validationMessage !== true) {
+  if (!validationMessage) {
     message.value = validationMessage;
     validationDialog.value = true;
   } else {
@@ -57,26 +56,17 @@ const handleSubmit = async () => {
       password: password.value,
       name: name.value,
       email: email.value,
-      permission: permission.value,
+      authority: authority.value,
       department: department.value,
       memo: memo.value,
     };
 
     try {
       const response = await postRegister(requestBody);
-    } catch {
-      //error 처리
+    } catch (error) {
+      message.value = error.data.message;
+      validationDialog.value = true;
     }
-
-    commonAxios.post("/register", requestBody).then((res) => {
-      if (res.status === 200) {
-        console.log("관리자 등록 성공");
-      } else if (res.status === 400) {
-        alert("관리자 등록 실패");
-      } else if (res.status === 500) {
-        console.log("서버 내부 오류입니다");
-      }
-    });
   }
 };
 </script>
@@ -236,8 +226,8 @@ const handleSubmit = async () => {
                         density="compact"
                         hint="관리자 페이지 접근제한이 필요한 경우 관리자를 선택"
                         persistent-hint
-                        v-model="permission"
-                        :rules="permissionRules"
+                        v-model="authority"
+                        :rules="authorityRules"
                       ></v-select>
                     </v-col>
                   </v-row>
