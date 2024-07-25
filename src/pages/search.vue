@@ -2,23 +2,34 @@
 import TextBlank from "../components/TextBlank.vue";
 import TextSelection from "../components/TextSelection.vue";
 import SearchBtn from "../components/SearchBtn.vue";
-import { getSearch, getAuthority } from "@/utils/api";
-import { onMounted } from "vue";
-import { computed } from "vue";
+import UserUpdateModal from "../components/UserUpdateModal.vue";
+import CheckDialog from "../components/CheckDialog.vue";
+import { getSearch, getAuthority, deleteUser, updateOtherUser } from "@/utils/api";
+import { removeT } from "@/utils/TimeFormat"
+import { onMounted, computed } from "vue";
+import router from "@/router/index";
 
 const tableItems = ref([]);
 
+const headerProps = ref(
+  {
+    class: 'bg-black'
+  }
+)
+
 const headers = [
-  { title: "관리자번호", value: "userId" },
-  { title: "아이디", value: "id" },
-  { title: "관리자명", value: "name" },
-  { title: "이메일", value: "email" },
-  { title: "부서", value: "department" },
-  { title: "메모", value: "memo" },
-  { title: "등록일", value: "registrationDate" },
-  { title: "최종로그인", value: "lastLoginIp" },
-  { title: "최종로그인 IP", value: "lastLoginIp" },
-  { title: "사용유무", value: "isUsed" },
+  { title: "관리자번호", value: "userId", width: "100px", align: 'center', headerProps: headerProps},
+  { title: "아이디", value: "id", width: "90px", headerProps: headerProps },
+  { title: "관리자명", value: "name", width: "90px", headerProps: headerProps },
+  { title: "이메일", value: "email", width: "120px", headerProps: headerProps },
+  { title: "권한", value: "permission", width: "80px", headerProps: headerProps},
+  { title: "부서", value: "department", width: "120px", headerProps: headerProps },
+  { title: "메모", value: "memo", width: "120px", headerProps: headerProps },
+  { title: "등록일", value: "registrationDate", width: "180px", headerProps: headerProps },
+  { title: "최종로그인", value: "lastLoginTime", width: "180px", headerProps: headerProps },
+  { title: "최종로그인 IP", value: "lastLoginIp", width: "120px", headerProps: headerProps },
+  { title: "활성화유무", value: "isUsed", width: "100px", headerProps: headerProps },
+  {title: "", value: "btn", width: "30px", headerProps: headerProps}
 ];
 
 const inputMapForSearch = ref({
@@ -27,45 +38,147 @@ const inputMapForSearch = ref({
   email: "",
   isUsed: "",
   page: 1,
-  showList: "10",
+  showList: 10,
 });
 
 const isSearch = ref(false);
 const totalLists = ref(0);
 const numOfPage = ref(0);
 const loading = ref(false);
-const authority = ref("");
-const userId = ref("");
 
-const SearchHandler = async (page = 1) => {
+// merge시 데이터 삭제
+const authority = ref('MASTER');
+const id = ref('jomg');
+const userInfo = ref({
+         id: "jomg",
+			   name:"김예린",
+			   permission: "MASTER",
+				 email: "niry929@naver.com",
+				 department: "fulfillment",
+				 memo: "hihi",
+				 isUsed: true,
+				 registrationDate: "2024-01-01 ...",
+			   lastLoginTime: "2024-02-02 ....",			  
+			   lastLoginIp: "dfdf"
+})
+// merge시 데이터 삭제
+
+
+const selected = ref([]);
+
+const dialogs = ref([
+  {'delete': false},
+  {'deleteMe': false},
+  {'nonSelect': false},
+  {'userUpdate': false},
+  {'deleteSuccess': false},
+  {'updateSuccess': false}
+])
+
+
+async function loadUserInfo(item){
+
+  if(id.value == item)
+    router.push('/mypage')
+  else{
+    try{
+      // const response = await getMyInfo(item)
+      // userInfo.value = response.data;
+      dialogs.value['userUpdate'] = true;
+    }
+    catch{
+    }
+}
+  
+}
+
+async function searchHandler(page = 1){
   isSearch.value = true;
   inputMapForSearch.value.page = page;
   tableItems.value = [];
+
   const params = new URLSearchParams();
 
   for (let key in inputMapForSearch.value) {
     params.append(key, inputMapForSearch.value[key]);
   }
+
   loading.value = true;
 
   try {
     const response = await getSearch(params);
-    loading.value = false;
-    totalLists.value = response.totalLists;
-    tableItems.value = response.users;
-    numOfPage.value = response.totalPages;
+    totalLists.value = response.data.totalLists;
+    tableItems.value = response.data.users;
+    numOfPage.value = response.data.totalPages;
+
+    for(let user of tableItems.value){
+      user.isUsed = (user.isUsed) ? "활성화" : "비활성화"
+      user.lastLoginTime = removeT(user.lastLoginTime)
+      user.permission = (user.permission === "MASTER") ? "통합관리자" : "일반관리자"
+      user.registrationDate = removeT(user.registrationDate)
+    }
   } catch {
     //error 처리
   }
-};
 
-onMounted(() => {
-  authority.value = "MASTER";
-  // const response = getAuthority();
-  // authority.value = response.authority;
-  // userId.value = response.userId;
-  // console.log(response);
-});
+  loading.value = false
+  isSearch.value = true;
+  selected.value = []
+}
+
+
+function showDialog(){
+  if(selected.value.length == 0)
+    dialogs.value['nonSelect'] = true
+  else
+    if(selected.value.indexOf(id.value) != -1)
+      dialogs.value['deleteMe'] = true;
+    else
+      dialogs.value['delete'] = true;
+}
+
+async function deleteHandler(){
+  console.log(selected.value)
+ try {
+    const response = await deleteUser(selected.value);
+    dialogs.value['deleteSuccess'] = true
+  } catch {
+    //error 처리
+  }
+}
+
+
+async function updateOthersHandler(){
+
+  try{
+    let req = {
+      id: "",
+			name:"",
+			permission: "",
+			email: "",
+			department: "",
+			memo: "",
+    }
+    req = userInfo.value;
+    const response = await updateOtherUser(req);
+    dialogs.value['updateSuccess']=true
+  }
+  catch{
+
+  }
+
+}
+
+// onMounted(async () => {
+//   try {
+//     const response = await getAuthority();
+//     authority.value = response.data.authority;
+//     id.value = response.data.id;
+//     console.log(response);
+//   } catch {}
+// });
+
+
 </script>
 
 <template>
@@ -76,34 +189,34 @@ onMounted(() => {
         v-model:inputText="inputMapForSearch.id"
         labelName="아이디"
         style="max-width: 120px"
-        @keyup.enter="SearchHandler()"
+        @keyup.enter="searchHandler()"
       />
 
       <TextBlank
         v-model:inputText="inputMapForSearch.name"
         labelName="관리자명"
         style="max-width: 140px"
-        @keyup.enter="SearchHandler()"
+        @keyup.enter="searchHandler()"
       />
 
       <TextBlank
         v-model:inputText="inputMapForSearch.email"
         labelName="이메일"
         style="max-width: 200px"
-        @keyup.enter="SearchHandler()"
+        @keyup.enter="searchHandler()"
       />
 
       <TextSelection
         v-model:selected="inputMapForSearch.isUsed"
-        style="max-width: fit-content"
-        labelName="사용유뮤"
+        style="max-width: 140px"
+        labelName="활성화유뮤"
         :itemList="[
           { name: '선택', value: '' },
-          { name: '사용', value: 'TRUE' },
-          { name: '미사용', value: 'FALSE' },
+          { name: '활성화', value: 'TRUE' },
+          { name: '비활성화', value: 'FALSE' },
         ]"
       />
-      <SearchBtn class="fixed-h" @click="SearchHandler()" />
+      <SearchBtn class="fixed-h bg-black" @click="searchHandler()" />
     </v-container>
 
     <v-container class="action-container">
@@ -111,50 +224,124 @@ onMounted(() => {
         <span style="color: red">{{ totalLists }}</span>
         <span>건 검색</span>
       </v-container>
-      <v-btn
-        v-if="authority === 'MASTER'"
-        color="info"
-        class="fixed-h"
-        to="/register"
-        >등록</v-btn
-      >
+      <v-btn v-if="authority === 'MASTER'" color="info" class="fixed-h" to="/register">등록</v-btn>
+      <v-btn v-if="authority === 'MASTER'" color="red" class="fixed-h" style="font-weight:bold;" @click="showDialog">삭제</v-btn>
+          <v-dialog v-model="dialogs['delete']" max-width="500">
+            <v-card class="pa-2">
+              <v-card-title>
+                총 {{selected.length}}명의 관리자를 삭제하시겠습니까?
+              </v-card-title>
+            <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="deleteHandler(); dialogs['delete'] = false" to="/search">네</v-btn>
+            <v-btn @click="dialogs['delete'] = false">아니오</v-btn>
+          </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="dialogs['deleteMe']" max-width="500">
+            <v-card class="pa-2">
+              <v-card-title>
+                자신을 삭제할 수 없습니다.
+              </v-card-title>
+            <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="dialogs['deleteMe'] = false">확인</v-btn>
+          </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+          <v-dialog v-model="dialogs['nonSelect']" max-width="400">
+            <v-card class="pa-2">
+              <v-card-title>
+                1개 이상의 삭제할 계정을 골라주세요.
+              </v-card-title>
+            <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="dialogs['nonSelect'] = false">확인</v-btn>
+          </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="dialogs['deleteSuccess']" max-width="400">
+          <v-card class="pa-2">
+            <v-card-title>
+              삭제가 완료되었습니다.
+            </v-card-title>
+          <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="dialogs['deleteSuccess'] = false; searchHandler();">확인</v-btn>
+        </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+
       <TextSelection
         v-model:selected="inputMapForSearch.showList"
         :itemList="[
-          { name: '10개씩 보기', value: '10' },
-          { name: '20개씩 보기', value: '20' },
-          { name: '50개씩 보기', value: '50' },
-          { name: '100개씩 보기', value: '100' },
+          { name: '10개씩 보기', value: 10 },
+          { name: '20개씩 보기', value: 20 },
+          { name: '50개씩 보기', value: 50 },
+          { name: '100개씩 보기', value: 100 },
         ]"
         style="max-width: fit-content"
-        @update:modelValue="SearchHandler()"
+        @update:modelValue="searchHandler()"
       />
     </v-container>
   </v-container>
 
   <v-container v-if="isSearch" class="content-container">
     <v-row>
-      <v-col class="result-container">
-        <v-data-table-virtual
-          :items="tableItems"
-          :headers="headers"
-          :loading="loading"
-          loading-text="Loading... Please wait"
-        ></v-data-table-virtual>
+      <v-col>
+          <v-data-table-virtual
+            v-model="selected"
+            :items="tableItems"
+            :headers="headers"
+            :loading="loading"
+            loading-text="Loading... Please wait"
+            :show-select="authority==='MASTER'"
+            height="500"
+            fixed-header
+            bordered
+          >
+        <template v-slot:item.btn="row">
+          <v-btn v-if="authority === 'MASTER'" color="green" @click="loadUserInfo(row.item.id)">
+          수정
+          </v-btn></template>
+        </v-data-table-virtual>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="pagination-container">
-        <v-pagination
-          v-if="!loading"
-          v-model="inputMapForSearch.page"
-          :length="numOfPage"
-          :total-visible="8"
-          @click="SearchHandler(inputMapForSearch.page)"
-        ></v-pagination>
+    <v-pagination
+      v-if="!loading"
+      v-model="inputMapForSearch.page"
+      :length="numOfPage"
+      :total-visible="8"
+      @click="searchHandler(inputMapForSearch.page)"
+    ></v-pagination>
       </v-col>
     </v-row>
   </v-container>
+
+  <UserUpdateModal 
+    v-model:dialog="dialogs['userUpdate']"
+    v-model:userInfo="userInfo"
+    :authority="authority"
+    @updateOthers="updateOthersHandler"
+  />
+
+  <v-dialog v-model="dialogs['updateSuccess']" max-width="400">
+    <v-card class="pa-2">
+      <v-card-title>
+        수정이 완료되었습니다.
+      </v-card-title>
+    <v-card-actions>
+    <v-spacer></v-spacer>
+    <v-btn @click="dialogs['updateSuccess'] = false; searchHandler();">확인</v-btn>
+  </v-card-actions>
+  </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>
@@ -192,4 +379,5 @@ onMounted(() => {
   overflow-y: auto;
   max-height: 20vh;
 }
+
 </style>

@@ -67,16 +67,6 @@ const handleSubmit = async () => {
     } catch {
       //error 처리
     }
-
-    commonAxios.post("/register", requestBody).then((res) => {
-      if (res.status === 200) {
-        console.log("관리자 등록 성공");
-      } else if (res.status === 400) {
-        alert("관리자 등록 실패");
-      } else if (res.status === 500) {
-        console.log("서버 내부 오류입니다");
-      }
-    });
   }
 };
 </script>
