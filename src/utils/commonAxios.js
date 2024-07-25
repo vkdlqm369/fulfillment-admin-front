@@ -22,4 +22,17 @@ commonAxios.interceptors.response.use(
   }
 );
 
+commonAxios.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("accessToken");
+    if (token) {
+      config.headers["Authorization"] = `${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export default commonAxios;
