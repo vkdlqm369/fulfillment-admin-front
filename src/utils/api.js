@@ -55,4 +55,31 @@ export const getAuthority = async () => {
   }
 };
 
+export const deleteUser = async (requestBody) => {
+  try {
+    const res = await commonAxios.delete("/delete", {
+      data: {
+        ids : requestBody
+      }
+    })
+    ;
+    console.log("성공", res);
+    return res.data;
+  } catch (error) {
+    console.error("삭제 오류가 발생했습니다.", error.response);
+    throw error;
+  }
+}
+
+export const updateOtherUser = async (requestBody) => {
+  try {
+    const res = await commonAxios.patch("/update/others", requestBody);
+    console.log("성공", res);
+    return res.data;
+  } catch (error) {
+    console.error("다른 사람 정보 수정 오류가 발생했습니다.", error.response);
+    throw error;
+  }
+}
+
 // register는 통합 후 추가

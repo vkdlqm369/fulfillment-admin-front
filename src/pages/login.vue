@@ -36,10 +36,10 @@ const handleSubmit = async () => {
 
     try {
       const response = await postLogin(requestBody);
-      Cookies.set("accessToken", response.token);
+      Cookies.set("accessToken", response.data.token);
       commonAxios.defaults.headers.common[
         "Authorization"
-      ] = `${response.token}`;
+      ] = `${response.data.token}`;
       localStorage.setItem("authority", response.token);
       router.push("/search");
     } catch {
