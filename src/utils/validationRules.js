@@ -32,7 +32,7 @@ export const emailRules = [
     ) || "이메일 형식에 맞게 작성해주십시오",
 ];
 
-export const permissionRules = [
+export const authorityRules = [
   (value) => !!value || "권한 선택은 필수값입니다.",
 ];
 

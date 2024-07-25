@@ -25,7 +25,7 @@ const handleSubmit = async () => {
   ];
 
   const validationMessage = validateForm(fieldsWithRules);
-  if (validationMessage !== true) {
+  if (!validationMessage) {
     message.value = validationMessage;
     validationDialog.value = true;
   } else {
@@ -36,14 +36,14 @@ const handleSubmit = async () => {
 
     try {
       const response = await postLogin(requestBody);
-      Cookies.set("accessToken", response.token);
+      Cookies.set("accessToken", response.data.token);
       commonAxios.defaults.headers.common[
         "Authorization"
-      ] = `${response.token}`;
-      localStorage.setItem("authority", response.token);
+      ] = `${response.data.token}`;
       router.push("/search");
-    } catch {
-      //error 처리
+    } catch (error) {
+      message.value = error.data.message;
+      validationDialog.value = true;
     }
   }
 };
