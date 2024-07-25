@@ -76,7 +76,7 @@ const handleSubmit = async () => {
           :type="showPassword ? 'text' : 'password'"
           @click:append-inner="showPassword = !showPassword"
         ></v-text-field>
-        <v-btn type="submit" block>LOGIN</v-btn>
+        <v-btn type="submit" color="#5A72A0" block>LOGIN</v-btn>
       </v-form>
     </v-sheet>
     <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>

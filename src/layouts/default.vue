@@ -3,51 +3,62 @@ import { ref } from "vue";
 import commonAxios from "@/utils/commonAxios";
 import Cookies from "js-cookie";
 import router from "@/router";
+import ChooseDialog from "@/components/ChooseDialog.vue";
 
-const dialog = ref(false);
+const logoutDialog = ref(false);
 const authority = ref("");
+const drawer = ref(true);
+const rail = ref(false);
 
-const handleLogout = async (isLogout) => {
-  dialog.value = isLogout;
-
-  if (dialog.value) {
-    Cookies.remove("accessToken");
-    delete commonAxios.defaults.headers.common.Authorization;
-    dialog.value = false;
-    await router.push("/login");
-  }
+const handleLogout = async () => {
+  Cookies.remove("accessToken");
+  delete commonAxios.defaults.headers.common.Authorization;
+  await router.push("/login");
 };
-
-onMounted(() => {
-  authority.value = localStorage.getItem("authority");
-});
 </script>
 
 <template>
   <v-app>
-    <v-card class="overflow-y-auto">
+    <v-card>
       <v-layout>
-        <v-navigation-drawer class="pa-6" theme="dark" permanent>
+        <v-navigation-drawer
+          v-model="drawer"
+          :rail="rail"
+          color="#5A72A0"
+          style="height: 100vh; border: none; position: fixed"
+          permanent
+          @click="rail = false"
+        >
+          <v-btn
+            icon="mdi-table-of-contents"
+            class="mt-5 ma-3"
+            variant="text"
+            @click.stop="rail = !rail"
+            density="compact"
+            nav
+          ></v-btn>
           <v-img
+            v-if="!rail"
+            class="mx-5"
             src="https://wms.sbfulfillment.co.kr/wms/asset/images/logo_fbs_w.svg"
           ></v-img>
-          <v-list class="mt-10 text-caption">
+          <v-list class="mt-5" nav>
             <v-list-item
               class="rounded-lg mb-1"
-              prepend-icon="mdi-account-search small=true"
+              prepend-icon="mdi-account-search"
               title="관리자 조회"
               to="/search"
             ></v-list-item>
             <v-list-item
               class="rounded-lg"
-              prepend-icon="mdi-archive-search small=true"
+              prepend-icon="mdi-archive-search"
               title="관리자 접속 이력"
               to="/history"
             ></v-list-item>
             <v-list-item
               v-if="authority === 'MASTER'"
               class="rounded-lg"
-              prepend-icon="mdi-tag-check small=true"
+              prepend-icon="mdi-tag-check"
               title="관리자 승인 관리"
               to="/approve"
             ></v-list-item>
@@ -55,26 +66,27 @@ onMounted(() => {
 
           <template v-slot:append>
             <div class="ma-2">
-              <v-btn block @click="dialog = true"> Logout </v-btn>
+              <v-btn v-if="!rail" block @click="logoutDialog = true">
+                Logout
+              </v-btn>
+              <v-btn
+                v-if="rail"
+                rounded="lg"
+                icon="mdi-logout"
+                block
+                @click="logoutDialog = true"
+              ></v-btn>
             </div>
           </template>
         </v-navigation-drawer>
-        <v-main style="height: 100vh"><router-view /></v-main>
+        <v-main style="height: 100%"><router-view /></v-main>
       </v-layout>
 
-      <v-dialog v-model="dialog" max-width="400" persistent>
-        <v-card class="pa-2">
-          <v-card-title>
-            <v-icon left>mdi-logout</v-icon>
-            로그아웃 하시겠습니까?
-          </v-card-title>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn @click="handleLogout(false)">아니오</v-btn>
-            <v-btn @click="handleLogout(true)">네</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <ChooseDialog
+        v-model="logoutDialog"
+        message="로그아웃하시겠습니까?"
+        :handleClick="handleLogout"
+      />
     </v-card>
   </v-app>
 </template>
