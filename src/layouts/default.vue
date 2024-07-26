@@ -51,6 +51,12 @@ onMounted(() => {
               title="관리자 승인 관리"
               to="/approve"
             ></v-list-item>
+            <v-list-item
+              class="rounded-lg"
+              prepend-icon="mdi-account small=true"
+              title="MY PAGE"
+              :to="`/mypage/${(user && user.id) || 'defaultId'}`"
+            ></v-list-item>
           </v-list>
 
           <template v-slot:append>
