@@ -1,13 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import OrderCollectPopup from '../components/OrderCollectPopup.vue';
-import App from '../App.vue'
+import OrderCollect from '../components/OrderCollect.vue';
+import AiCustomerAnalytics from '../components/AiCustomerAnalytics.vue';
 
 const routes = [
   {
-    path: '/order-collect-popup',
-    name: 'OrderCollectPopup',
-    component: OrderCollectPopup
+    path: '/',
+    name: 'OrderCollect',
+    component: OrderCollect
   },
+  {
+    path: '/ai-customer-analytics',
+    name: 'AiCustomerAnalytics',
+    component: AiCustomerAnalytics
+  }
 ];
 
 const router = createRouter({
