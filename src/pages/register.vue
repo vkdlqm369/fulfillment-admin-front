@@ -13,6 +13,7 @@ import {
 import CheckDialog from "@/components/CheckDialog.vue";
 import ChooseDialog from "@/components/ChooseDialog.vue";
 import { postRegister } from "@/utils/api";
+import { search } from "@/";
 
 const id = ref("");
 const password = ref("");
@@ -31,8 +32,8 @@ const backDialog = ref(false);
 const message = ref("");
 
 const items = [
-  { title: "관리자", value: "ADMIN" },
-  { title: "마스터", value: "MASTER" },
+  { title: "일반 관리자", value: "ADMIN" },
+  { title: "통합 관리자", value: "MASTER" },
 ];
 
 // 해당 함수는 필수값 입력 여부 검증
@@ -281,7 +282,7 @@ const handleSubmit = async () => {
       :to="'/search'"
     >
     </ChooseDialog>
-    <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>
+    <CheckDialog :to="'/search'" v-model="validationDialog" :message="message"></CheckDialog>
   </v-app>
 </template>
 

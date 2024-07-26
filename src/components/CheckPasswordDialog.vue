@@ -22,7 +22,7 @@ const closeDialog = () => {
 </script>
 
 <template>
-  <v-dialog v-model="modelValue" max-width="500">
+  <v-dialog max-width="500">
     <v-container fluid class="fill-height py-0">
       <v-row justify="center" class="fill-height">
         <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height overflow-auto">
