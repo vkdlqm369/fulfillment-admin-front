@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main class="main-background">
-      <Header v-if="showHeader" />
+      <Header v-if="!isPopupRouteApp" />
       <router-view></router-view>
     </v-main>
   </v-app>
@@ -18,14 +18,13 @@ export default {
     Header
   },
   setup() {
-    const route = useRoute();
-    // 현재 경로가 '/ordercollectpopup'인지 확인
-    const showHeader = computed(() => route.path !== '/ordercollectpopup');
-    
-    return {
-      showHeader
-    };
-  }
+  },
+  computed: {
+    isPopupRouteApp() {
+      const popupRoutes = ["OrderCollectPopup"]; // 팝업 창에서만 노출할 라우트 이름
+      return popupRoutes.includes(this.$route.name);
+    },
+  },
 };
 
 </script>

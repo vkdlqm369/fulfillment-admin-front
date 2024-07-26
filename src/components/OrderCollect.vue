@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import Header from "./Header.vue";
 import NavigationBar from "./NavigationBar.vue";
 import NewTable from "./NewTable.vue";
 import Footer from "./Footer.vue";
@@ -38,7 +37,6 @@ import axios from "axios";
 export default {
   name: "OrderCollect",
   components: {
-    
     NavigationBar,
     NewTable,
     Pagination,
@@ -112,7 +110,6 @@ export default {
 
 <style scoped>
 .content-wrapper {
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
