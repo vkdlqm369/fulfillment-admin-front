@@ -1,32 +1,16 @@
 <script setup>
-
-
-const props = defineProps(['labelName', 'itemList'])
-const selected = defineModel('selected')
-
-</script>
-
-<script>
-export default {
-
-  data(){
-    return {
-      width:200,
-      height: 20,
-    }
-  }
-};
+const props = defineProps(["labelName", "itemList"]);
+const selected = defineModel("selected");
 </script>
 
 <template>
-    <v-select
+  <v-select
     v-model="selected"
-    :style="{width: width + 'px', height: height + 'px'}"
+    :style="{ width: '200px', height: '20px' }"
     :label="labelName"
     :items="itemList"
     item-title="name"
     item-value="value"
-    >
-   </v-select>
+  >
+  </v-select>
 </template>
-
