@@ -1,51 +1,84 @@
+<script setup>
+import { getMyInfo } from '@/utils/api';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import CheckPasswordDialog from '@/components/CheckPasswordDialog.vue';
+
+const user = ref({});
+const checkOpen = ref(false);
+const id = ref('jomg'); // 샘플
+const path1 = ref(true)
+
+const router = useRouter();
+
+const fetchUser = async (id) => {
+  try {
+    user.value = await getMyInfo(id);
+    console.log(user.value);
+  } catch (error) {
+    console.error("사용자 정보를 가져오는 중 에러 발생");
+  }
+};
+
+onMounted(() => {
+  console.log(id); // Log to verify
+  if (id.value) {
+    fetchUser(id.value);
+  }
+});
+
+
+
+const handlePasswordVerified = ( ) => {
+  if(path1.value) {
+    router.push('/updateProfile');
+  }else{
+    router.push('/updatePassword' );
+    console.log("dd")
+  }
+  
+};
+</script>
 
 <template>
   <v-app>
     <v-container fluid class="fill-height py-0">
-      <v-row justify="center" class="fill-height" >
+      <v-row justify="center" class="fill-height">
         <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height overflow-auto">
           <v-toolbar flat>
             <v-toolbar-title>My Page</v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
 
-          <v-card 
-          class="flex-grow-1 overflow-y-auto" style="height: 100vh;">
+          <v-card class="flex-grow-1 overflow-y-auto" style="height: 100vh;">
             <v-card-text>
-                <!-- 회원 정보 섹션 -->
-                <h3>회원정보</h3>
-                <v-container fluid>
-
-                  <v-row>
-                    <v-col cols="4">
-                      <v-list-subheader>
-                        <span>아이디</span>
-                      </v-list-subheader>
-                    </v-col>
-                    <v-col cols="8">
-                      <div>{{ id }}</div>
-                    </v-col>
-                  </v-row>
-                    
-                  <v-row>
-                    <v-col cols="4">
-                      <v-list-subheader>
-                        <span>관리자명</span>
-                      </v-list-subheader>
-                    </v-col>
-                    <v-col cols="8">
-                      <div>{{ name }}</div>
-                    </v-col>
-                  </v-row>
-
-                  <v-row>
+              <h3>회원정보</h3>
+              <v-container fluid>
+                <v-row>
+                  <v-col cols="4">
+                    <v-list-subheader><span>아이디</span></v-list-subheader>
+                  </v-col>
+                  <v-col cols="8">
+                    <div>{{ user.id }}</div>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="4">
+                    <v-list-subheader><span>관리자명</span></v-list-subheader>
+                  </v-col>
+                  <v-col cols="8">
+                    <div>{{ user.name }}</div>
+                  </v-col>
+                </v-row>
+                
+                <v-row>
                     <v-col cols="4">
                       <v-list-subheader>
                         <span>이메일</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ email }}</div>
+                      <div>{{ user.email }}</div>
                     </v-col>
                   </v-row>
 
@@ -56,7 +89,7 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ permission }}</div>
+                      <div>{{ user.permission }}</div>
                     </v-col>
                   </v-row>
 
@@ -67,7 +100,7 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ department }}</div>
+                      <div>{{ user.department }}</div>
                     </v-col>
                   </v-row>
 
@@ -78,7 +111,7 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ memo }}</div>
+                      <div>{{ user.memo }}</div>
                     </v-col>
                   </v-row>
 
@@ -89,7 +122,7 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ isUsed }}</div>
+                      <div>{{ user.isUsed }}</div>
                     </v-col>
                   </v-row>
 
@@ -100,7 +133,7 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ registrationDate }}</div>
+                      <div>{{ user.registrationDate }}</div>
                     </v-col>
                   </v-row>
 
@@ -111,7 +144,7 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ lastLoginTime }}</div>
+                      <div>{{ user.lastLoginTime }}</div>
                     </v-col>
                   </v-row>
 
@@ -122,50 +155,34 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ lastLoginIp }}</div>
+                      <div>{{ user.lastLoginIp }}</div>
                     </v-col>
                   </v-row>
-                </v-container>
-              
+              </v-container>
 
-                <v-row justify="center">
-                    <v-col cols="auto">
-                      <v-btn color="#546E7A" class="mt-2">회원 정보 수정</v-btn>
-                    </v-col>
-                    <v-col cols="auto">
-                      <v-btn color="#6D4C41" class="mt-2">비밀번호 수정</v-btn>
-                    </v-col>
-                  </v-row>
-
-
-
+              <v-row justify="center">
+                <v-col cols="auto">
+                  <v-btn @click="checkOpen=true; path1=true;" color="#546E7A" class="mt-2">회원 정보 수정</v-btn>
+                </v-col>
+                <v-col cols="auto">
+                  <v-btn @click="checkOpen=true; path1=false; console.log(path1)" color="#6D4C41" class="mt-2">비밀번호 수정</v-btn>
+                </v-col>
+              </v-row>
             </v-card-text>
           </v-card>
-
         </v-col>
       </v-row>
+      <CheckPasswordDialog :id="id" v-model="checkOpen" @password-verified="handlePasswordVerified"></CheckPasswordDialog>
     </v-container>
   </v-app>
 </template>
 
-  <script setup>
-  import { ref } from 'vue';
-  
-  const id = ref("user123");  // Placeholder
-  const name = ref("홍길동");  // Placeholder
-  const email = ref("example@123.com");  // Placeholder
-  const permission = ref("마스터");  // Placeholder
-  const registrationDate = ref("2024.11.11");  // Placeholder
-  const department = ref("플랫폼 개발팀");  // Placeholder
-  const memo = ref("안녕하세요");  // Placeholder
-  const isUsed = ref("Used");  // Placeholder
-  const lastLoginTime = ref("Wed, 17 Jul 2024 15:00:00");  // Placeholder
-  const lastLoginIp = ref("192.168.0.1");  // Placeholder
-  </script>
-  
-  <style scoped>
-  .white--text {
-    color: white !important;
-  }
-  </style>
+
+<style scoped>
+.white--text {
+  color: white !important;
+}
+</style>
+
+
   

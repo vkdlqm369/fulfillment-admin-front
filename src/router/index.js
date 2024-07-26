@@ -40,7 +40,7 @@ const routes = [
   },
 
   {
-    path: "/mypage",
+    path: '/mypage/:id',
     component: MyPage,
     meta: { layout: "default" },
   },
