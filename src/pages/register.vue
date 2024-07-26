@@ -8,9 +8,11 @@ import {
   nameRules,
   emailRules,
   permissionRules,
-  enteredForm,
   validateForm,
 } from "@/utils/validationRules";
+import CheckDialog from "@/components/CheckDialog.vue";
+import ChooseDialog from "@/components/ChooseDialog.vue";
+import { postRegister } from "@/utils/api";
 
 const id = ref("");
 const password = ref("");
@@ -20,18 +22,21 @@ const permission = ref("");
 const name = ref("");
 const department = ref("");
 const memo = ref("");
+
 const showPassword = ref(false);
 const showPasswordCheck = ref(false);
-const dialog = ref(false); //기본 상태 false, true면 열린 상태가 초기 화면
-const dialog2 = ref(false);
-const dialog3 = ref(false);
+
+const validationDialog = ref(false);
+const backDialog = ref(false);
+const message = ref("");
+
 const items = [
   { title: "관리자", value: "ADMIN" },
   { title: "마스터", value: "MASTER" },
 ];
 
 // 해당 함수는 필수값 입력 여부 검증
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const fieldsWithRules = [
     { value: id.value, rules: idRules },
     { value: password.value, rules: passwordRules },
@@ -42,8 +47,10 @@ const handleSubmit = () => {
     { value: email.value, rules: emailRules },
   ];
 
-  const message = validateForm(fieldsWithRules);
-  if (message !== true) {
+  const validationMessage = validateForm(fieldsWithRules);
+  if (validationMessage !== true) {
+    message.value = validationMessage;
+    validationDialog.value = true;
   } else {
     const requestBody = {
       id: id.value,
@@ -55,15 +62,11 @@ const handleSubmit = () => {
       memo: memo.value,
     };
 
-    commonAxios.post("/register", requestBody).then((res) => {
-      if (res.status === 200) {
-        console.log("관리자 등록 성공");
-      } else if (res.status === 400) {
-        alert("관리자 등록 실패");
-      } else if (res.status === 500) {
-        console.log("서버 내부 오류입니다");
-      }
-    });
+    try {
+      const response = await postRegister(requestBody);
+    } catch {
+      //error 처리
+    }
   }
 };
 </script>
@@ -83,30 +86,20 @@ const handleSubmit = () => {
             <v-spacer></v-spacer>
             <template v-slot:append>
               <div class="ma-2">
-                <v-btn color="blue" block @click="dialog = true">
+                <v-btn color="blue" block @click="backDialog = true">
                   목록으로
                 </v-btn>
               </div>
             </template>
-            <v-dialog v-model="dialog" max-width="400" persistent>
-              <v-card class="pa-2">
-                <v-card-title> 목록으로 이동하시겠습니까? </v-card-title>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn @click="dialog = true" to="/search">네</v-btn>
-                  <v-btn @click="dialog = false">아니오</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
           </v-toolbar>
 
           <v-card class="flex-grow-1 overflow-y-auto" style="height: 100vh">
             <v-card-text>
               <v-form
+                fast-fail
                 ref="form"
-                v-model="valid"
                 class="form-style"
-                @submit.prevent
+                @submit.prevent="handleSubmit"
               >
                 <!-- 기본정보 섹션 -->
                 <h3>기본정보</h3>
@@ -176,7 +169,7 @@ const handleSubmit = () => {
                           showPasswordCheck = !showPasswordCheck
                         "
                         v-model="confirmPassword"
-                        :rules="confirmPasswordRules"
+                        :rules="confirmPasswordRules(confirmPassword)"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -270,45 +263,9 @@ const handleSubmit = () => {
                   <!-- 등록 버튼 -->
                   <v-row>
                     <v-col cols="12">
-                      <v-btn
-                        color="primary"
-                        class="mt-4"
-                        block
-                        @click="handleSubmit"
+                      <v-btn type="submit" color="primary" class="mt-4" block
                         >등록</v-btn
                       >
-
-                      <v-dialog v-model="dialog2" max-width="400" persistent>
-                        <v-card class="pa-2">
-                          <v-card-title>
-                            <v-icon
-                              color="error"
-                              icon="mdi-alert-circle"
-                            ></v-icon>
-                            채우지 않은 필수값이 있습니다.
-                          </v-card-title>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn @click="dialog2 = false">확인</v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-
-                      <v-dialog v-model="dialog3" max-width="450" persistent>
-                        <v-card class="pa-2">
-                          <v-card-title>
-                            <v-icon
-                              color="error"
-                              icon="mdi-alert-circle"
-                            ></v-icon>
-                            필수값 조건을 다시 확인해주십시오
-                          </v-card-title>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn @click="dialog3 = false">확인</v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -318,6 +275,13 @@ const handleSubmit = () => {
         </v-col>
       </v-row>
     </v-container>
+    <ChooseDialog
+      v-model="backDialog"
+      message="목록으로 이동하시겠습니까?"
+      :to="'/search'"
+    >
+    </ChooseDialog>
+    <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>
   </v-app>
 </template>
 
