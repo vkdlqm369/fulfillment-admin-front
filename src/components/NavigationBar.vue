@@ -1,4 +1,5 @@
 <template>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <div>
     <div class="filters">
       <div class="date-picker">
@@ -114,7 +115,9 @@ async function openPopupWindow() {
   console.log("openPopupWindow called");
   if (startDate.value && endDate.value) {
     // 팝업 창 먼저 열기
-    const popup = window.open('/order-collect-popup', '_blank', 'width=600,height=700');
+    const popup = window.open('/order-collect-popup', '_blank', 'width=600,height=700,overflow =hidden');
+
+    
 
     // REST API 요청을 보낼 URL
     const sellerNo = 2644; // 실제 sellerNo로 변경
@@ -165,37 +168,46 @@ onMounted(() => {
 </script>
 
 <style scoped>
-@import "@/assets/button.css";
+@import "@/assets/css/pretendard.css";
 
 /* 수집기간 박스 */
 .filters {
   display: flex;
   align-items: center;
-  padding: 15px;
+  padding: 20px;
   background-color: #ffffff;
-  border-radius: 5px;
-  gap: 40px; /*날짜 선택, 주문 버튼 */
-  border: 2px solid #000;
+  border-radius: 12px; /* 반경을 추가하여 더 부드럽게 만듦 */
+  gap: 20px; /* 날짜 선택과 버튼 사이의 간격을 조정 */
+  border: 1px solid #e0e0e0; /* 부드러운 테두리 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 박스에 그림자 추가 */
+  font-family: 'Pretendard-Regular', sans-serif;
+  justify-content: center; /* 전체적인 정렬을 중앙으로 이동 */
 }
 
 /* datepicker 스타일 */
 .date-picker {
   display: flex;
   align-items: center;
+  gap: 10px; /* 라벨과 입력 필드 사이의 간격 조정 */
 }
 
-/* datepicker 라벨 스타일 */
 .date-picker label {
-  margin-right: 50px;
-  font-weight: bold;
-  color: black;
   display: flex;
   align-items: center;
+  font-weight: bold;
+  color: black;
+  margin-right: 10px;
+}
+
+.date-picker label i {
+  margin-left: 5px; /* 아이콘과 텍스트 사이의 간격 조정 */
+  color: #2484C6; /* 아이콘 색상 */
 }
 
 .date-inputs {
   display: flex;
   align-items: center;
+  gap: 10px; /* 입력 필드와 구분자 사이의 간격 조정 */
 }
 
 .date-picker span {
@@ -212,22 +224,20 @@ onMounted(() => {
 .datepicker-wrapper i {
   position: absolute;
   left: 10px;
-  color: #000;
+  color: #2484C6; /* 아이콘 색상 */
 }
 
-/* datepicker 입력 필드 스타일 */
 .datepicker-input {
-  padding: 5px 5px 5px 25px; /* 아이콘 공간 확보 */
-  border: 2px solid #000;
-  border-radius: 5px;
+  padding: 8px 12px; /* 입력 필드의 패딩 조정 */
+  border: 1px solid #e0e0e0; /* 부드러운 테두리 */
+  border-radius: 8px; /* 반경을 추가하여 더 부드럽게 만듭니다 */
   background-color: white;
   color: black;
   width: 150px;
   box-sizing: border-box;
-  display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
+  text-align: left; /* 입력 필드 텍스트를 왼쪽 정렬 */
+  padding-left: 39px; /* 아이콘 공간 확보 */
+  padding-top: 10px; /* 아이콘 공간 확보 */
   cursor: pointer;
 }
 
@@ -239,16 +249,42 @@ onMounted(() => {
 .buttons {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px; /* 버튼 사이의 간격을 조정합니다 */
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 10px 20px; /* 버튼 패딩 조정 */
+  background-color: #2484C6; /* 버튼 배경색 */
+  color: #ffffff; /* 버튼 텍스트 색 */
+  border: 1px solid #e0e0e0; /* 부드러운 테두리 */
+  border-radius: 8px; /* 버튼의 모서리를 둥글게 만듭니다 */
+  font-family: 'Pretendard-SemiBold', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #1e6fa1; /* 호버 시 버튼 배경색 */
+  transform: translateY(-2px); /* 호버 시 버튼 이동 효과 */
+}
+
+.btn:active {
+  background-color: #195a7e; /* 클릭 시 버튼 배경색 */
+  transform: translateY(0); /* 클릭 시 버튼 이동 효과 제거 */
 }
 
 .btn i {
-  margin-right: 5px;
+  margin-right: 8px; /* 아이콘과 텍스트 사이의 간격 조정 */
+}
+
+.btn-collectOrders i::before {
+  content: "\f07a"; /* FontAwesome 쇼핑카트 아이콘 */
+}
+
+.btn-refreshPage i::before {
+  content: "\f2f1"; /* FontAwesome 새로고침 아이콘 */
 }
 </style>

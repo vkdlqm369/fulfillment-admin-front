@@ -19,22 +19,32 @@ function closePopup() {
 </script>
 
 <style scoped>
+@import '@/assets/css/pretendard.css';
+
 .popup-close-button {
   text-align: center;
   margin-top: 20px;
 }
 
 button {
-  padding: 5px 15px;
-  border: 2px solid #000; /* 테두리 추가 */
-  border-radius: 5px;
-  background-color: white;
-  color: black;
+  padding: 10px 20px; /* 패딩 조정 */
+  border: none; /* 테두리 제거 */
+  border-radius: 8px; /* 둥근 모서리 */
+  background-color: #2484C6; /* 버튼 배경색 */
+  color: white; /* 버튼 텍스트 색 */
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px; /* 폰트 크기 조정 */
+  font-family: 'Pretendard-SemiBold', sans-serif;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
-  background-color: #f0f0f0;
+  background-color: #1e6fa1; /* 호버 시 버튼 배경색 */
+  transform: translateY(-2px); /* 호버 시 버튼 이동 효과 */
+}
+
+button:active {
+  background-color: #195a7e; /* 클릭 시 버튼 배경색 */
+  transform: translateY(0); /* 클릭 시 버튼 이동 효과 제거 */
 }
 </style>

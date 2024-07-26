@@ -1,12 +1,14 @@
 <template>
   <div class="header">
-    <!--상단 헤드 영역-->
-    <h4 class="header-text">타다닥 주문수집</h4>
-    <p>
-      <router-link to="/">메인 페이지</router-link>
-      <router-link to="/ai-customer-analytics">AI 주문 분석</router-link>
-    </p>
-
+    <!-- 상단 헤드 영역 -->
+    <div class="header-left">
+      <img
+        src="/src/assets/sabangnet_logo.png"
+        alt="Sabangnet Logo"
+        class="header-logo"
+      />
+      <h4 class="header-text">타다닥 주문수집</h4>
+    </div>
     <div class="header-buttons">
       <button @click="goToMainPage">메인 페이지</button>
       <button @click="goToAICustomerAnalytics">AI 주문 분석</button>
@@ -16,48 +18,65 @@
 
 <script>
 export default {
-  name: 'Header',
+  name: "Header",
   methods: {
     goToMainPage() {
-      this.$router.push('/');
+      this.$router.push("/");
     },
     goToAICustomerAnalytics() {
-      this.$router.push('/ai-customer-analytics');
-    }
-  }
+      this.$router.push("/ai-customer-analytics");
+    },
+  },
 };
 </script>
 
 <style scoped>
 .header {
-  padding: 10px 20px;
-  background-color: #2c3e50;
-  margin-bottom: 13px;
-  border-radius: 5px;
-  border: 2px solid #000;
+  padding: 15px 20px;
+  background-color: #ffffff;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.header-logo {
+  width: 1.5em; 
+  height: 1.5em; 
+  margin-right: 10px;
 }
 
 .header-text {
-  color: white;
+  color: #2484c6;
   margin: 0;
-  text-align: left;
+  font-size: 1.5em;
+  font-family: "Pretendard-SemiBold", sans-serif;
 }
 
-.header-buttons {
-  margin-top: 10px;
+.header-left {
+  display: flex;
+  align-items: center;
 }
 
 .header-buttons button {
   margin-right: 10px;
   padding: 10px 20px;
-  background-color: #3498db;
+  background-color: #2484c6;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  font-family: "Pretendard-SemiBold", sans-serif;
 }
 
 .header-buttons button:hover {
   background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.header-buttons button:active {
+  background-color: #1f6391;
 }
 </style>

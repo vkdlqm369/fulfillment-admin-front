@@ -1,6 +1,5 @@
 <template>
   <div :class="['content-wrapper', { 'popup-active': isPopupRoute }]">
-    <Header v-if="!isPopupRoute" />
     <NavigationBar
       v-if="!isPopupRoute"
       @openPopup="openPopup"
@@ -12,6 +11,7 @@
       :totalPages="totalPages"
       :currentPage="currentPage"
     />
+    </div>
     <div class="footer-pagination-wrapper" v-if="!isPopupRoute">
       <div class="pagination-wrapper">
         <Pagination
@@ -24,7 +24,7 @@
         <Footer />
       </div>
     </div>
-  </div>
+  
 </template>
 
 <script>
@@ -135,7 +135,6 @@ export default {
 
 .popup-content {
   justify-content: flex-start;
-  padding: 40px;
 }
 
 .popup-active {

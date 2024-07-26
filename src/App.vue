@@ -1,11 +1,7 @@
 <template>
   <v-app>
     <v-main class="main-background">
-      <Header />
-      <v-container>
-        <router-link to="/">메인 페이지</router-link>
-        <router-link to="/ai-customer-analytics">AI 주문 분석</router-link>
-      </v-container>
+      <Header v-if="showHeader" />
       <router-view></router-view>
     </v-main>
   </v-app>
@@ -13,13 +9,25 @@
 
 <script>
 import Header from "./components/Header.vue";
+import { useRoute } from 'vue-router';
+import { computed } from 'vue'; 
 
 export default {
   name: "App",
   components: {
     Header
+  },
+  setup() {
+    const route = useRoute();
+    // 현재 경로가 '/ordercollectpopup'인지 확인
+    const showHeader = computed(() => route.path !== '/ordercollectpopup');
+    
+    return {
+      showHeader
+    };
   }
 };
+
 </script>
 
 <style>
