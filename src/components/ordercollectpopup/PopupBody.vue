@@ -3,7 +3,7 @@
     <!-- v-for를 사용하여 visibleOrders 배열의 각 주문 항목을 반복적으로 렌더링 -->
     <div v-for="(order, index) in visibleOrders" :key="index" class="order-item">
       <!-- 각 주문의 번호와 주문 번호를 화면에 표시 -->
-      <span class="order-number">{{ index + 1 }}번째 주문 {{ order.orderNo }}</span>
+      <span class="order-number">[{{ index + 1 }}번째 주문] {{ order.orderNo }}</span>
       <!-- order.success가 true면 '성공', false면 '실패'로 텍스트를 표시하고, 이에 따라 CSS 클래스도 변경 -->
       <span :class="{ success: order.success, failure: !order.success }">
         {{ order.success ? ' 성공' : ' 실패' }}

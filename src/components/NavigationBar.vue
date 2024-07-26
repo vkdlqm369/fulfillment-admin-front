@@ -1,5 +1,5 @@
 <template>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <div>
     <div class="filters">
       <div class="date-picker">
@@ -9,7 +9,7 @@
           <div class="datepicker-wrapper">
             <i class="fas fa-calendar-alt"></i>
             <flat-pickr
-              v-model="startDate"
+              v-model="dates.startDate"
               :config="startConfig"
               placeholder="시작일"
               class="datepicker-input"
@@ -21,7 +21,7 @@
           <div class="datepicker-wrapper">
             <i class="fas fa-calendar-alt"></i>
             <flat-pickr
-              v-model="endDate"
+              v-model="dates.endDate"
               :config="endConfig"
               placeholder="종료일"
               class="datepicker-input"
@@ -47,16 +47,18 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, reactive, watch, onMounted } from "vue";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import { useAxios } from "@vueuse/integrations/useAxios";
 import NewTable from "./NewTable.vue";
 
-const emit = defineEmits(["openPopup", "refreshPage"]);
+const emit = defineEmits(["refreshPage"]);
 
-const startDate = ref(getSavedDate("startDate"));
-const endDate = ref(getSavedDate("endDate"));
+const dates = reactive({
+  startDate: getSavedDate("startDate"),
+  endDate: getSavedDate("endDate"),
+});
 
 const startConfig = {
   dateFormat: "Y-m-d",
@@ -64,36 +66,33 @@ const startConfig = {
   onClose: updateStartDate,
 };
 
-const endConfig = {
+const endConfig = reactive({
   dateFormat: "Y-m-d",
   allowInput: false,
-  minDate: startDate.value,
+  minDate: dates.startDate,
   onClose: updateEndDate,
-};
-
-watch(startDate, (newDate) => {
-  endConfig.minDate = newDate;
-  if (endDate.value && new Date(endDate.value) < new Date(newDate)) {
-    endDate.value = newDate; // 시작일 변경 시 종료일이 시작일 이전이면 초기화
-  }
-  if (endDatePicker.value) {
-    endDatePicker.value.flatpickr.set("minDate", newDate);
-  }
 });
 
-function updateStartDate() {
-  saveDate("startDate", startDate.value);
-  endConfig.minDate = startDate.value; // 시작일 변경 시 minDate 업데이트
-  if (endDate.value && new Date(endDate.value) < new Date(startDate.value)) {
-    endDate.value = null; // 시작일을 변경할 때 종료일 초기화
+watch(
+  () => dates.startDate,
+  (newDate) => {
+    endConfig.minDate = newDate;
+    if (dates.endDate && new Date(dates.endDate) < new Date(newDate)) {
+      dates.endDate = newDate; // 시작일 변경 시 종료일이 시작일 이전이면 초기화
+    }
   }
-  if (endDatePicker.value) {
-    endDatePicker.value.flatpickr.set("minDate", startDate.value);
+);
+
+function updateStartDate() {
+  saveDate("startDate", dates.startDate);
+  endConfig.minDate = dates.startDate; // 시작일 변경 시 minDate 업데이트
+  if (dates.endDate && new Date(dates.endDate) < new Date(dates.startDate)) {
+    dates.endDate = null; // 시작일을 변경할 때 종료일 초기화
   }
 }
 
 function updateEndDate() {
-  saveDate("endDate", endDate.value); // 종료일이 선택될 때 호출 endDate 저장
+  saveDate("endDate", dates.endDate); // 종료일이 선택될 때 호출 endDate 저장
 }
 
 function saveDate(key, date) {
@@ -113,11 +112,9 @@ function formatDate(date) {
 async function openPopupWindow() {
   // 시작일과 종료일이 설정되어 있는지 확인
   console.log("openPopupWindow called");
-  if (startDate.value && endDate.value) {
+  if (dates.startDate && dates.endDate) {
     // 팝업 창 먼저 열기
-    const popup = window.open('/order-collect-popup', '_blank', 'width=600,height=700,overflow =hidden');
-
-    
+    const popup = window.open('/order-collect-popup', '_blank', 'width=600,height=700,overflow=hidden');
 
     // REST API 요청을 보낼 URL
     const sellerNo = 2644; // 실제 sellerNo로 변경
@@ -126,8 +123,8 @@ async function openPopupWindow() {
 
     // 요청 매개변수 설정
     const params = {
-      startDate: formatDate(startDate.value),
-      endDate: formatDate(endDate.value),
+      startDate: formatDate(dates.startDate),
+      endDate: formatDate(dates.endDate),
       status: status,
     };
 
@@ -158,11 +155,11 @@ const startDatePicker = ref(null);
 const endDatePicker = ref(null);
 
 onMounted(() => {
-  if (startDatePicker.value && startDate.value) {
-    startDatePicker.value.flatpickr.setDate(startDate.value);
+  if (startDatePicker.value && dates.startDate) {
+    startDatePicker.value.flatpickr.setDate(dates.startDate);
   }
-  if (endDatePicker.value && endDate.value) {
-    endDatePicker.value.flatpickr.setDate(endDate.value);
+  if (endDatePicker.value && dates.endDate) {
+    endDatePicker.value.flatpickr.setDate(dates.endDate);
   }
 });
 </script>
