@@ -2,8 +2,6 @@
 import TextBlank from "../components/TextBlank.vue";
 import TextSelection from "../components/TextSelection.vue";
 import SearchBtn from "../components/SearchBtn.vue";
-import commonAxios from "@/utils/commonAxios";
-import { watch } from "vue";
 import { getHistory } from "@/utils/api";
 import { removeT } from "@/utils/TimeFormat"
 import router from "@/router";
@@ -60,8 +58,9 @@ async function searchHandler (page = 1) {
       history.loginTime = removeT(history.loginTime)
 
     numOfPage.value = response.data.totalPages;
-  } catch {
-    //error 처리
+  } catch (error) {
+    message.value = error.data.message;
+    validationDialog.value = true;
   }
  
  loading.value = false;
@@ -71,17 +70,18 @@ async function searchHandler (page = 1) {
 </script>
 
 <template>
-  <v-container>
-    <h1 style="margin: 15px" class="content-container">
-      관리자 접속 이력 조회
-    </h1>
-    <v-container class="search-container">
-      <TextBlank
-        v-model:inputText="inputMapForSearch.id"
-        labelName="아이디"
-        style="max-width: 200px"
-        @keyup.enter="searchHandler()"
-      />
+  <v-container style="min-height: 100vh">
+    <v-container>
+      <h1 style="margin: 15px" class="content-container">
+        관리자 접속 이력 조회
+      </h1>
+      <v-container class="search-container">
+        <TextBlank
+          v-model:inputText="inputMapForSearch.id"
+          labelName="아이디"
+          style="max-width: 200px"
+          @keyup.enter="searchHandler()"
+        />
 
       <TextBlank
         v-model:inputText="inputMapForSearch.name"
@@ -114,8 +114,8 @@ async function searchHandler (page = 1) {
 
   <v-container v-if="isSearch" class="content-container">
     <v-row>
-      <v-col>
-        <v-data-table-virtual 
+      <v-col class="result-container">
+        <v-data-table-virtual  
             :items="tableItems"
             :headers="headers"
             :loading="loading" 
@@ -137,6 +137,8 @@ async function searchHandler (page = 1) {
       </v-col>
     </v-row>
   </v-container>
+</v-container>
+  
 </template>
 
 <style scoped>

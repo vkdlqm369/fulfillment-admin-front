@@ -4,10 +4,12 @@ import TextSelection from "../components/TextSelection.vue";
 import SearchBtn from "../components/SearchBtn.vue";
 import UserUpdateModal from "../components/UserUpdateModal.vue";
 import CheckDialog from "../components/CheckDialog.vue";
-import { getSearch, getAuthority, deleteUser, updateOtherUser } from "@/utils/api";
+import ChooseDialog from "@/components/ChooseDialog.vue";
+import { getSearch, getAuthority, deleteUser, updateOtherUser, patchApprove } from "@/utils/api";
 import { removeT } from "@/utils/TimeFormat"
 import { onMounted, computed } from "vue";
 import router from "@/router/index";
+
 
 const tableItems = ref([]);
 
@@ -29,7 +31,7 @@ const headers = [
   { title: "최종로그인", value: "lastLoginTime", width: "180px", headerProps: headerProps },
   { title: "최종로그인 IP", value: "lastLoginIp", width: "120px", headerProps: headerProps },
   { title: "활성화유무", value: "isUsed", width: "100px", headerProps: headerProps },
-  {title: "", value: "btn", width: "30px", headerProps: headerProps}
+  { title: "", value: "btn", width: "30px", headerProps: headerProps}
 ];
 
 const inputMapForSearch = ref({
@@ -47,8 +49,8 @@ const numOfPage = ref(0);
 const loading = ref(false);
 
 // merge시 데이터 삭제
-const authority = ref('MASTER');
-const id = ref('jomg');
+const authority = ref('');
+const id = ref('');
 const userInfo = ref({
          id: "jomg",
 			   name:"김예린",
@@ -63,16 +65,24 @@ const userInfo = ref({
 })
 // merge시 데이터 삭제
 
-
 const selected = ref([]);
 
-const dialogs = ref([
-  {'delete': false},
-  {'deleteMe': false},
-  {'nonSelect': false},
-  {'userUpdate': false},
-  {'deleteSuccess': false},
-  {'updateSuccess': false}
+const deleteDialogs = ref([
+  { delete: false },
+  { deleteMe: false },
+  { nonSelect: false },
+  { deleteSuccess: false}
+]);
+
+const approveDialogs = ref([
+  { approve: false },
+  { alreadyApproved: false },
+  { nonSelect: false },
+]);
+
+const updateDialogs = ref([
+  { userUpdate: false },
+  { updateSuccess: false},
 ])
 
 function isMaster(){
@@ -82,21 +92,21 @@ function isMaster(){
 
 async function loadUserInfo(item){
 
-  if(id.value == item)
+  if(id.value == item){
     router.push('/mypage')
+  }
   else{
     try{
       // const response = await getMyInfo(item)
       // userInfo.value = response.data;
-      dialogs.value['userUpdate'] = true;
+      updateDialogs.value['userUpdate'] = true;
     }
     catch{
     }
-}
-  
+  }
 }
 
-async function searchHandler(page = 1){
+async function searchHandler(page = 1) {
   isSearch.value = true;
   inputMapForSearch.value.page = page;
   tableItems.value = [];
@@ -115,47 +125,68 @@ async function searchHandler(page = 1){
     tableItems.value = response.data.users;
     numOfPage.value = response.data.totalPages;
 
-    for(let user of tableItems.value){
-      user.isUsed = (user.isUsed) ? "활성화" : "비활성화"
-      user.lastLoginTime = removeT(user.lastLoginTime)
+    for (let user of tableItems.value) {
+      user.isUsed = user.isUsed ? "활성화" : "비활성화";
       user.permission = (user.permission === "MASTER") ? "통합관리자" : "일반관리자"
-      user.registrationDate = removeT(user.registrationDate)
+      user.lastLoginTime = removeT(user.lastLoginTime);
+      user.registrationDate = removeT(user.registrationDate);
     }
-  } catch {
-    //error 처리
+  } catch (error) {
+    message.value = error.data.message;
+    validationDialog.value = true;
   }
 
-  loading.value = false
+  loading.value = false;
   isSearch.value = true;
-  selected.value = []
+  selected.value = [];
 }
 
+// 삭제버튼
+function checkDeleteMe() {
+  return selected.value.indexOf(id.value) != -1;
+}
 
-function showDialog(){
-  if(selected.value.length == 0){
-    dialogs.value['nonSelect'] = true
-  }
-  else{
-    if(selected.value.indexOf(id.value) != -1){
-      dialogs.value['deleteMe'] = true;
-    }
-    else{
-      dialogs.value['delete'] = true;
-    }
-  }
-
+function showDeleteDialog() {
+  console.log("SDAfsdaf")
+  if (selected.value.length == 0) deleteDialogs.value["nonSelect"] = true;
+  else if (checkDeleteMe()) deleteDialogs.value["deleteMe"] = true;
+  // else if (checkAlreadyApproved())
+  //   deleteDialogs.value["alreadyApproved"] = true;
+  else deleteDialogs.value["delete"] = true;
 }
 
 async function deleteHandler(){
 
  try {
     const response = await deleteUser({data:{ids:selected.value}});
-    dialogs.value['deleteSuccess'] = true
+    deleteDialogs.value['deleteSuccess'] = true
   } catch {
     //error 처리
   }
 }
 
+// 승인버튼
+function checkAlreadyApproved() {
+  return selected.value.some((id) => {
+    const selectedItem = tableItems.value.find((item) => item.id === id);
+    return selectedItem && selectedItem.isUsed === "활성화";
+  });
+}
+
+function showApproveDialog() {
+  if (selected.value.length == 0) approveDialogs.value["nonSelect"] = true;
+  else if (checkAlreadyApproved())
+    approveDialogs.value["alreadyApproved"] = true;
+  else approveDialogs.value["approve"] = true;
+}
+
+async function approveHandler() {
+  console.log(selected.value);
+  try {
+    const response = await patchApprove(selected.value);
+    searchHandler();
+  } catch {}
+}
 
 async function updateOthersHandler(){
 
@@ -170,7 +201,7 @@ async function updateOthersHandler(){
     }
     req = userInfo.value;
     const response = await updateOtherUser(req);
-    dialogs.value['updateSuccess']=true
+    updateDialogs.value['updateSuccess']=true
   }
   catch{
 
@@ -178,28 +209,27 @@ async function updateOthersHandler(){
 
 }
 
-// onMounted(async () => {
-//   try {
-//     const response = await getAuthority();
-//     authority.value = response.data.authority;
-//     id.value = response.data.id;
-//     console.log(response);
-//   } catch {}
-// });
-
-
+onMounted(async () => {
+  try {
+    const response = await getAuthority();
+    authority.value = response.data.authority;
+    id.value = response.data.id;
+    console.log(response);
+  } catch {}
+});
 </script>
 
 <template>
-  <v-container>
-    <h1 style="margin: 15px" class="content-container">관리자 조회</h1>
-    <v-container class="search-container">
-      <TextBlank
-        v-model:inputText="inputMapForSearch.id"
-        labelName="아이디"
-        style="max-width: 120px"
-        @keyup.enter="searchHandler()"
-      />
+  <v-container style="min-height: 100vh">
+    <v-container>
+      <h1 style="margin: 15px" class="content-container">관리자 조회</h1>
+      <v-container class="search-container">
+        <TextBlank
+          v-model:inputText="inputMapForSearch.id"
+          labelName="아이디"
+          style="max-width: 120px"
+          @keyup.enter="searchHandler()"
+        />
 
       <TextBlank
         v-model:inputText="inputMapForSearch.name"
@@ -233,57 +263,65 @@ async function updateOthersHandler(){
         <span style="color: red">{{ totalLists }}</span>
         <span>건 검색</span>
       </v-container>
-      <v-btn v-if="isMaster()" color="info" class="fixed-h" to="/register">등록</v-btn>
-      <v-btn v-if="isMaster()" color="red" class="fixed-h" style="font-weight:bold;" @click="showDialog">삭제</v-btn>
-          <v-dialog v-model="dialogs['delete']" max-width="500">
-            <v-card class="pa-2">
-              <v-card-title>
-                총 {{selected.length}}명의 관리자를 삭제하시겠습니까?
-              </v-card-title>
-            <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn @click="deleteHandler(); dialogs['delete'] = false" to="/search">네</v-btn>
-            <v-btn @click="dialogs['delete'] = false">아니오</v-btn>
-          </v-card-actions>
-          </v-card>
-        </v-dialog>
+      <v-btn 
+        v-if="isMaster()"
+        variant="elevated"
+        color="#5A72A0"
+        class="fixed-h rounded-lg" 
+        to="/register">관리자 등록</v-btn>
+        <v-btn
+          v-if="isMaster()"
+          variant="tonal"
+          color="#6EACDE"
+          class="fixed-h rounded-lg"
+          style="font-weight: bold"
+          @click="showApproveDialog"
+          >승인</v-btn
+        >
+      <v-btn 
+        v-if="isMaster()" 
+        variant="tonal"
+        class="fixed-h text-error rounded-lg" 
+        style="font-weight:bold;"
+        @click="showDeleteDialog">삭제</v-btn>
 
-        <v-dialog v-model="dialogs['deleteMe']" max-width="500">
-            <v-card class="pa-2">
-              <v-card-title>
-                자신을 삭제할 수 없습니다.
-              </v-card-title>
-            <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn @click="dialogs['deleteMe'] = false">확인</v-btn>
-          </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <ChooseDialog
+          v-model="deleteDialogs['delete']"
+          :message="`총 ${selected.length}명의 관리자를 삭제 하시겠습니까?`"
+          :handleClick="deleteHandler"
+        />
 
-          <v-dialog v-model="dialogs['nonSelect']" max-width="400">
-            <v-card class="pa-2">
-              <v-card-title>
-                1개 이상의 삭제할 계정을 골라주세요.
-              </v-card-title>
-            <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn @click="dialogs['nonSelect'] = false">확인</v-btn>
-          </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <CheckDialog
+          v-model="deleteDialogs['deleteMe']"
+          message="자신을 삭제할 수 없습니다."
+        />
 
-        <v-dialog v-model="dialogs['deleteSuccess']" max-width="400">
-          <v-card class="pa-2">
-            <v-card-title>
-              삭제가 완료되었습니다.
-            </v-card-title>
-          <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="dialogs['deleteSuccess'] = false; searchHandler();">확인</v-btn>
-        </v-card-actions>
-        </v-card>
-      </v-dialog>
+        <CheckDialog
+          v-model="deleteDialogs['nonSelect']"
+          message="1개 이상의 삭제할 계정을 골라주세요."
+        />
 
+        <ChooseDialog
+          v-model="approveDialogs['approve']"
+          :message="`총 ${selected.length}명의 관리자를 승인 하시겠습니까?`"
+          :handleClick="approveHandler"
+        />
+
+        <CheckDialog
+          v-model="approveDialogs['alreadyApproved']"
+          message="이미 승인된 계정은 선택할 수 없습니다."
+        />
+
+        <CheckDialog
+          v-model="approveDialogs['nonSelect']"
+          message="1개 이상의 승인할 계정을 골라주세요."
+        />
+
+        <CheckDialog
+          v-model="deleteDialogs['deleteSuccess']"
+          message="삭제가 완료되었습니다."
+          @close="searchHandler"
+        />
 
       <TextSelection
         v-model:selected="inputMapForSearch.showList"
@@ -293,7 +331,7 @@ async function updateOthersHandler(){
           { name: '50개씩 보기', value: 50 },
           { name: '100개씩 보기', value: 100 },
         ]"
-        style="max-width: fit-content"
+        style="min-width: fit-content; max-width: fit-content"
         @update:modelValue="searchHandler()"
       />
     </v-container>
@@ -309,9 +347,10 @@ async function updateOthersHandler(){
             :loading="loading"
             loading-text="Loading... Please wait"
             :show-select="isMaster()"
-            height="500"
+            height="60vh"
             fixed-header
-            bordered
+            hover
+            sticky
           >
         <template v-slot:item.btn="row">
           <v-btn v-if="isMaster()" color="green" @click="loadUserInfo(row.item.id)">
@@ -334,23 +373,20 @@ async function updateOthersHandler(){
   </v-container>
 
   <UserUpdateModal 
-    v-model:dialog="dialogs['userUpdate']"
+    v-model:dialog="updateDialogs['userUpdate']"
     v-model:userInfo="userInfo"
     :authority="authority"
     @updateOthers="updateOthersHandler"
   />
 
-  <v-dialog v-model="dialogs['updateSuccess']" max-width="400">
-    <v-card class="pa-2">
-      <v-card-title>
-        수정이 완료되었습니다.
-      </v-card-title>
-    <v-card-actions>
-    <v-spacer></v-spacer>
-    <v-btn @click="dialogs['updateSuccess'] = false; searchHandler();">확인</v-btn>
-  </v-card-actions>
-  </v-card>
-  </v-dialog>
+  <CheckDialog
+    v-model="updateDialogs['updateSuccess']"
+    message="수정이 완료되었습니다."
+    @close="searchHandler"
+  />
+
+  </v-container>
+
 </template>
 
 <style scoped>
@@ -372,7 +408,7 @@ async function updateOthersHandler(){
 }
 
 .fixed-h {
-  height: 55px;
+  height: 50px;
 }
 
 .min-w-max-c {
@@ -389,4 +425,7 @@ async function updateOthersHandler(){
   max-height: 20vh;
 }
 
+.selected-row {
+  background-color: #e3f2fd !important; /* 선택된 행의 배경색 */
+}
 </style>

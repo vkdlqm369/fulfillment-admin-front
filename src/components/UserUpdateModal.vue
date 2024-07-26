@@ -2,7 +2,7 @@
 import {  
   nameRules,
   emailRules,
-  permissionRules,
+  authorityRules,
   validateForm,  } from "@/utils/validationRules"
 
   const props = defineProps(['authority'])
