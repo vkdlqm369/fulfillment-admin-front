@@ -57,6 +57,12 @@ const routes = [
     meta: { layout: "default" },
   },
 
+  {
+    path: "/checkPassword",
+    component: checkPassword,
+    meta: { layout: "default" },
+  },
+
 
 ];
 
