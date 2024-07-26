@@ -5,16 +5,20 @@ import SearchBtn from "../components/SearchBtn.vue";
 import commonAxios from "@/utils/commonAxios";
 import { watch } from "vue";
 import { getHistory } from "@/utils/api";
+import { removeT } from "@/utils/TimeFormat"
+import router from "@/router";
+
+
 
 const tableItems = ref([]);
 
 const headers = [
-  { title: "로그인 일시", value: "loginTime" },
-  { title: "관리자명", value: "name" },
-  { title: "아이디", value: "ID" },
-  { title: "로그인 디바이스", value: "loginDevice" },
-  { title: "로그인 아이피", value: "loginIp" },
-];
+  { title : '로그인 일시', value: 'loginTime', width: "120px"},
+  { title : '관리자명', value: 'name', width: "80px"},
+  { title : '아이디', value: 'ID', width: "30px"},
+  { title : '로그인 디바이스', value: 'loginDevice', width: "500px"},
+  { title : '로그인 아이피', value: 'loginIp', width: "100px"}
+]
 
 const inputMapForSearch = ref({
   id: "",
@@ -28,7 +32,7 @@ const totalLists = ref(0);
 const numOfPage = ref(0);
 const loading = ref(false);
 
-const SearchHandler = async (page = 1) => {
+async function searchHandler (page = 1) {
   isSearch.value = true;
   inputMapForSearch.value.page = page;
   tableItems.value = [];
@@ -38,20 +42,32 @@ const SearchHandler = async (page = 1) => {
     params.append(key, inputMapForSearch.value[key]);
   }
   loading.value = true;
-  const response = await getHistory(params);
-  loading.value = false;
-  totalLists.value = response.totalLists;
-  tableItems.value = response.histories.map((histories) => {
-    return {
-      ID: histories.id,
-      loginDevice: histories.loginDevice,
-      loginIp: histories.loginIp,
-      loginTime: histories.loginTime,
-      name: histories.name,
-    };
-  });
-  numOfPage.value = response.totalPages;
+
+  try {
+    const response = await getHistory(params);
+    totalLists.value = response.data.totalLists;
+    tableItems.value = response.data.histories.map((histories) => {
+      return {
+        ID: histories.id,
+        loginDevice: histories.loginDevice,
+        loginIp: histories.loginIp,
+        loginTime: histories.loginTime,
+        name: histories.name,
+      };
+    });
+    
+    for(let history of tableItems.value)
+      history.loginTime = removeT(history.loginTime)
+
+    numOfPage.value = response.data.totalPages;
+  } catch {
+    //error 처리
+  }
+ 
+ loading.value = false;
+
 };
+
 </script>
 
 <template>
@@ -64,17 +80,17 @@ const SearchHandler = async (page = 1) => {
         v-model:inputText="inputMapForSearch.id"
         labelName="아이디"
         style="max-width: 200px"
-        @keyup.enter="SearchHandler()"
+        @keyup.enter="searchHandler()"
       />
 
       <TextBlank
         v-model:inputText="inputMapForSearch.name"
         labelName="관리자명"
         style="max-width: 200px"
-        @keyup.enter="SearchHandler()"
+        @keyup.enter="searchHandler()"
       />
 
-      <SearchBtn class="fixed-h" @click="SearchHandler()" />
+      <SearchBtn class="fixed-h" @click="searchHandler()" />
     </v-container>
 
     <v-container class="action-container">
@@ -91,19 +107,21 @@ const SearchHandler = async (page = 1) => {
           { name: '100개씩 보기', value: '100' },
         ]"
         style="max-width: fit-content"
-        @update:modelValue="SearchHandler()"
+        @update:modelValue="searchHandler()"
       />
     </v-container>
   </v-container>
 
   <v-container v-if="isSearch" class="content-container">
     <v-row>
-      <v-col class="result-container">
-        <v-data-table-virtual
-          :items="tableItems"
-          :headers="headers"
-          :loading="loading"
-          loading-text="Loading... Please wait"
+      <v-col>
+        <v-data-table-virtual 
+            :items="tableItems"
+            :headers="headers"
+            :loading="loading" 
+            loading-text="Loading... Please wait"
+            height="500"
+            fixed-header
         ></v-data-table-virtual>
       </v-col>
     </v-row>
@@ -114,7 +132,7 @@ const SearchHandler = async (page = 1) => {
           v-model="inputMapForSearch.page"
           :length="numOfPage"
           :total-visible="8"
-          @click="SearchHandler(inputMapForSearch.page)"
+          @click="searchHandler(inputMapForSearch.page)"
         ></v-pagination>
       </v-col>
     </v-row>
