@@ -9,15 +9,11 @@
 
 <script>
 import Header from "./components/Header.vue";
-import { useRoute } from 'vue-router';
-import { computed } from 'vue'; 
 
 export default {
   name: "App",
   components: {
     Header
-  },
-  setup() {
   },
   computed: {
     isPopupRouteApp() {

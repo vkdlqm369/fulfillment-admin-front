@@ -73,16 +73,6 @@ const endConfig = reactive({
   onClose: updateEndDate,
 });
 
-watch(
-  () => dates.startDate,
-  (newDate) => {
-    endConfig.minDate = newDate;
-    if (dates.endDate && new Date(dates.endDate) < new Date(newDate)) {
-      dates.endDate = newDate; // 시작일 변경 시 종료일이 시작일 이전이면 초기화
-    }
-  }
-);
-
 function updateStartDate() {
   saveDate("startDate", dates.startDate);
   endConfig.minDate = dates.startDate; // 시작일 변경 시 minDate 업데이트
