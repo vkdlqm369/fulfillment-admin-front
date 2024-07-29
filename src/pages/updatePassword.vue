@@ -122,6 +122,8 @@
                   required
                   v-model="confirmNewPassword"
                   :rules="confirmPasswordRules"
+                 @keyup.enter="submitForm"
+
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -142,6 +144,7 @@
         비밀번호 변경이 완료되었습니다
         로그인 페이지로 이동합니다."
         @close="handleDialogClose"
+        icon="mdi-check-bold"
       ></CheckDialog>
 
       <CheckDialog 

@@ -17,11 +17,6 @@ export const passwordRulesWithoutNorm = [
   (value) => !!value || "비밀번호는 필수값입니다.",
 ];
 
-export const confirmPasswordRules = (password) => [
-  (value) => !!value || "비밀번호 확인이 필요합니다",
-  (value) => value === password || "동일한 비밀번호를 입력해주세요.",
-];
-
 export const nameRules = [(value) => !!value || "관리자명은 필수값입니다."];
 
 export const emailRules = [
@@ -32,9 +27,11 @@ export const emailRules = [
     ) || "이메일 형식에 맞게 작성해주십시오",
 ];
 
-export const permissionRules = [
+export const authorityRules = [
   (value) => !!value || "권한 선택은 필수값입니다.",
 ];
+
+
 
 export const validateField = (value, rules) => {
   for (let rule of rules) {

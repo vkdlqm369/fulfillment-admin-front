@@ -1,27 +1,36 @@
 <script setup>
-import { getMyInfo } from '@/utils/api';
+import { getMyInfo, getAuthority } from '@/utils/api';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import CheckPasswordDialog from '@/components/CheckPasswordDialog.vue';
+import { convertAuthority, convertIsUsed, convertTime } from '@/utils/convertFormat';
 
 const user = ref({});
 const checkOpen = ref(false);
-const id = ref('jomg'); // 샘플
+const id = ref('');
+const authority = ref('')
 const path1 = ref(true)
 
 const router = useRouter();
 
 const fetchUser = async (id) => {
+  user.value = []
   try {
-    user.value = await getMyInfo(id);
-    console.log(user.value);
+    const response = await getMyInfo(id);
+    user.value = response.data
   } catch (error) {
     console.error("사용자 정보를 가져오는 중 에러 발생");
   }
 };
 
-onMounted(() => {
-  console.log(id); // Log to verify
+onMounted(async () => {
+
+    try {
+    const response = await getAuthority();
+    authority.value = response.data.authority;
+    id.value = response.data.id;
+  } catch {}
+
   if (id.value) {
     fetchUser(id.value);
   }
@@ -34,7 +43,6 @@ const handlePasswordVerified = ( ) => {
     router.push('/updateProfile');
   }else{
     router.push('/updatePassword' );
-    console.log("dd")
   }
   
 };
@@ -56,7 +64,7 @@ const handlePasswordVerified = ( ) => {
               <v-container fluid>
                 <v-row>
                   <v-col cols="4">
-                    <v-list-subheader><span>아이디</span></v-list-subheader>
+                    <span>아이디</span>
                   </v-col>
                   <v-col cols="8">
                     <div>{{ user.id }}</div>
@@ -64,7 +72,7 @@ const handlePasswordVerified = ( ) => {
                 </v-row>
                 <v-row>
                   <v-col cols="4">
-                    <v-list-subheader><span>관리자명</span></v-list-subheader>
+                    <span>관리자명</span>
                   </v-col>
                   <v-col cols="8">
                     <div>{{ user.name }}</div>
@@ -73,9 +81,9 @@ const handlePasswordVerified = ( ) => {
                 
                 <v-row>
                     <v-col cols="4">
-                      <v-list-subheader>
+                      
                         <span>이메일</span>
-                      </v-list-subheader>
+                      
                     </v-col>
                     <v-col cols="8">
                       <div>{{ user.email }}</div>
@@ -84,20 +92,20 @@ const handlePasswordVerified = ( ) => {
 
                   <v-row>
                     <v-col cols="4">
-                      <v-list-subheader>
+                      
                         <span>권한</span>
-                      </v-list-subheader>
+                      
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ user.permission }}</div>
+                      <div>{{ convertAuthority(user.authority) }}</div>
                     </v-col>
                   </v-row>
 
                   <v-row>
                     <v-col cols="4">
-                      <v-list-subheader>
+                      
                         <span>부서</span>
-                      </v-list-subheader>
+                      
                     </v-col>
                     <v-col cols="8">
                       <div>{{ user.department }}</div>
@@ -106,9 +114,9 @@ const handlePasswordVerified = ( ) => {
 
                   <v-row>
                     <v-col cols="4">
-                      <v-list-subheader>
+                      
                         <span>메모</span>
-                      </v-list-subheader>
+                      
                     </v-col>
                     <v-col cols="8">
                       <div>{{ user.memo }}</div>
@@ -117,42 +125,42 @@ const handlePasswordVerified = ( ) => {
 
                   <v-row>
                     <v-col cols="4">
-                      <v-list-subheader>
-                        <span>사용여부</span>
-                      </v-list-subheader>
+                      
+                        <span>활성화여부</span>
+                      
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ user.isUsed }}</div>
+                      <div>{{ convertIsUsed(user.isUsed) }}</div>
                     </v-col>
                   </v-row>
 
                   <v-row>
                     <v-col cols="4">
-                      <v-list-subheader>
+                      
                         <span>등록일</span>
-                      </v-list-subheader>
+                      
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ user.registrationDate }}</div>
+                      <div>{{ convertTime(user.registrationDate) }}</div>
                     </v-col>
                   </v-row>
 
                   <v-row>
                     <v-col cols="4">
-                      <v-list-subheader>
+                      
                         <span>최종 로그인 시간</span>
-                      </v-list-subheader>
+                      
                     </v-col>
                     <v-col cols="8">
-                      <div>{{ user.lastLoginTime }}</div>
+                      <div>{{ convertTime(user.lastLoginTime) }}</div>
                     </v-col>
                   </v-row>
 
                   <v-row>
                     <v-col cols="4">
-                      <v-list-subheader>
+                      
                         <span>최종 로그인 IP</span>
-                      </v-list-subheader>
+                      
                     </v-col>
                     <v-col cols="8">
                       <div>{{ user.lastLoginIp }}</div>
@@ -165,14 +173,14 @@ const handlePasswordVerified = ( ) => {
                   <v-btn @click="checkOpen=true; path1=true;" color="#546E7A" class="mt-2">회원 정보 수정</v-btn>
                 </v-col>
                 <v-col cols="auto">
-                  <v-btn @click="checkOpen=true; path1=false; console.log(path1)" color="#6D4C41" class="mt-2">비밀번호 수정</v-btn>
+                  <v-btn @click="checkOpen=true; path1=false;" color="#6D4C41" class="mt-2">비밀번호 수정</v-btn>
                 </v-col>
               </v-row>
             </v-card-text>
           </v-card>
         </v-col>
       </v-row>
-      <CheckPasswordDialog :id="id" v-model="checkOpen" @password-verified="handlePasswordVerified"></CheckPasswordDialog>
+      <CheckPasswordDialog v-model:checkOpen="checkOpen" :id="id" @password-verified="handlePasswordVerified"></CheckPasswordDialog>
     </v-container>
   </v-app>
 </template>
