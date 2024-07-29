@@ -28,11 +28,11 @@ const showPasswordCheck = ref(false);
 const validationDialog = ref(false);
 const backDialog = ref(false);
 const message = ref("");
-const registerDoneDialog = ref(false)
+const registerDoneDialog = ref(false);
 
 const confirmPasswordRules = [
-  value => value === password.value || '동일한 비밀번호를 입력해주세요.'
-]
+  (value) => value === password.value || "동일한 비밀번호를 입력해주세요.",
+];
 
 const items = [
   { title: "일반 관리자", value: "ADMIN" },
@@ -51,7 +51,7 @@ const handleSubmit = async () => {
     { value: email.value, rules: emailRules },
   ];
 
-const validationMessage = validateForm(fieldsWithRules);
+  const validationMessage = validateForm(fieldsWithRules);
   if (validationMessage !== true) {
     message.value = validationMessage;
     validationDialog.value = true;
@@ -69,7 +69,7 @@ const validationMessage = validateForm(fieldsWithRules);
     try {
       const response = await postRegister(requestBody);
       registerDoneDialog.value = true;
-    } catch(error) {
+    } catch (error) {
       message.value = error.data.message;
       validationDialog.value = true;
     }
@@ -287,10 +287,13 @@ const validationMessage = validateForm(fieldsWithRules);
       :to="'/search'"
     />
     <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>
-    <CheckDialog v-model="registerDoneDialog" 
-    message="
+    <CheckDialog
+      v-model="registerDoneDialog"
+      message="
     회원 등록이 완료되었습니다. 
-    관리자 조회 페이지로 이동합니다. " :to="'/search'"></CheckDialog>
+    관리자 조회 페이지로 이동합니다. "
+      :to="'/search'"
+    ></CheckDialog>
   </v-app>
 </template>
 
