@@ -1,24 +1,23 @@
 <script setup>
 import { ref } from "vue";
-import commonAxios from "@/utils/commonAxios";
 import {
   idRules,
   passwordRules,
-  confirmPasswordRules,
   nameRules,
   emailRules,
-  permissionRules,
+  authorityRules,
   validateForm,
 } from "@/utils/validationRules";
 import CheckDialog from "@/components/CheckDialog.vue";
 import ChooseDialog from "@/components/ChooseDialog.vue";
 import { postRegister } from "@/utils/api";
+import commonAxios from "@/utils/commonAxios";
 
 const id = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 const email = ref("");
-const permission = ref("");
+const authority = ref("");
 const name = ref("");
 const department = ref("");
 const memo = ref("");
@@ -29,10 +28,15 @@ const showPasswordCheck = ref(false);
 const validationDialog = ref(false);
 const backDialog = ref(false);
 const message = ref("");
+const registerDoneDialog = ref(false)
+
+const confirmPasswordRules = [
+  value => value === password.value || '동일한 비밀번호를 입력해주세요.'
+]
 
 const items = [
-  { title: "관리자", value: "ADMIN" },
-  { title: "마스터", value: "MASTER" },
+  { title: "일반 관리자", value: "ADMIN" },
+  { title: "통합 관리자", value: "MASTER" },
 ];
 
 // 해당 함수는 필수값 입력 여부 검증
@@ -42,12 +46,12 @@ const handleSubmit = async () => {
     { value: password.value, rules: passwordRules },
     {
       value: confirmPassword.value,
-      rules: confirmPasswordRules(password.value),
+      rules: confirmPasswordRules,
     },
     { value: email.value, rules: emailRules },
   ];
 
-  const validationMessage = validateForm(fieldsWithRules);
+const validationMessage = validateForm(fieldsWithRules);
   if (validationMessage !== true) {
     message.value = validationMessage;
     validationDialog.value = true;
@@ -57,15 +61,17 @@ const handleSubmit = async () => {
       password: password.value,
       name: name.value,
       email: email.value,
-      permission: permission.value,
+      authority: authority.value,
       department: department.value,
       memo: memo.value,
     };
 
     try {
       const response = await postRegister(requestBody);
-    } catch {
-      //error 처리
+      registerDoneDialog.value = true;
+    } catch(error) {
+      message.value = error.data.message;
+      validationDialog.value = true;
     }
   }
 };
@@ -169,7 +175,7 @@ const handleSubmit = async () => {
                           showPasswordCheck = !showPasswordCheck
                         "
                         v-model="confirmPassword"
-                        :rules="confirmPasswordRules(confirmPassword)"
+                        :rules="confirmPasswordRules"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -226,8 +232,8 @@ const handleSubmit = async () => {
                         density="compact"
                         hint="관리자 페이지 접근제한이 필요한 경우 관리자를 선택"
                         persistent-hint
-                        v-model="permission"
-                        :rules="permissionRules"
+                        v-model="authority"
+                        :rules="authorityRules"
                       ></v-select>
                     </v-col>
                   </v-row>
@@ -279,9 +285,12 @@ const handleSubmit = async () => {
       v-model="backDialog"
       message="목록으로 이동하시겠습니까?"
       :to="'/search'"
-    >
-    </ChooseDialog>
+    />
     <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>
+    <CheckDialog v-model="registerDoneDialog" 
+    message="
+    회원 등록이 완료되었습니다. 
+    관리자 조회 페이지로 이동합니다. " :to="'/search'"></CheckDialog>
   </v-app>
 </template>
 

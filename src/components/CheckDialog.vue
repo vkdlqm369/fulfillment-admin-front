@@ -1,7 +1,6 @@
-<script setup>
-
+nsole.log<script setup>
+const isOpen = defineModel("modelValue", { type: Boolean, default: false });
 const props = defineProps({
-  modelValue: Boolean,
   message: String,
   icon: {
     type: String,
@@ -11,25 +10,22 @@ const props = defineProps({
     type: String,
     default: "error",
   },
+  to: {
+    type: String,
+    default: "",
+  },
 });
 
-const emits = defineEmits(["update:modelValue"]);
-const isOpen = ref(props.modelValue);
+const emit = defineEmits(['close'])
 
-watch(
-  () => props.modelValue,
-  (newValue) => {
-    isOpen.value = newValue;
-  }
-);
-
-watch(isOpen, (newValue) => {
-  emits("update:modelValue", newValue);
-});
+const closeDialog = () => {
+  isOpen.value = false;
+  emit('close')
+};
 </script>
 
 <template>
-  <v-dialog v-model="isOpen" max-width="400" persistent>
+  <v-dialog v-model="isOpen" max-width="500" persistent>
     <v-card class="pa-2">
       <v-card-title>
         <v-responsive>
@@ -39,7 +35,7 @@ watch(isOpen, (newValue) => {
       </v-card-title>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="isOpen = false">확인</v-btn>
+        <v-btn @click="closeDialog" :to="to">확인</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -1,8 +1,9 @@
 <script setup>
+import { convertTime, convertIsUsed } from "@/utils/convertFormat"
 import {  
   nameRules,
   emailRules,
-  permissionRules,
+  authorityRules,
   validateForm,  } from "@/utils/validationRules"
 
   const props = defineProps(['authority'])
@@ -84,11 +85,12 @@ import {
                         <v-col cols="8">
                         <v-select   
                                 v-if="authority==='MASTER'"
-                                v-model="userInfo.permission"
+                                v-model="userInfo.authority"
                                 :items= "[
-                                            { name: '통합관리자', value: 'MASTER' },
-                                            { name: '일반관리자', value: 'ADMIN' }
+                                            { name: '통합 관리자', value: 'MASTER' },
+                                            { name: '일반 관리자', value: 'ADMIN' }
                                         ]"
+                                key="value"
                                 item-title="name"
                                 item-value="value"
                         ></v-select>
@@ -130,7 +132,7 @@ import {
                         </v-list-subheader>
                         </v-col>
                         <v-col cols="8">
-                        <div>{{ userInfo.isUsed }}</div>
+                        <div>{{ convertIsUsed(userInfo.isUsed) }}</div>
                         </v-col>
                     </v-row>
 
@@ -141,7 +143,7 @@ import {
                         </v-list-subheader>
                         </v-col>
                         <v-col cols="8">
-                        <div>{{ userInfo.registrationDate }}</div>
+                        <div>{{ convertTime(userInfo.registrationDate) }}</div>
                         </v-col>
                     </v-row>
 
@@ -152,7 +154,7 @@ import {
                         </v-list-subheader>
                         </v-col>
                         <v-col cols="8">
-                        <div>{{ userInfo.lastLoginTime }}</div>
+                        <div>{{ convertTime(userInfo.lastLoginTime) }}</div>
                         </v-col>
                     </v-row>
 
@@ -168,9 +170,8 @@ import {
                     </v-row>
                     </v-container>
 
-                    <v-container class="cc">
-
-                        <v-btn color="primary" class="mt-2" size="large"  @click="dialog=false; emit('updateOthers')">확인</v-btn>
+                    <v-container class="row-btn">
+                        <v-btn color="primary" class="mt-2" size="large"  @click="emit('updateOthers')">확인</v-btn>
                         <v-btn color="grey" class="mt-2" size="large"  @click="dialog=false">취소</v-btn>
                     </v-container>
 
@@ -185,7 +186,7 @@ import {
 
 <style scoped>
 
-.cc{
+.row-btn{
   display: flex;
   justify-content: center;
   gap: 15px;
