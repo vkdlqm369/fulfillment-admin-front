@@ -10,6 +10,7 @@ import MyPage from "@/pages/myPage.vue";
 import UpdateProfile from "@/pages/updateProfile.vue";
 import UpdatePassword from "@/pages/updatePassword.vue";
 import Cookies from "js-cookie";
+import { getAuthority } from "@/utils/api";
 
 const routes = [
   {
@@ -38,7 +39,7 @@ const routes = [
     meta: { layout: "default" },
   },
   {
-    path: '/mypage/:id',
+    path: "/mypage/:id",
     component: MyPage,
     meta: { layout: "default" },
   },
@@ -61,8 +62,9 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const accessToken = Cookies.get("accessToken");
+  const response = await getAuthority();
 
   if (accessToken) {
     if (to.path === "/" || to.path === "/login") {
@@ -79,6 +81,13 @@ router.beforeEach((to, from, next) => {
   if (!accessToken && to.path === "/") {
     next("/login"); // 비로그인 상태에서 / 접근 시 /login으로 리디렉션
     return;
+  }
+
+  if (response.data.authority === "ADMIN") {
+    if (to.path == "/register") {
+      next("/search");
+      return;
+    }
   }
 
   const layout = to.meta.layout || "default";
