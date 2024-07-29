@@ -90,7 +90,7 @@ const validationMessage = validateForm(fieldsWithRules);
           class="d-flex flex-column fill-height overflow-auto"
         >
           <v-toolbar flat>
-            <v-toolbar-title>관리자 등록</v-toolbar-title>
+            <v-toolbar-title style="font-weight: bold;">관리자 등록</v-toolbar-title>
             <v-spacer></v-spacer>
             <template v-slot:append>
               <div class="ma-2">
@@ -110,12 +110,13 @@ const validationMessage = validateForm(fieldsWithRules);
                 @submit.prevent="handleSubmit"
               >
                 <!-- 기본정보 섹션 -->
-                <h3>기본정보</h3>
                 <v-container fluid>
+                <h3>기본정보</h3>
+
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>아이디</span>
+                        <span class="c-bold">아이디</span>
                         <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
@@ -135,7 +136,7 @@ const validationMessage = validateForm(fieldsWithRules);
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>비밀번호</span>
+                        <span class="c-bold">비밀번호</span>
                         <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
@@ -159,7 +160,7 @@ const validationMessage = validateForm(fieldsWithRules);
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>비밀번호 확인</span>
+                        <span class="c-bold">비밀번호 확인</span>
                         <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
@@ -184,7 +185,7 @@ const validationMessage = validateForm(fieldsWithRules);
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>관리자명</span>
+                        <span class="c-bold">관리자명</span>
                         <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
@@ -200,7 +201,7 @@ const validationMessage = validateForm(fieldsWithRules);
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>이메일</span>
+                        <span class="c-bold">이메일</span>
                         <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
@@ -218,7 +219,7 @@ const validationMessage = validateForm(fieldsWithRules);
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>권한</span>
+                        <span class="c-bold">권한</span>
                         <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
@@ -244,7 +245,7 @@ const validationMessage = validateForm(fieldsWithRules);
                   <h3>추가정보</h3>
                   <v-row class="py-2">
                     <v-col cols="4">
-                      <v-list-subheader>부서</v-list-subheader>
+                      <v-list-subheader class="c-bold">부서</v-list-subheader>
                     </v-col>
                     <v-col cols="8">
                       <v-text-field
@@ -257,7 +258,7 @@ const validationMessage = validateForm(fieldsWithRules);
 
                   <v-row class="py-2">
                     <v-col cols="4">
-                      <v-list-subheader>메모</v-list-subheader>
+                      <v-list-subheader class="c-bold">메모</v-list-subheader>
                     </v-col>
                     <v-col cols="8">
                       <v-text-field
@@ -302,5 +303,10 @@ const validationMessage = validateForm(fieldsWithRules);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.c-bold{
+  font-weight: bold;
+  font-size: 16px;
 }
 </style>
