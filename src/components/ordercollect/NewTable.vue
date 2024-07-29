@@ -21,6 +21,9 @@
           </thead>
           <tbody>
             <template v-for="(group, ordNo) in groupedData" :key="ordNo">
+              <tr v-if="group.ordersDetail.length" class="group-separator">
+                <td colspan="9"></td>
+              </tr>
               <template v-for="item in group.ordersDetail" :key="item.ordPrdNo">
                 <tr :class="{ 'hover': hoverOrder === ordNo }" @mouseover="hoverOrder = ordNo" @mouseout="hoverOrder = null">
                   <td class="order-sequence">{{ item.index }}</td>
@@ -30,7 +33,7 @@
                   <td class="option-name">{{ item.optVal }}</td>
                   <td class="receiver-name">{{ group.rcvrNm }}</td>
                   <td class="receiver-address">{{ group.rcvrAddr }}</td>
-                  <td class="receiver-contact">{{ group.rcvrMphnNo }}</td>
+                  <td class="receiver-contact">{{ formatPhoneNumber(group.rcvrMphnNo) }}</td>
                   <td class="collection-time">{{ group.ordCollectDttm }}</td>
                 </tr>
               </template>
@@ -54,6 +57,11 @@ export default {
     return {
       hoverOrder: null
     };
+  },
+  methods: {
+    formatPhoneNumber(phoneNumber) {
+      return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'); //전화번호 형식 xxx-xxxx-xxxx로 변환
+    }
   }
 };
 </script>
@@ -108,9 +116,16 @@ export default {
   color: #000000;
 }
 
+
 .new-table td.order-sequence,
 .new-table td.order-number {
   border-right: 1px solid #e0e0e0; /* No. 열과 주문번호 열에 구분선 추가 */
+}
+
+.group-separator td {
+  border-top: 1px solid #b6bfc5; /* 그룹 사이에 구분선 추가 */
+  padding: 0;
+  height: 0;
 }
 
 .no-data-message {
