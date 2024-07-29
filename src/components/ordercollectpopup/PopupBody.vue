@@ -4,6 +4,7 @@
     <div v-for="(order, index) in visibleOrders" :key="index" class="order-item">
       <!-- 각 주문의 번호와 주문 번호를 화면에 표시 -->
       <span class="order-number">[{{ index + 1 }}번째 주문] {{ order.orderNo }}</span>
+      <span class="order-detail">  상품번호 : {{ order.ordPrdNo }}</span>
       <!-- order.success가 true면 '성공', false면 '실패'로 텍스트를 표시하고, 이에 따라 CSS 클래스도 변경 -->
       <span :class="{ success: order.success, failure: !order.success }">
         {{ order.success ? ' 성공' : ' 실패' }}
@@ -111,6 +112,12 @@ onMounted(() => {
 .order-number {
   font-size: 1em; /* 폰트 크기 조정 */
   color: #333;
+}
+
+.order-detail {
+  font-size: 1em;
+  color: #333;
+  margin-right: 80px; /* 오른쪽 마진 추가 */
 }
 
 .success {
