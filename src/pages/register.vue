@@ -13,7 +13,8 @@ import {
 import CheckDialog from "@/components/CheckDialog.vue";
 import ChooseDialog from "@/components/ChooseDialog.vue";
 import { postRegister } from "@/utils/api";
-import { search } from "@/";
+import { errorMessages } from "vue/compiler-sfc";
+
 
 const id = ref("");
 const password = ref("");
@@ -30,6 +31,9 @@ const showPasswordCheck = ref(false);
 const validationDialog = ref(false);
 const backDialog = ref(false);
 const message = ref("");
+const registerDoneDialog = ref(false);
+const registerFailDialog = ref(false);
+const message2 = ref("");
 
 const items = [
   { title: "일반 관리자", value: "ADMIN" },
@@ -65,8 +69,14 @@ const handleSubmit = async () => {
 
     try {
       const response = await postRegister(requestBody);
-    } catch {
-      //error 처리
+      console.log(response)
+      registerDoneDialog.value = true;
+    } catch(error) {
+      // console.log("회원등록에 실패했습니다.");
+      // console.log(error);
+      // message2.value = error.data.message;
+      // console.log(message2.value)
+      // registerFailDialog.value = true;
     }
   }
 };
@@ -282,7 +292,12 @@ const handleSubmit = async () => {
       :to="'/search'"
     >
     </ChooseDialog>
-    <CheckDialog :to="'/search'" v-model="validationDialog" :message="message"></CheckDialog>
+    <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>
+    <CheckDialog v-model="registerDoneDialog" 
+    message="
+    회원 등록이 완료되었습니다. 
+    관리자 조회 페이지로 이동합니다. " :to="'/search'"></CheckDialog>
+    <CheckDialog v-model="registerFailDialog" :message="message2"></CheckDialog>
   </v-app>
 </template>
 
