@@ -20,18 +20,13 @@
           @pageChanged="handlePageChange"
         />
       </div>
-      <div class="footer-wrapper">
-        <Footer />
-      </div>
     </div>
-  
 </template>
 
 <script>
 import NavigationBar from "./ordercollect/NavigationBar.vue";
 import NewTable from "./ordercollect/NewTable.vue";
 import Pagination from "./ordercollect/Pagination.vue";
-import Footer from "./Footer.vue";
 import axios from "axios";
 
 export default {
@@ -40,7 +35,6 @@ export default {
     NavigationBar,
     NewTable,
     Pagination,
-    Footer,
   },
   data() {
     return {
@@ -124,10 +118,6 @@ export default {
 .pagination-wrapper {
   text-align: center;
   padding: 10px 0;
-}
-
-.footer-wrapper {
-  margin-top: auto;
 }
 
 .popup-content {

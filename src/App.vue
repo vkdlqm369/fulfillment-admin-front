@@ -3,17 +3,20 @@
     <v-main class="main-background">
       <Header v-if="!isPopupRouteApp" />
       <router-view></router-view>
+      <Footer v-if="!isPopupRouteApp" />
     </v-main>
   </v-app>
 </template>
 
 <script>
 import Header from "./components/Header.vue";
+import Footer from "./components/Footer.vue";
 
 export default {
   name: "App",
   components: {
-    Header
+    Header,
+    Footer
   },
   computed: {
     isPopupRouteApp() {
@@ -32,6 +35,10 @@ body {
   padding: 0;
   box-sizing: border-box;
   background-color: #ffffff;
+}
+
+footer {
+  margin-top: auto;
 }
 
 .main-background {
