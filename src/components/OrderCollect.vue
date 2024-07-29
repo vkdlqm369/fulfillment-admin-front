@@ -28,10 +28,10 @@
 </template>
 
 <script>
-import NavigationBar from "./NavigationBar.vue";
-import NewTable from "./NewTable.vue";
+import NavigationBar from "./ordercollect/NavigationBar.vue";
+import NewTable from "./ordercollect/NewTable.vue";
+import Pagination from "./ordercollect/Pagination.vue";
 import Footer from "./Footer.vue";
-import Pagination from "./Pagination.vue";
 import axios from "axios";
 
 export default {

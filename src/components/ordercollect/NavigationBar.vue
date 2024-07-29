@@ -51,7 +51,6 @@ import { ref, reactive, watch, onMounted } from "vue";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import { useAxios } from "@vueuse/integrations/useAxios";
-import NewTable from "./NewTable.vue";
 
 const emit = defineEmits(["refreshPage"]);
 
