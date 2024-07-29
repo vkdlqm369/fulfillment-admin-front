@@ -5,7 +5,7 @@
     </template>
     <template v-else>
       <div class="table-container">
-        <table class="modern-table">
+        <table class="new-table">
           <thead>
             <tr>
               <th class="order-sequence">No.</th>
@@ -68,22 +68,22 @@ export default {
   background: #fff;
 }
 
-.modern-table {
+.new-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   font-family: 'Pretendard-Regular', sans-serif;
 }
 
-.modern-table th,
-.modern-table td {
+.new-table th,
+.new-table td {
   padding: 16px;
   white-space: nowrap;
   transition: background-color 0.3s ease, color 0.3s ease;
   
 }
 
-.modern-table thead {
+.new-table thead {
   background-color: #2484C6;
   color: #ffffff;
   text-transform: uppercase;
@@ -91,25 +91,25 @@ export default {
   font-family: 'Pretendard-Semibold', sans-serif;
 }
 
-.modern-table tbody tr {
+.new-table tbody tr {
   border-bottom: 1px solid #e0e0e0;
 }
 
-.modern-table tbody tr:last-child {
+.new-table tbody tr:last-child {
   border-bottom: none;
 }
 
-.modern-table td {
+.new-table td {
   background-color: #ffffff;
 }
 
-.modern-table tr.hover td {
+.new-table tr.hover td {
   background-color: #f9f9f9;
   color: #000000;
 }
 
-.modern-table td.order-sequence,
-.modern-table td.order-number {
+.new-table td.order-sequence,
+.new-table td.order-number {
   border-right: 1px solid #e0e0e0; /* No. 열과 주문번호 열에 구분선 추가 */
 }
 
@@ -123,16 +123,16 @@ export default {
 
 /* 반응형 디자인 */
 @media screen and (max-width: 768px) {
-  .modern-table th,
-  .modern-table td {
+  .new-table th,
+  .new-table td {
     padding: 12px;
     font-size: 0.9em;
   }
 
-  .modern-table th.order-sequence,
-  .modern-table td.order-sequence,
-  .modern-table th.order-number,
-  .modern-table td.order-number {
+  .new-table th.order-sequence,
+  .new-table td.order-sequence,
+  .new-table th.order-number,
+  .new-table td.order-number {
     display: none;
   }
 }
