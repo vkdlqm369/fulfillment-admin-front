@@ -345,6 +345,7 @@ onMounted(async () => {
           message="삭제가 완료되었습니다."
           @close="searchHandler"
           icon="mdi-check-bold"
+          iconColor="primary_green"
         />
 
       <TextSelection
