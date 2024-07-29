@@ -9,7 +9,6 @@ import Register from "@/pages/register.vue";
 import MyPage from "@/pages/myPage.vue";
 import UpdateProfile from "@/pages/updateProfile.vue";
 import UpdatePassword from "@/pages/updatePassword.vue";
-import checkPassword from "@/pages/checkPassword.vue";
 import Cookies from "js-cookie";
 
 const routes = [

@@ -4,7 +4,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import CheckPasswordDialog from '@/components/CheckPasswordDialog.vue';
 import { convertAuthority, convertIsUsed, convertTime } from '@/utils/convertFormat';
-
+import LoadingSpinnerVue from '@/components/LoadingSpinner.vue';
 
 const user = ref({});
 const checkOpen = ref(false);
@@ -58,7 +58,7 @@ const handlePasswordVerified = ( ) => {
   <v-app max-width="100">
     <v-container fluid class="fill-height py-0">
       <v-row justify="center" class="fill-height">
-        <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height overflow-auto">
+        <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height overflow-auto ">
           <v-toolbar flat>
             <v-toolbar-title style="font-weight: bold">My Page</v-toolbar-title>
             <v-spacer></v-spacer>

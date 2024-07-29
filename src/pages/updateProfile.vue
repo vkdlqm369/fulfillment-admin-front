@@ -1,9 +1,9 @@
 <script setup>
+import LoadingSpinnerVue from '@/components/LoadingSpinner.vue';
 import { getMyInfo, updateProfile, getAuthority } from '@/utils/api';
 import { convertAuthority, convertIsUsed, convertTime } from '@/utils/convertFormat';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-
 
 const user = ref({});
 const id = ref("");
@@ -11,6 +11,7 @@ const id = ref("");
 const updateInfoDialog = ref(false);
 const validationDialog = ref(false)
 const message = ref('')
+const loading = ref(false)
 
 const router = useRouter();
 
@@ -22,11 +23,21 @@ const fetchUser = async (id) => {
     message.value = error.data.message;
     validationDialog.value = true;
   }
+  loading.value = false
 };
 
 onMounted(async () => {
-    const response = await getAuthority();
-    id.value = response.data.id;
+    loading.value = true
+    try{
+      const response = await getAuthority();
+      id.value = response.data.id;
+    }
+    catch(error){
+          message.value = error.data.message;
+          validationDialog.value = true;
+          loading.value = false
+    }
+
   if (id.value) {
     fetchUser(id.value);
   }
@@ -68,7 +79,7 @@ const submitForm = async() => {
 
           <v-card 
           class="flex-grow-1 overflow-y-auto" style="height: 100vh;">
-            <v-card-text>
+            <v-card-text >
                 <!-- 회원 정보 섹션 -->
                 <h3>회원정보</h3>
                 <v-container fluid>
@@ -212,4 +223,6 @@ const submitForm = async() => {
         />
     </v-container>
   </v-app>
+
+  <LoadingSpinner v-model="loading"/>
 </template>

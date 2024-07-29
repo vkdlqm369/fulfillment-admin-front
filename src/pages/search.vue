@@ -9,7 +9,6 @@ import { getSearch, getAuthority, deleteUser, updateOtherUser, patchApprove, get
 import { convertAuthority, convertIsUsed , convertTime } from "@/utils/convertFormat"
 import { onMounted, computed } from "vue";
 import router from "@/router/index";
-import vuetify from "@/plugins/vuetify";
 
 const tableItems = ref([]);
 
@@ -21,19 +20,34 @@ const headerProps = ref(
 )
 
 const headers = [
-  { title: "관리자번호", value: "userId", width: "100px", align: 'center', headerProps: headerProps},
-  { title: "아이디", value: "id", width: "90px", headerProps: headerProps },
-  { title: "관리자명", value: "name", width: "90px", headerProps: headerProps },
-  { title: "이메일", value: "email", width: "120px", headerProps: headerProps },
-  { title: "권한", value: "authority", width: "100px", headerProps: headerProps},
-  { title: "부서", value: "department", width: "100px", headerProps: headerProps },
-  { title: "메모", value: "memo", width: "120px", headerProps: headerProps },
-  { title: "등록일", value: "registrationDate", width: "180px", headerProps: headerProps },
-  { title: "최종로그인", value: "lastLoginTime", width: "180px", headerProps: headerProps },
-  { title: "최종로그인 IP", value: "lastLoginIp", width: "120px", headerProps: headerProps },
-  { title: "활성화유무", value: "isUsed", width: "100px", headerProps: headerProps },
-  { title: "", value: "btn", width: "30px", headerProps: headerProps}
+  { title: "관리자번호", value: "userId", maxWidth: "*0px", align: 'center', headerProps: headerProps},
+  { title: "아이디", value: "id", maxWidth: "80px", headerProps: headerProps },
+  { title: "관리자명", value: "name", maxWidth: "80px", headerProps: headerProps },
+  { title: "이메일", value: "email", maxWidth: "130px", headerProps: headerProps },
+  { title: "권한", value: "authority", maxWidth: "90px", headerProps: headerProps},
+  { title: "부서", value: "department", maxWidth: "90px", headerProps: headerProps },
+  { title: "메모", value: "memo", maxWidth: "110px", headerProps: headerProps },
+  { title: "등록일", value: "registrationDate", maxWidth: "100px", headerProps: headerProps },
+  { title: "최종로그인", value: "lastLoginTime", maxWidth: "100px", headerProps: headerProps },
+  { title: "최종로그인 IP", value: "lastLoginIp", maxWidth: "110px", headerProps: headerProps },
+  { title: "활성화유무", value: "isUsed", maxWidth: "90px", headerProps: headerProps },
+  { title: "", value: "btn" , width: "30px", headerProps: headerProps}
 ];
+
+// const headers = [
+//   { title: "관리자번호", value: "userId", width: "100px", align: 'center', headerProps: headerProps},
+//   { title: "아이디", value: "id", width: "90px", headerProps: headerProps },
+//   { title: "관리자명", value: "name", width: "90px", headerProps: headerProps },
+//   { title: "이메일", value: "email", width: "120px", headerProps: headerProps },
+//   { title: "권한", value: "authority", width: "100px", headerProps: headerProps},
+//   { title: "부서", value: "department", width: "100px", headerProps: headerProps },
+//   { title: "메모", value: "memo", width: "120px", headerProps: headerProps },
+//   { title: "등록일", value: "registrationDate", width: "180px", headerProps: headerProps },
+//   { title: "최종로그인", value: "lastLoginTime", width: "180px", headerProps: headerProps },
+//   { title: "최종로그인 IP", value: "lastLoginIp", width: "120px", headerProps: headerProps },
+//   { title: "활성화유무", value: "isUsed", width: "100px", headerProps: headerProps },
+//   { title: "", value: "btn", width: "30px", headerProps: headerProps}
+// ];
 
 const inputMapForSearch = ref({
   id: "",
@@ -115,7 +129,6 @@ async function searchHandler(page = 1) {
   try {
     const response = await getSearch(params);
     totalLists.value = response.data.totalLists;
-    // tableItems.value = response.data.users;
     tableItems.value = response.data.users.map(user => {
       return {
         authority: convertAuthority(user.authority),
@@ -237,7 +250,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <v-container style="min-height: 100vh">
+  <v-container style="min-height: 100vh;">
     <v-container>
       <h1 style="margin: 15px" class="content-container">관리자 조회</h1>
       <v-container class="search-container">
@@ -366,6 +379,7 @@ onMounted(async () => {
   <v-container v-if="isSearch" class="content-container">
     <v-row>
       <v-col>
+        <div style="max-">
           <v-data-table-virtual
             v-model="selected"
             :items="tableItems"
@@ -380,13 +394,14 @@ onMounted(async () => {
           >
         <template v-slot:item.btn="row">
           <v-btn v-if="isMaster()"  
-              style="font-weight: bold"
+              style="font-weight: bold;"
               variant="tonal"
               color="title_gray"
               @click="loadUserInfo(row.item.id)">
               수정
           </v-btn></template>
         </v-data-table-virtual>
+        </div>
       </v-col>
     </v-row>
     <v-row>
@@ -455,7 +470,5 @@ onMounted(async () => {
   max-height: 20vh;
 }
 
-.selected-row {
-  background-color: #e3f2fd !important; /* 선택된 행의 배경색 */
-}
+
 </style>
