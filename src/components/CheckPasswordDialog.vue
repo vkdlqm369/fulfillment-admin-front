@@ -74,8 +74,8 @@ const handleSubmit = async () => {
                 </v-row>
               </v-container>
                 <v-container class="row-btn">
-                    <v-btn @click="handleSubmit" color="primary" size="large" class="mt-2">확인</v-btn>
-                    <v-btn color="grey" size="large" class="mt-2"@click="checkOpen=false">취소</v-btn>
+                    <v-btn @click="handleSubmit" color="primary_blue" size="large" class="mt-2">확인</v-btn>
+                    <v-btn color="tertiary_red" size="large" class="mt-2"@click="checkOpen=false">취소</v-btn>
                 </v-container>
             </v-card-text>
           </v-card>

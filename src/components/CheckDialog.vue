@@ -1,4 +1,4 @@
-nsole.log<script setup>
+<script setup>
 const isOpen = defineModel("modelValue", { type: Boolean, default: false });
 const props = defineProps({
   message: String,

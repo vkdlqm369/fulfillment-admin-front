@@ -5,6 +5,7 @@ import SearchBtn from "../components/SearchBtn.vue";
 import { getHistory } from "@/utils/api";
 import { convertTime } from "@/utils/convertFormat"
 import router from "@/router";
+import LoadingSpinnerVue from "@/components/LoadingSpinner.vue";
 
 
 
@@ -12,7 +13,7 @@ const tableItems = ref([]);
 
 const headerProps = ref(
   {
-    class: 'bg-black'
+    style: 'font-size: 15px; font-weight: bold;'
   }
 )
 
@@ -76,6 +77,7 @@ async function searchHandler (page = 1) {
 </script>
 
 <template>
+  <LoadingSpinner v-model="loading"/>
   <v-container style="min-height: 100vh">
     <v-container>
       <h1 style="margin: 15px" class="content-container">
@@ -174,4 +176,5 @@ async function searchHandler (page = 1) {
   overflow-y: auto;
   max-height: 20vh;
 }
+
 </style>
