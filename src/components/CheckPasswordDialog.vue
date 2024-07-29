@@ -1,21 +1,15 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { checkPassword } from '@/utils/api';
+import CheckDialog from '@/components/CheckDialog.vue'
 
-const props = defineProps(['id', 'modelValue']);
-const emit = defineEmits(['update:modelValue', 'password-verified']);
+
+const props = defineProps(['id']);
+const emit = defineEmits(['password-verified']);
+const checkOpen = defineModel('checkOpen')
 const password = ref('');
 const passwordShow = ref(false);
-
-watch(() => props.modelValue, (newVal) => {
-  if (newVal) {
-    open.value = true;
-  } else {
-    open.value = false;
-  }
-});
-
-const open = ref(false);
+const fail = ref(false)
 
 const handleSubmit = async () => {
   const requestBody = {
@@ -26,21 +20,19 @@ const handleSubmit = async () => {
     const response = await checkPassword(requestBody);
     if (response) {
       emit('password-verified');
-  emit('update:modelValue', false);
-
     } else {
       console.log("비밀번호 검증에 실패했습니다.");
-
     }
-  } catch {
+  } catch{
+    fail.value=true
     console.log("비밀번호 검증에 실패했습니다.");
   }
 };
 </script>
 
 <template>
-  <v-dialog v-model="open" persistent>
-    <v-container fluid class="fill-height py-0">
+  <v-dialog v-model="checkOpen" persistent>
+    <v-container fluid class="fill-height py-0" style="height: 100vh;">
       <v-row justify="center" class="fill-height">
         <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height overflow-auto">
           <v-card>
@@ -69,10 +61,11 @@ const handleSubmit = async () => {
                   </v-col>
                   <v-col cols="8">
                     <v-text-field 
-                      variant="outlined" 
+                      v-model="password"
+                      @keyup.enter="handleSubmit"
+                       variant="outlined" 
                       density="compact" 
                       width="50vh"
-                      v-model="password"
                       :type="passwordShow ? 'text' : 'password'"
                       :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
                       @click:append="passwordShow = !passwordShow"
@@ -80,15 +73,26 @@ const handleSubmit = async () => {
                   </v-col>
                 </v-row>
               </v-container>
-              <v-row justify="center">
-                <v-col cols="8">
-                  <v-btn @click="handleSubmit" color="primary" class="mt-2" block size="large">확인</v-btn>
-                </v-col>
-              </v-row>
+                <v-container class="row-btn">
+                    <v-btn @click="handleSubmit" color="primary" size="large" class="mt-2">확인</v-btn>
+                    <v-btn color="grey" size="large" class="mt-2"@click="checkOpen=false">취소</v-btn>
+                </v-container>
             </v-card-text>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
   </v-dialog>
+
+  <CheckDialog v-model="fail" message="비밀번호가 일치하지 않습니다"></CheckDialog>
 </template>
+
+
+<style scoped>
+.row-btn{
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+</style>

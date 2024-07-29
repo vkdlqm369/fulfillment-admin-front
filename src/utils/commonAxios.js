@@ -8,6 +8,19 @@ const commonAxios = axios.create({
   headers: {},
 });
 
+commonAxios.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("accessToken");
+    if (token) {
+      config.headers["Authorization"] = `${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 commonAxios.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -18,19 +31,6 @@ commonAxios.interceptors.response.use(
       await router.push("/login");
     }
 
-    return Promise.reject(error);
-  }
-);
-
-commonAxios.interceptors.request.use(
-  (config) => {
-    const token = Cookies.get("accessToken");
-    if (token) {
-      config.headers["Authorization"] = `${token}`;
-    }
-    return config;
-  },
-  (error) => {
     return Promise.reject(error);
   }
 );

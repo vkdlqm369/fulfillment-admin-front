@@ -7,10 +7,10 @@ import Search from "@/pages/search.vue";
 import History from "@/pages/history.vue";
 import Register from "@/pages/register.vue";
 import MyPage from "@/pages/myPage.vue";
-import Cookies from "js-cookie";
 import UpdateProfile from "@/pages/updateProfile.vue";
 import UpdatePassword from "@/pages/updatePassword.vue";
 import checkPassword from "@/pages/checkPassword.vue";
+import Cookies from "js-cookie";
 
 const routes = [
   {
@@ -38,7 +38,6 @@ const routes = [
     component: Register,
     meta: { layout: "default" },
   },
-
   {
     path: '/mypage/:id',
     component: MyPage,
@@ -56,14 +55,6 @@ const routes = [
     component: UpdatePassword,
     meta: { layout: "default" },
   },
-
-  {
-    path: "/checkPassword",
-    component: checkPassword,
-    meta: { layout: "default" },
-  },
-
-
 ];
 
 const router = createRouter({

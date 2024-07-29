@@ -1,3 +1,65 @@
+<<<<<<< HEAD
+=======
+<script setup>
+import { getMyInfo, updateProfile, getAuthority } from '@/utils/api';
+import { convertAuthority, convertIsUsed, convertTime } from '@/utils/convertFormat';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
+// Merry20033!
+
+const user = ref({});
+const id = ref("");
+
+const updateInfoDialog = ref(false);
+const validationDialog = ref(false)
+const message = ref('')
+
+const router = useRouter();
+
+const fetchUser = async (id) => {
+  try {
+    const response = await getMyInfo(id);
+    user.value = response.data
+  } catch (error) {
+    message.value = error.data.message;
+    validationDialog.value = true;
+  }
+};
+
+onMounted(async () => {
+    const response = await getAuthority();
+    id.value = response.data.id;
+  if (id.value) {
+    fetchUser(id.value);
+  }
+});
+
+const submitForm = async() => {
+
+  let requestBody = {
+      name: "",
+      email: "",
+      department: "",
+      memo: ""
+    }
+  requestBody = user.value
+
+    try {
+        const response = await updateProfile(requestBody);
+        console.log("업데이트 성공")
+        updateInfoDialog.value = true;
+    } catch(error) {
+        console.log(error)
+        message.value = error.data.message;
+        validationDialog.value = true;
+    }
+}
+
+
+</script>
+
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
 <template>
   <v-app>
     <v-container fluid class="fill-height py-0">
@@ -22,7 +84,11 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
+<<<<<<< HEAD
                       <div>{{ id }}</div>
+=======
+                      <div>{{ user.id }}</div>
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
                     </v-col>
                   </v-row>
                     
@@ -37,7 +103,11 @@
                       <v-text-field
                         variant="outlined"
                         density="compact"
+<<<<<<< HEAD
                         v-model="name"
+=======
+                        v-model="user.name"
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -53,7 +123,11 @@
                       label="예: test1234@test.co.kr" 
                       variant="outlined" 
                       density="compact"
+<<<<<<< HEAD
                       v-model="email" 
+=======
+                      v-model="user.email" 
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -65,7 +139,11 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
+<<<<<<< HEAD
                       <div>{{ permission }}</div>
+=======
+                      <div>{{ convertAuthority(user.authority) }}</div>
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
                     </v-col>
                   </v-row>
 
@@ -79,7 +157,11 @@
                       <v-text-field 
                       variant="outlined" 
                       density="compact" 
+<<<<<<< HEAD
                       v-model = "department"></v-text-field>
+=======
+                      v-model = "user.department"></v-text-field>
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
                     </v-col>
                   </v-row>
 
@@ -93,7 +175,11 @@
                       <v-text-field 
                       variant="outlined" 
                       density="compact" 
+<<<<<<< HEAD
                       v-model = "memo"></v-text-field>
+=======
+                      v-model = "user.memo"></v-text-field>
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
                     </v-col>
                   </v-row>
 
@@ -104,7 +190,11 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
+<<<<<<< HEAD
                       <div>{{ isUsed }}</div>
+=======
+                      <div>{{ convertIsUsed(user.isUsed) }}</div>
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
                     </v-col>
                   </v-row>
 
@@ -115,7 +205,11 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
+<<<<<<< HEAD
                       <div>{{ registrationDate }}</div>
+=======
+                      <div>{{ convertTime(user.registrationDate) }}</div>
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
                     </v-col>
                   </v-row>
 
@@ -126,7 +220,11 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
+<<<<<<< HEAD
                       <div>{{ lastLoginTime }}</div>
+=======
+                      <div>{{ convertTime(user.lastLoginTime) }}</div>
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
                     </v-col>
                   </v-row>
 
@@ -137,13 +235,21 @@
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
+<<<<<<< HEAD
                       <div>{{ lastLoginIp }}</div>
+=======
+                      <div>{{ user.lastLoginIp }}</div>
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
                     </v-col>
                   </v-row>
                 </v-container>
                 <v-row justify="center">
                     <v-col cols="8">
+<<<<<<< HEAD
                       <v-btn color="primary" class="mt-2" block size="large">확인</v-btn>
+=======
+                      <v-btn @click="submitForm" color="primary" class="mt-2" block size="large">확인</v-btn>
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
                     </v-col>
                   </v-row>
             </v-card-text>
@@ -151,6 +257,7 @@
  
         </v-col>
       </v-row>
+<<<<<<< HEAD
     </v-container>
   </v-app>
 </template>
@@ -168,3 +275,21 @@
   const lastLoginTime = ref("Wed, 17 Jul 2024 15:00:00");  // Placeholder
   const lastLoginIp = ref("192.168.0.1");  // Placeholder
 </script>
+=======
+      <CheckDialog 
+        v-model="updateInfoDialog" 
+        message="
+        회원 정보 변경이 완료되었습니다
+        마이 페이지로 이동합니다."
+        :to="'/mypage/:id'"
+        icon="mdi-check-bold"
+      ></CheckDialog>
+
+        <CheckDialog
+            v-model="validationDialog"
+            :message="message"
+        />
+    </v-container>
+  </v-app>
+</template>
+>>>>>>> 52a463c84727c554c514cd50459764b9cca51c9d
