@@ -11,4 +11,3 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 const layoutComponent = computed(() => route.meta.layoutComponent);
 </script>
-

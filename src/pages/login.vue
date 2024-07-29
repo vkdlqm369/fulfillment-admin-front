@@ -10,6 +10,7 @@ import {
   validateForm,
 } from "@/utils/validationRules";
 import CheckDialog from "@/components/CheckDialog.vue";
+// import { useTheme } from "vuetify";
 
 const id = ref("");
 const password = ref("");
@@ -47,12 +48,18 @@ const handleSubmit = async () => {
     }
   }
 };
+
+// const theme = useTheme();
+// function toggleTheme() {
+//   theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+// }
 </script>
 
 <template>
   <v-container
     class="fill-height d-flex flex-column align-center justify-center"
   >
+    <v-btn @click="toggleTheme">toggle theme</v-btn>
     <v-card class="mb-10" width="400" color="transparent">
       <v-img
         src="https://wms.sbfulfillment.co.kr/wms/asset/images/logo_fbs_w.svg"
@@ -76,7 +83,7 @@ const handleSubmit = async () => {
           :type="showPassword ? 'text' : 'password'"
           @click:append-inner="showPassword = !showPassword"
         ></v-text-field>
-        <v-btn type="submit" color="#5A72A0" block>LOGIN</v-btn>
+        <v-btn type="submit" color="tertiary_blue" block>LOGIN</v-btn>
       </v-form>
     </v-sheet>
     <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>
