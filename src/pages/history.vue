@@ -3,19 +3,25 @@ import TextBlank from "../components/TextBlank.vue";
 import TextSelection from "../components/TextSelection.vue";
 import SearchBtn from "../components/SearchBtn.vue";
 import { getHistory } from "@/utils/api";
-import { removeT } from "@/utils/TimeFormat"
+import { convertTime } from "@/utils/convertFormat"
 import router from "@/router";
 
 
 
 const tableItems = ref([]);
 
+const headerProps = ref(
+  {
+    class: 'bg-black'
+  }
+)
+
 const headers = [
-  { title : '로그인 일시', value: 'loginTime', width: "120px"},
-  { title : '관리자명', value: 'name', width: "80px"},
-  { title : '아이디', value: 'ID', width: "30px"},
-  { title : '로그인 디바이스', value: 'loginDevice', width: "500px"},
-  { title : '로그인 아이피', value: 'loginIp', width: "100px"}
+  { title : '로그인 일시', value: 'loginTime', width: "120px", headerProps: headerProps},
+  { title : '관리자명', value: 'name', width: "80px", headerProps: headerProps},
+  { title : '아이디', value: 'ID', width: "30px", headerProps: headerProps},
+  { title : '로그인 디바이스', value: 'loginDevice', width: "500px", headerProps: headerProps},
+  { title : '로그인 아이피', value: 'loginIp', width: "100px", headerProps: headerProps}
 ]
 
 const inputMapForSearch = ref({
@@ -55,7 +61,7 @@ async function searchHandler (page = 1) {
     });
     
     for(let history of tableItems.value)
-      history.loginTime = removeT(history.loginTime)
+      history.loginTime = convertTime(history.loginTime)
 
     numOfPage.value = response.data.totalPages;
   } catch (error) {
@@ -114,14 +120,16 @@ async function searchHandler (page = 1) {
 
   <v-container v-if="isSearch" class="content-container">
     <v-row>
-      <v-col class="result-container">
+      <v-col>
         <v-data-table-virtual  
             :items="tableItems"
             :headers="headers"
             :loading="loading" 
             loading-text="Loading... Please wait"
-            height="500"
+            height="52vh"
             fixed-header
+            hover
+            sticky
         ></v-data-table-virtual>
       </v-col>
     </v-row>
@@ -154,22 +162,12 @@ async function searchHandler (page = 1) {
   gap: 15px;
 }
 
-.content-container {
-  min-width: min-content;
-  word-break: keep-all;
-}
-
 .fixed-h {
   height: 55px;
 }
 
 .min-w-max-c {
   min-width: max-content;
-}
-
-.result-container {
-  overflow-y: auto;
-  max-height: 55vh;
 }
 
 .pagination-container {
