@@ -145,6 +145,7 @@
         로그인 페이지로 이동합니다."
         @close="handleDialogClose"
         icon="mdi-check-bold"
+        iconColor="primary_green"
       ></CheckDialog>
 
       <CheckDialog 

@@ -1,15 +1,22 @@
 import commonAxios from "./commonAxios";
+import Cookies from "js-cookie";
+
 
 export const postLogin = async (requestBody) => {
   try {
     const res = await commonAxios.post("/login", requestBody);
     console.log("성공", res);
+    Cookies.set("accessToken", res.headers.authorization);
+    commonAxios.defaults.headers.common[
+      "Authorization"
+    ] = `${res.headers.authorization}`;
     return res.data;
-  } catch (error) {
+  }catch (error) {
     console.error("로그인 오류가 발생했습니다.", error.response);
     throw error.response;
   }
 };
+
 
 export const postRegister = async (requestBody) => {
   try {
@@ -43,6 +50,7 @@ export const getHistory = async (params) => {
     throw error.response;
   }
 };
+
 
 export const getAuthority = async () => {
   try {

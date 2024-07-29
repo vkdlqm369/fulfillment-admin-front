@@ -1,10 +1,9 @@
 <script setup>
+import LoadingSpinnerVue from '@/components/LoadingSpinner.vue';
 import { getMyInfo, updateProfile, getAuthority } from '@/utils/api';
 import { convertAuthority, convertIsUsed, convertTime } from '@/utils/convertFormat';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-
-// Merry20033!
 
 const user = ref({});
 const id = ref("");
@@ -12,6 +11,7 @@ const id = ref("");
 const updateInfoDialog = ref(false);
 const validationDialog = ref(false)
 const message = ref('')
+const loading = ref(false)
 
 const router = useRouter();
 
@@ -23,11 +23,21 @@ const fetchUser = async (id) => {
     message.value = error.data.message;
     validationDialog.value = true;
   }
+  loading.value = false
 };
 
 onMounted(async () => {
-    const response = await getAuthority();
-    id.value = response.data.id;
+    loading.value = true
+    try{
+      const response = await getAuthority();
+      id.value = response.data.id;
+    }
+    catch(error){
+          message.value = error.data.message;
+          validationDialog.value = true;
+          loading.value = false
+    }
+
   if (id.value) {
     fetchUser(id.value);
   }
@@ -63,32 +73,30 @@ const submitForm = async() => {
       <v-row justify="center" class="fill-height" >
         <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height overflow-auto">
           <v-toolbar flat>
-            <v-toolbar-title>회원 정보 수정</v-toolbar-title>
+            <v-toolbar-title style="font-weight: bold">회원 정보 수정</v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
 
           <v-card 
           class="flex-grow-1 overflow-y-auto" style="height: 100vh;">
-            <v-card-text>
+            <v-card-text >
                 <!-- 회원 정보 섹션 -->
                 <h3>회원정보</h3>
                 <v-container fluid>
 
-                  <v-row>
+                  <v-row class="py-3">
                     <v-col cols="4">
-                      <v-list-subheader>
-                        <span>아이디</span>
-                      </v-list-subheader>
+                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">아이디</span>
                     </v-col>
                     <v-col cols="8">
                       <div>{{ user.id }}</div>
                     </v-col>
                   </v-row>
                     
-                  <v-row>
+                  <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>관리자명</span>
+                        <span style="font-weight: bold; font-size: 16px;">관리자명</span>
                       </v-list-subheader>
                     </v-col>
 
@@ -101,10 +109,10 @@ const submitForm = async() => {
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>이메일</span>
+                        <span style="font-weight: bold; font-size: 16px;">이메일</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -117,21 +125,19 @@ const submitForm = async() => {
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class="py-3">
                     <v-col cols="4">
-                      <v-list-subheader>
-                        <span>권한</span>
-                      </v-list-subheader>
+                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">권한</span>
                     </v-col>
                     <v-col cols="8">
                       <div>{{ convertAuthority(user.authority) }}</div>
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>부서</span>
+                        <span style="font-weight: bold; font-size: 16px;">부서</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -142,10 +148,10 @@ const submitForm = async() => {
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>메모</span>
+                        <span style="font-weight: bold; font-size: 16px;">메모</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -156,44 +162,36 @@ const submitForm = async() => {
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class="py-3">
                     <v-col cols="4">
-                      <v-list-subheader>
-                        <span>사용여부</span>
-                      </v-list-subheader>
+                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">사용여부</span>
                     </v-col>
                     <v-col cols="8">
                       <div>{{ convertIsUsed(user.isUsed) }}</div>
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class="py-3">
                     <v-col cols="4">
-                      <v-list-subheader>
-                        <span>등록일</span>
-                      </v-list-subheader>
+                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">등록일</span>
                     </v-col>
                     <v-col cols="8">
                       <div>{{ convertTime(user.registrationDate) }}</div>
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class="py-3">
                     <v-col cols="4">
-                      <v-list-subheader>
-                        <span>최종 로그인 시간</span>
-                      </v-list-subheader>
+                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">최종 로그인 시간</span>
                     </v-col>
                     <v-col cols="8">
                       <div>{{ convertTime(user.lastLoginTime) }}</div>
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class="py-3">
                     <v-col cols="4">
-                      <v-list-subheader>
-                        <span>최종 로그인 IP</span>
-                      </v-list-subheader>
+                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">최종 로그인 IP</span>
                     </v-col>
                     <v-col cols="8">
                       <div>{{ user.lastLoginIp }}</div>
@@ -202,7 +200,7 @@ const submitForm = async() => {
                 </v-container>
                 <v-row justify="center">
                     <v-col cols="8">
-                      <v-btn @click="submitForm" color="primary" class="mt-2" block size="large">확인</v-btn>
+                      <v-btn @click="submitForm" color="tertiary_blue" class="mt-2" block size="large">확인</v-btn>
                     </v-col>
                   </v-row>
             </v-card-text>
@@ -225,4 +223,6 @@ const submitForm = async() => {
         />
     </v-container>
   </v-app>
+
+  <LoadingSpinner v-model="loading"/>
 </template>
