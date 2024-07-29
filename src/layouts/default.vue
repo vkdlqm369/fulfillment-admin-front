@@ -4,14 +4,14 @@ import commonAxios from "@/utils/commonAxios";
 import Cookies from "js-cookie";
 import router from "@/router";
 import ChooseDialog from "@/components/ChooseDialog.vue";
-
 import { getAuthority } from "@/utils/api";
+import { useTheme } from "vuetify";
 
 const logoutDialog = ref(false);
 const authority = ref("");
 const drawer = ref(true);
 const rail = ref(false);
-const id = ref('')
+const id = ref("");
 
 const handleLogout = async () => {
   Cookies.remove("accessToken");
@@ -19,6 +19,10 @@ const handleLogout = async () => {
   await router.push("/login");
 };
 
+// const theme = useTheme();
+// function toggleTheme() {
+//   theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+// }
 
 onMounted(async () => {
   try {
@@ -36,7 +40,7 @@ onMounted(async () => {
         <v-navigation-drawer
           v-model="drawer"
           :rail="rail"
-          color="#5A72A0"
+          color="primary_blue"
           style="height: 100vh; border: none; position: fixed"
           permanent
           @click="rail = false"
@@ -76,7 +80,8 @@ onMounted(async () => {
           </v-list>
 
           <template v-slot:append>
-            <div class="ma-2">
+            <!-- <v-btn @click="toggleTheme">toggle theme</v-btn> -->
+            <div class="ma-2 mb-5">
               <v-btn v-if="!rail" block @click="logoutDialog = true">
                 Logout
               </v-btn>
