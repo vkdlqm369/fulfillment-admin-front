@@ -1,4 +1,4 @@
-nsole.log<script setup>
+<script setup>
 const isOpen = defineModel("modelValue", { type: Boolean, default: false });
 const props = defineProps({
   message: String,
@@ -8,7 +8,7 @@ const props = defineProps({
   },
   iconColor: {
     type: String,
-    default: "error",
+    default: "primary_red",
   },
   to: {
     type: String,
@@ -16,12 +16,13 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['close'])
+const emits = defineEmits(["update:modelValue"]);
 
 const closeDialog = () => {
   isOpen.value = false;
   emit('close')
 };
+
 </script>
 
 <template>
