@@ -8,7 +8,7 @@ const props = defineProps({
   },
   iconColor: {
     type: String,
-    default: "error",
+    default: "primary_red",
   },
   to: {
     type: String,
