@@ -1,4 +1,4 @@
-<script setup>
+nsole.log<script setup>
 const isOpen = defineModel("modelValue", { type: Boolean, default: false });
 const props = defineProps({
   message: String,
@@ -9,6 +9,10 @@ const props = defineProps({
   iconColor: {
     type: String,
     default: "error",
+  },
+  to: {
+    type: String,
+    default: "",
   },
 });
 
@@ -31,7 +35,7 @@ const closeDialog = () => {
       </v-card-title>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="closeDialog">확인</v-btn>
+        <v-btn @click="closeDialog" :to="to">확인</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

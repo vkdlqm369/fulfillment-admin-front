@@ -5,11 +5,10 @@ import SearchBtn from "../components/SearchBtn.vue";
 import UserUpdateModal from "../components/UserUpdateModal.vue";
 import CheckDialog from "../components/CheckDialog.vue";
 import ChooseDialog from "@/components/ChooseDialog.vue";
-import { getSearch, getAuthority, deleteUser, updateOtherUser, patchApprove } from "@/utils/api";
-import { removeT } from "@/utils/TimeFormat"
+import { getSearch, getAuthority, deleteUser, updateOtherUser, patchApprove, getMyInfo } from "@/utils/api";
+import { convertAuthority, convertIsUsed , convertTime } from "@/utils/convertFormat"
 import { onMounted, computed } from "vue";
 import router from "@/router/index";
-
 
 const tableItems = ref([]);
 
@@ -24,8 +23,8 @@ const headers = [
   { title: "아이디", value: "id", width: "90px", headerProps: headerProps },
   { title: "관리자명", value: "name", width: "90px", headerProps: headerProps },
   { title: "이메일", value: "email", width: "120px", headerProps: headerProps },
-  { title: "권한", value: "permission", width: "80px", headerProps: headerProps},
-  { title: "부서", value: "department", width: "120px", headerProps: headerProps },
+  { title: "권한", value: "authority", width: "100px", headerProps: headerProps},
+  { title: "부서", value: "department", width: "100px", headerProps: headerProps },
   { title: "메모", value: "memo", width: "120px", headerProps: headerProps },
   { title: "등록일", value: "registrationDate", width: "180px", headerProps: headerProps },
   { title: "최종로그인", value: "lastLoginTime", width: "180px", headerProps: headerProps },
@@ -47,22 +46,13 @@ const isSearch = ref(false);
 const totalLists = ref(0);
 const numOfPage = ref(0);
 const loading = ref(false);
+const message = ref("")
+const validationDialog = ref(false)
 
 // merge시 데이터 삭제
 const authority = ref('');
 const id = ref('');
-const userInfo = ref({
-         id: "jomg",
-			   name:"김예린",
-			   permission: "MASTER",
-				 email: "niry929@naver.com",
-				 department: "fulfillment",
-				 memo: "hihi",
-				 isUsed: true,
-				 registrationDate: "2024-01-01 ...",
-			   lastLoginTime: "2024-02-02 ....",			  
-			   lastLoginIp: "dfdf"
-})
+const userInfo = ref({})
 // merge시 데이터 삭제
 
 const selected = ref([]);
@@ -93,15 +83,16 @@ function isMaster(){
 async function loadUserInfo(item){
 
   if(id.value == item){
-    router.push('/mypage')
+    router.push(`/mypage/${id.value || 'defaultId'}`)
   }
   else{
     try{
-      // const response = await getMyInfo(item)
-      // userInfo.value = response.data;
+      const response = await getMyInfo(item)
+      userInfo.value = response.data;
       updateDialogs.value['userUpdate'] = true;
     }
-    catch{
+    catch(error){
+
     }
   }
 }
@@ -122,15 +113,24 @@ async function searchHandler(page = 1) {
   try {
     const response = await getSearch(params);
     totalLists.value = response.data.totalLists;
-    tableItems.value = response.data.users;
+    // tableItems.value = response.data.users;
+    tableItems.value = response.data.users.map(user => {
+      return {
+        authority: convertAuthority(user.authority),
+        department: user.department,
+        email: user.email,
+        id: user.id,
+        isUsed: convertIsUsed(user.isUsed),
+        lastLoginIp: user.lastLoginIp,
+        lastLoginTime: convertTime(user.lastLoginTime),
+        memo: user.memo,
+        name: user.name,
+        registrationDate: convertTime(user.registrationDate),
+        userId: user.userId,
+      }
+    })
     numOfPage.value = response.data.totalPages;
 
-    for (let user of tableItems.value) {
-      user.isUsed = user.isUsed ? "활성화" : "비활성화";
-      user.permission = (user.permission === "MASTER") ? "통합관리자" : "일반관리자"
-      user.lastLoginTime = removeT(user.lastLoginTime);
-      user.registrationDate = removeT(user.registrationDate);
-    }
   } catch (error) {
     message.value = error.data.message;
     validationDialog.value = true;
@@ -141,13 +141,21 @@ async function searchHandler(page = 1) {
   selected.value = [];
 }
 
+
+function authorityTransfer(str){
+  return (str === 'MASTER') ? "통합 관리자" : "일반 관리자"
+}
+
+function isUsedTransfer(bool){
+  return (bool) ? "활성화" : "비활성화"
+}
+
 // 삭제버튼
 function checkDeleteMe() {
   return selected.value.indexOf(id.value) != -1;
 }
 
 function showDeleteDialog() {
-  console.log("SDAfsdaf")
   if (selected.value.length == 0) deleteDialogs.value["nonSelect"] = true;
   else if (checkDeleteMe()) deleteDialogs.value["deleteMe"] = true;
   // else if (checkAlreadyApproved())
@@ -160,8 +168,9 @@ async function deleteHandler(){
  try {
     const response = await deleteUser({data:{ids:selected.value}});
     deleteDialogs.value['deleteSuccess'] = true
-  } catch {
-    //error 처리
+  } catch(error) {
+    message.value = error.data.message;
+    validationDialog.value = true;
   }
 }
 
@@ -181,11 +190,13 @@ function showApproveDialog() {
 }
 
 async function approveHandler() {
-  console.log(selected.value);
   try {
     const response = await patchApprove(selected.value);
     searchHandler();
-  } catch {}
+  } catch(error) {
+    message.value = error.data.message;
+    validationDialog.value = true;
+  }
 }
 
 async function updateOthersHandler(){
@@ -194,17 +205,19 @@ async function updateOthersHandler(){
     let req = {
       id: "",
 			name:"",
-			permission: "",
+			authority: "",
 			email: "",
 			department: "",
 			memo: "",
     }
     req = userInfo.value;
     const response = await updateOtherUser(req);
+    updateDialogs.value['userUpdate']=false; 
     updateDialogs.value['updateSuccess']=true
   }
-  catch{
-
+  catch(error){
+    message.value = error.data.message;
+    validationDialog.value = true;
   }
 
 }
@@ -214,8 +227,10 @@ onMounted(async () => {
     const response = await getAuthority();
     authority.value = response.data.authority;
     id.value = response.data.id;
-    console.log(response);
-  } catch {}
+  } catch (error){
+    message.value = error.data.message;
+    validationDialog.value = true;
+  }
 });
 </script>
 
@@ -289,6 +304,7 @@ onMounted(async () => {
           v-model="deleteDialogs['delete']"
           :message="`총 ${selected.length}명의 관리자를 삭제 하시겠습니까?`"
           :handleClick="deleteHandler"
+          icon="mdi-delete"
         />
 
         <CheckDialog
@@ -321,6 +337,7 @@ onMounted(async () => {
           v-model="deleteDialogs['deleteSuccess']"
           message="삭제가 완료되었습니다."
           @close="searchHandler"
+          icon="mdi-check-bold"
         />
 
       <TextSelection
@@ -353,8 +370,11 @@ onMounted(async () => {
             sticky
           >
         <template v-slot:item.btn="row">
-          <v-btn v-if="isMaster()" color="green" @click="loadUserInfo(row.item.id)">
-          수정
+          <v-btn v-if="isMaster()"  
+              style="font-weight: bold"
+              variant="tonal"
+              @click="loadUserInfo(row.item.id)">
+수정
           </v-btn></template>
         </v-data-table-virtual>
       </v-col>
@@ -383,8 +403,13 @@ onMounted(async () => {
     v-model="updateDialogs['updateSuccess']"
     message="수정이 완료되었습니다."
     @close="searchHandler"
+    icon="mdi-check-bold"
   />
 
+  <CheckDialog
+    v-model="validationDialog"
+    :message="message"
+  />
   </v-container>
 
 </template>
@@ -413,11 +438,6 @@ onMounted(async () => {
 
 .min-w-max-c {
   min-width: max-content;
-}
-
-.result-container {
-  overflow-y: auto;
-  max-height: 60vh;
 }
 
 .pagination-container {

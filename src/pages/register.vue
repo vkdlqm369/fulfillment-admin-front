@@ -3,7 +3,6 @@ import { ref } from "vue";
 import {
   idRules,
   passwordRules,
-  confirmPasswordRules,
   nameRules,
   emailRules,
   authorityRules,
@@ -12,6 +11,7 @@ import {
 import CheckDialog from "@/components/CheckDialog.vue";
 import ChooseDialog from "@/components/ChooseDialog.vue";
 import { postRegister } from "@/utils/api";
+import commonAxios from "@/utils/commonAxios";
 
 const id = ref("");
 const password = ref("");
@@ -28,10 +28,15 @@ const showPasswordCheck = ref(false);
 const validationDialog = ref(false);
 const backDialog = ref(false);
 const message = ref("");
+const registerDoneDialog = ref(false)
+
+const confirmPasswordRules = [
+  value => value === password.value || '동일한 비밀번호를 입력해주세요.'
+]
 
 const items = [
-  { title: "관리자", value: "ADMIN" },
-  { title: "마스터", value: "MASTER" },
+  { title: "일반 관리자", value: "ADMIN" },
+  { title: "통합 관리자", value: "MASTER" },
 ];
 
 // 해당 함수는 필수값 입력 여부 검증
@@ -41,13 +46,13 @@ const handleSubmit = async () => {
     { value: password.value, rules: passwordRules },
     {
       value: confirmPassword.value,
-      rules: confirmPasswordRules(password.value),
+      rules: confirmPasswordRules,
     },
     { value: email.value, rules: emailRules },
   ];
 
-  const validationMessage = validateForm(fieldsWithRules);
-  if (!validationMessage) {
+const validationMessage = validateForm(fieldsWithRules);
+  if (validationMessage !== true) {
     message.value = validationMessage;
     validationDialog.value = true;
   } else {
@@ -63,7 +68,8 @@ const handleSubmit = async () => {
 
     try {
       const response = await postRegister(requestBody);
-    } catch (error) {
+      registerDoneDialog.value = true;
+    } catch(error) {
       message.value = error.data.message;
       validationDialog.value = true;
     }
@@ -169,7 +175,7 @@ const handleSubmit = async () => {
                           showPasswordCheck = !showPasswordCheck
                         "
                         v-model="confirmPassword"
-                        :rules="confirmPasswordRules(confirmPassword)"
+                        :rules="confirmPasswordRules"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -279,9 +285,12 @@ const handleSubmit = async () => {
       v-model="backDialog"
       message="목록으로 이동하시겠습니까?"
       :to="'/search'"
-    >
-    </ChooseDialog>
+    />
     <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>
+    <CheckDialog v-model="registerDoneDialog" 
+    message="
+    회원 등록이 완료되었습니다. 
+    관리자 조회 페이지로 이동합니다. " :to="'/search'"></CheckDialog>
   </v-app>
 </template>
 

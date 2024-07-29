@@ -1,20 +1,32 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import commonAxios from "@/utils/commonAxios";
 import Cookies from "js-cookie";
 import router from "@/router";
 import ChooseDialog from "@/components/ChooseDialog.vue";
 
+import { getAuthority } from "@/utils/api";
+
 const logoutDialog = ref(false);
 const authority = ref("");
 const drawer = ref(true);
 const rail = ref(false);
+const id = ref('')
 
 const handleLogout = async () => {
   Cookies.remove("accessToken");
   delete commonAxios.defaults.headers.common.Authorization;
   await router.push("/login");
 };
+
+
+onMounted(async () => {
+  try {
+    const response = await getAuthority();
+    authority.value = response.data.authority;
+    id.value = response.data.id;
+  } catch {}
+});
 </script>
 
 <template>
@@ -56,11 +68,10 @@ const handleLogout = async () => {
               to="/history"
             ></v-list-item>
             <v-list-item
-              v-if="authority === 'MASTER'"
               class="rounded-lg"
-              prepend-icon="mdi-tag-check"
-              title="관리자 승인 관리"
-              to="/approve"
+              prepend-icon="mdi-account small=true"
+              title="MY PAGE"
+              :to="`/mypage/${id}`"
             ></v-list-item>
           </v-list>
 
