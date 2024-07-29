@@ -12,7 +12,8 @@ const tableItems = ref([]);
 
 const headerProps = ref(
   {
-    class: 'bg-black'
+    class: "text-secondary_blue",
+    style: "font-weight:bold; font-size:15px"
   }
 )
 
@@ -85,6 +86,7 @@ async function searchHandler (page = 1) {
         <TextBlank
           v-model:inputText="inputMapForSearch.id"
           labelName="아이디"
+          variant="outlined"
           style="max-width: 200px"
           @keyup.enter="searchHandler()"
         />
@@ -92,6 +94,7 @@ async function searchHandler (page = 1) {
       <TextBlank
         v-model:inputText="inputMapForSearch.name"
         labelName="관리자명"
+        variant="outlined"
         style="max-width: 200px"
         @keyup.enter="searchHandler()"
       />
@@ -101,7 +104,7 @@ async function searchHandler (page = 1) {
 
     <v-container class="action-container">
       <v-container v-if="isSearch" class="min-w-max-c">
-        <span style="color: red">{{ totalLists }}</span>
+        <span class="text-secondary_red">{{ totalLists }}</span>
         <span>건 검색</span>
       </v-container>
       <TextSelection

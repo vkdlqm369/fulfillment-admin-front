@@ -94,7 +94,7 @@ const validationMessage = validateForm(fieldsWithRules);
             <v-spacer></v-spacer>
             <template v-slot:append>
               <div class="ma-2">
-                <v-btn color="blue" block @click="backDialog = true">
+                <v-btn color="secondary_blue" variant="outlined" style="font-weight: bold" block @click="backDialog = true">
                   목록으로
                 </v-btn>
               </div>
@@ -116,7 +116,7 @@ const validationMessage = validateForm(fieldsWithRules);
                     <v-col cols="4">
                       <v-list-subheader>
                         <span>아이디</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -136,7 +136,7 @@ const validationMessage = validateForm(fieldsWithRules);
                     <v-col cols="4">
                       <v-list-subheader>
                         <span>비밀번호</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -160,7 +160,7 @@ const validationMessage = validateForm(fieldsWithRules);
                     <v-col cols="4">
                       <v-list-subheader>
                         <span>비밀번호 확인</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -185,7 +185,7 @@ const validationMessage = validateForm(fieldsWithRules);
                     <v-col cols="4">
                       <v-list-subheader>
                         <span>관리자명</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -201,7 +201,7 @@ const validationMessage = validateForm(fieldsWithRules);
                     <v-col cols="4">
                       <v-list-subheader>
                         <span>이메일</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -219,7 +219,7 @@ const validationMessage = validateForm(fieldsWithRules);
                     <v-col cols="4">
                       <v-list-subheader>
                         <span>권한</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -271,7 +271,7 @@ const validationMessage = validateForm(fieldsWithRules);
                   <!-- 등록 버튼 -->
                   <v-row>
                     <v-col cols="12">
-                      <v-btn type="submit" color="primary" class="mt-4" block
+                      <v-btn color="tertiary_blue" type="submit" class="mt-4" block
                         >등록</v-btn
                       >
                     </v-col>

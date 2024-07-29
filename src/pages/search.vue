@@ -9,12 +9,14 @@ import { getSearch, getAuthority, deleteUser, updateOtherUser, patchApprove, get
 import { convertAuthority, convertIsUsed , convertTime } from "@/utils/convertFormat"
 import { onMounted, computed } from "vue";
 import router from "@/router/index";
+import vuetify from "@/plugins/vuetify";
 
 const tableItems = ref([]);
 
 const headerProps = ref(
   {
-    class: 'bg-black'
+    class: "text-secondary_blue",
+    style: "font-weight:bold; font-size:15px"
   }
 )
 
@@ -242,6 +244,7 @@ onMounted(async () => {
         <TextBlank
           v-model:inputText="inputMapForSearch.id"
           labelName="아이디"
+          variant="outlined"
           style="max-width: 120px"
           @keyup.enter="searchHandler()"
         />
@@ -249,6 +252,7 @@ onMounted(async () => {
       <TextBlank
         v-model:inputText="inputMapForSearch.name"
         labelName="관리자명"
+        variant="outlined"
         style="max-width: 140px"
         @keyup.enter="searchHandler()"
       />
@@ -256,6 +260,7 @@ onMounted(async () => {
       <TextBlank
         v-model:inputText="inputMapForSearch.email"
         labelName="이메일"
+        variant="outlined"
         style="max-width: 200px"
         @keyup.enter="searchHandler()"
       />
@@ -264,30 +269,31 @@ onMounted(async () => {
         v-model:selected="inputMapForSearch.isUsed"
         style="max-width: 140px"
         labelName="활성화유뮤"
+        variant="outlined"
         :itemList="[
           { name: '선택', value: '' },
           { name: '활성화', value: 'TRUE' },
           { name: '비활성화', value: 'FALSE' },
         ]"
       />
-      <SearchBtn class="fixed-h bg-black" @click="searchHandler()" />
+      <SearchBtn class="fixed-h" @click="searchHandler()" />
     </v-container>
 
     <v-container class="action-container">
       <v-container v-if="isSearch" class="min-w-max-c">
-        <span style="color: red">{{ totalLists }}</span>
+        <span class="text-secondary_red">{{ totalLists }}</span>
         <span>건 검색</span>
       </v-container>
       <v-btn 
         v-if="isMaster()"
         variant="elevated"
-        color="#5A72A0"
+        color="tertiary_blue"
         class="fixed-h rounded-lg" 
         to="/register">관리자 등록</v-btn>
         <v-btn
           v-if="isMaster()"
           variant="tonal"
-          color="#6EACDE"
+          color="secondary_blue"
           class="fixed-h rounded-lg"
           style="font-weight: bold"
           @click="showApproveDialog"
@@ -296,7 +302,8 @@ onMounted(async () => {
       <v-btn 
         v-if="isMaster()" 
         variant="tonal"
-        class="fixed-h text-error rounded-lg" 
+        class="fixed-h rounded-lg" 
+        color="secondary_red"
         style="font-weight:bold;"
         @click="showDeleteDialog">삭제</v-btn>
 
@@ -342,6 +349,7 @@ onMounted(async () => {
 
       <TextSelection
         v-model:selected="inputMapForSearch.showList"
+        variant="outlined"
         :itemList="[
           { name: '10개씩 보기', value: 10 },
           { name: '20개씩 보기', value: 20 },
@@ -373,8 +381,9 @@ onMounted(async () => {
           <v-btn v-if="isMaster()"  
               style="font-weight: bold"
               variant="tonal"
+              color="title_gray"
               @click="loadUserInfo(row.item.id)">
-수정
+              수정
           </v-btn></template>
         </v-data-table-virtual>
       </v-col>

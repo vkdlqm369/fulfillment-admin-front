@@ -5,11 +5,13 @@ import { useRouter } from 'vue-router';
 import CheckPasswordDialog from '@/components/CheckPasswordDialog.vue';
 import { convertAuthority, convertIsUsed, convertTime } from '@/utils/convertFormat';
 
+
 const user = ref({});
 const checkOpen = ref(false);
 const id = ref('');
 const authority = ref('')
 const path1 = ref(true)
+const loading = ref(false)
 
 const router = useRouter();
 
@@ -21,15 +23,19 @@ const fetchUser = async (id) => {
   } catch (error) {
     console.error("사용자 정보를 가져오는 중 에러 발생");
   }
+    loading.value =false;
 };
 
 onMounted(async () => {
-
     try {
+    loading.value =true;
     const response = await getAuthority();
     authority.value = response.data.authority;
     id.value = response.data.id;
-  } catch {}
+  } catch {
+    loading.value =false;
+
+  }
 
   if (id.value) {
     fetchUser(id.value);
@@ -49,12 +55,12 @@ const handlePasswordVerified = ( ) => {
 </script>
 
 <template>
-  <v-app>
+  <v-app max-width="100">
     <v-container fluid class="fill-height py-0">
       <v-row justify="center" class="fill-height">
         <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height overflow-auto">
           <v-toolbar flat>
-            <v-toolbar-title>My Page</v-toolbar-title>
+            <v-toolbar-title style="font-weight: bold">My Page</v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
 
@@ -62,38 +68,36 @@ const handlePasswordVerified = ( ) => {
             <v-card-text>
               <h3>회원정보</h3>
               <v-container fluid>
-                <v-row>
+                <v-row class='py-2' justify="center">
                   <v-col cols="4">
-                    <span>아이디</span>
+                    <span class='gray--text'>아이디</span>
                   </v-col>
                   <v-col cols="8">
                     <div>{{ user.id }}</div>
                   </v-col>
                 </v-row>
-                <v-row>
+                <v-row class='py-2'>
                   <v-col cols="4">
-                    <span>관리자명</span>
+                    <span class='gray--text'>관리자명</span>
                   </v-col>
                   <v-col cols="8">
                     <div>{{ user.name }}</div>
                   </v-col>
                 </v-row>
                 
-                <v-row>
+                <v-row class='py-2'>
                     <v-col cols="4">
-                      
-                        <span>이메일</span>
-                      
+                        <span class='gray--text'>이메일</span>
                     </v-col>
                     <v-col cols="8">
                       <div>{{ user.email }}</div>
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class='py-2'>
                     <v-col cols="4">
                       
-                        <span>권한</span>
+                        <span class='gray--text'>권한</span>
                       
                     </v-col>
                     <v-col cols="8">
@@ -101,10 +105,10 @@ const handlePasswordVerified = ( ) => {
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class='py-2'>
                     <v-col cols="4">
                       
-                        <span>부서</span>
+                        <span class='gray--text'>부서</span>
                       
                     </v-col>
                     <v-col cols="8">
@@ -112,32 +116,30 @@ const handlePasswordVerified = ( ) => {
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class='py-2'>
                     <v-col cols="4">
-                      
-                        <span>메모</span>
-                      
+                        <span class='gray--text'>메모</span>
                     </v-col>
                     <v-col cols="8">
                       <div>{{ user.memo }}</div>
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class='py-2'>
                     <v-col cols="4">
                       
-                        <span>활성화여부</span>
+                        <span class='gray--text'>활성화여부</span>
                       
                     </v-col>
                     <v-col cols="8">
                       <div>{{ convertIsUsed(user.isUsed) }}</div>
                     </v-col>
-                  </v-row>
+                  </v-row >
 
-                  <v-row>
+                  <v-row class='py-2'>
                     <v-col cols="4">
                       
-                        <span>등록일</span>
+                        <span class='gray--text'>등록일</span>
                       
                     </v-col>
                     <v-col cols="8">
@@ -145,10 +147,10 @@ const handlePasswordVerified = ( ) => {
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class='py-2'>
                     <v-col cols="4">
                       
-                        <span>최종 로그인 시간</span>
+                        <span class='gray--text'>최종 로그인 시간</span>
                       
                     </v-col>
                     <v-col cols="8">
@@ -156,10 +158,10 @@ const handlePasswordVerified = ( ) => {
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row class='py-2'>
                     <v-col cols="4">
                       
-                        <span>최종 로그인 IP</span>
+                        <span class='gray--text'>최종 로그인 IP</span>
                       
                     </v-col>
                     <v-col cols="8">
@@ -170,10 +172,10 @@ const handlePasswordVerified = ( ) => {
 
               <v-row justify="center">
                 <v-col cols="auto">
-                  <v-btn @click="checkOpen=true; path1=true;" color="#546E7A" class="mt-2">회원 정보 수정</v-btn>
+                  <v-btn @click="checkOpen=true; path1=true;" color="tertiary_blue" class="mt-2">회원 정보 수정</v-btn>
                 </v-col>
                 <v-col cols="auto">
-                  <v-btn @click="checkOpen=true; path1=false;" color="#6D4C41" class="mt-2">비밀번호 수정</v-btn>
+                  <v-btn @click="checkOpen=true; path1=false;" color="primary_red" class="mt-2">비밀번호 수정</v-btn>
                 </v-col>
               </v-row>
             </v-card-text>
@@ -181,6 +183,7 @@ const handlePasswordVerified = ( ) => {
         </v-col>
       </v-row>
       <CheckPasswordDialog v-model:checkOpen="checkOpen" :id="id" @password-verified="handlePasswordVerified"></CheckPasswordDialog>
+      <LoadingSpinner v-model="loading" />
     </v-container>
   </v-app>
 </template>
@@ -189,6 +192,11 @@ const handlePasswordVerified = ( ) => {
 <style scoped>
 .white--text {
   color: white !important;
+}
+.gray--text{
+  color: #BDBDBD ;
+  font-weight: bold;
+  font-size: 16px;
 }
 </style>
 

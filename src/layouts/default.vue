@@ -4,6 +4,7 @@ import commonAxios from "@/utils/commonAxios";
 import Cookies from "js-cookie";
 import router from "@/router";
 import ChooseDialog from "@/components/ChooseDialog.vue";
+import vuetify from "@/plugins/vuetify";
 
 import { getAuthority } from "@/utils/api";
 
@@ -36,7 +37,7 @@ onMounted(async () => {
         <v-navigation-drawer
           v-model="drawer"
           :rail="rail"
-          color="#5A72A0"
+          color="primary_blue"
           style="height: 100vh; border: none; position: fixed"
           permanent
           @click="rail = false"
@@ -73,17 +74,11 @@ onMounted(async () => {
               title="MY PAGE"
               :to="`/mypage/${id}`"
             ></v-list-item>
-            <v-list-item
-              class="rounded-lg"
-              prepend-icon="mdi-account small=true"
-              title="MY PAGE"
-              :to="`/mypage/${(user && user.id) || 'defaultId'}`"
-            ></v-list-item>
           </v-list>
 
           <template v-slot:append>
             <div class="ma-2">
-              <v-btn v-if="!rail" block @click="logoutDialog = true">
+              <v-btn color="tertiary_blue" v-if="!rail" block @click="logoutDialog = true">
                 Logout
               </v-btn>
               <v-btn
