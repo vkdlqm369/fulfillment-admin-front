@@ -6,6 +6,9 @@ import Index from "@/pages/index.vue";
 import Search from "@/pages/search.vue";
 import History from "@/pages/history.vue";
 import Register from "@/pages/register.vue";
+import MyPage from "@/pages/myPage.vue";
+import UpdateProfile from "@/pages/updateProfile.vue";
+import UpdatePassword from "@/pages/updatePassword.vue";
 import Cookies from "js-cookie";
 
 const routes = [
@@ -32,6 +35,23 @@ const routes = [
   {
     path: "/register",
     component: Register,
+    meta: { layout: "default" },
+  },
+  {
+    path: '/mypage/:id',
+    component: MyPage,
+    meta: { layout: "default" },
+  },
+
+  {
+    path: "/updateProfile",
+    component: UpdateProfile,
+    meta: { layout: "default" },
+  },
+
+  {
+    path: "/updatePassword",
+    component: UpdatePassword,
     meta: { layout: "default" },
   },
 ];
