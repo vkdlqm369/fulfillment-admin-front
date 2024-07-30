@@ -18,12 +18,16 @@
   </script>
   
   <style scoped>
+
+  @import '@/assets/css/pretendard.css';
+
   .footer {
     background-color: #f9f9f9;
     color: #333;
     padding: 10px 20px;
     text-align: center;
     border-top: 1px solid #ddd;
+    font-family: 'Pretendard-Regular', sans-serif;
   }
   
   .footer-content {

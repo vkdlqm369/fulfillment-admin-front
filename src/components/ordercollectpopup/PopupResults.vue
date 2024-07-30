@@ -25,18 +25,35 @@ const props = defineProps({
 </script>
 
 <style scoped>
+@import '@/assets/css/pretendard.css';
+
 .popup-results {
   margin-top: 20px;
   text-align: center;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Pretendard-SemiBold', sans-serif;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.popup-results:hover {
+  background-color: #f9f9f9;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.total {
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .success {
-  color: blue;
+  color: blue; /* 성공 시 녹색 */
 }
 
 .failure {
-  color: red;
+  color: #f44336; /* 실패 시 빨간색 */
 }
-
-
 </style>
