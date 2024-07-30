@@ -132,7 +132,6 @@ export const patchApprove = async (requestBody) => {
       return res
     }catch(error) {
       console.error("비밀번호 업데이트 오류가 발생하였습니다", error.response);
-      throw error;
       throw error.response;
     }
 

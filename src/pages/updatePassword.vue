@@ -4,6 +4,7 @@
   import Cookies from "js-cookie";
   import router from "@/router";
   import commonAxios from "@/utils/commonAxios";
+  import { passwordRules, validateForm } from '@/utils/validationRules';
   
   const currentPassword = ref('');
   const newPassword = ref('');
@@ -13,9 +14,15 @@
   const showConfirmNewPassword = ref(false);
   const updateDialog = ref(false);
   const updateFailDialog = ref(false);
-
+  const validationDialog = ref(false);
+  const message = ref('');
 
   const checkPasswordRule = [
+    value => !!value || "비밀번호는 필수값입니다.",
+    value =>
+    /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[a-z\d!@#$%^&*]{10,100}$/.test(
+      value
+    ) || "비밀번호는 10자리 이상의 소문자/숫자/특수문자를 입력해주세요.",
       value => value !== currentPassword.value || ' 현재와 다른 비밀번호를 입력해주세요.'
   ];
 
@@ -25,19 +32,30 @@
   
 
   const submitForm = async() => {
+    const fieldsWithRules = [
+    { value: newPassword.value, rules: checkPasswordRule},
+    { value: confirmNewPassword.value, rules: confirmPasswordRules}
+  ];
+  const validationMessage = validateForm(fieldsWithRules);
 
+  if (validationMessage !== true) {
+      message.value = validationMessage
+      validationDialog.value = true;
+  }
+  else{
     const requestBody = {
       currentPassword: currentPassword.value,
       newPassword: newPassword.value
     }
 
-    try {
-    const response = await updatePassword(requestBody);
-    console.log("업데이트 성공")
-    updateDialog.value = true;
-  } catch {
-    console.log("비밀번호 검증에 실패했습니다.");
-    updateFailDialog.value = true;
+      try {
+      const response = await updatePassword(requestBody);
+      console.log("업데이트 성공")
+      updateDialog.value = true;
+    } catch(error) {
+      message.value = error.data.message;
+      validationDialog.value = true;
+    }
   }
   }
 
@@ -47,6 +65,7 @@
       delete commonAxios.defaults.headers.common.Authorization;
       await router.push("/login");
     }
+
   }
 
   </script>
@@ -64,8 +83,9 @@
   
   
 <template>
+  <v-app max-width="100">
     <v-container>
-      <v-card style="width: 400;" variant="outlined">
+      <v-card  class="flex-grow-1 overflow-y-auto" style="height: 60vh;"  >
         <v-row align-center justify-center>
             <v-card-title>
             <h2>비밀번호 변경</h2>
@@ -147,13 +167,9 @@
         icon="mdi-check-bold"
       ></CheckDialog>
 
-      <CheckDialog 
-        v-model="updateFailDialog" 
-        message="
-        비밀번호가 현재 비밀번호와 일치하지 않습니다."
-      ></CheckDialog>
-  
+      <CheckDialog v-model="validationDialog" :message="message" />
     </v-container>
+  </v-app>
   </template>
   
 

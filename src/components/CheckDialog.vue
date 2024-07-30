@@ -25,7 +25,7 @@ const closeDialog = () => {
 </script>
 
 <template>
-  <v-dialog v-model="isOpen" max-width="500" persistent>
+  <v-dialog v-model="isOpen" max-width="500" @keyup.enter="isOpen=false" persistent>
     <v-card class="pa-2">
       <v-card-title>
         <v-responsive>

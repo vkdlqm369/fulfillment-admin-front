@@ -225,7 +225,7 @@ const submitForm = async() => {
         message="
         회원 정보 변경이 완료되었습니다
         마이 페이지로 이동합니다."
-        :to="'/mypage/:id'"
+        to="/mypage"
         icon="mdi-check-bold"
       ></CheckDialog>
 

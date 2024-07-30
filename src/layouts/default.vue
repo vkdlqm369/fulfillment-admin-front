@@ -71,7 +71,7 @@ onMounted(async () => {
               class="rounded-lg"
               prepend-icon="mdi-account small=true"
               title="MY PAGE"
-              :to="`/mypage/${id}`"
+              to="/mypage"
             ></v-list-item>
           </v-list>
 
