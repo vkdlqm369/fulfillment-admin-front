@@ -3,7 +3,7 @@
     <v-main class="main-background">
       <Header v-if="!isPopupRouteApp" />
       <router-view></router-view>
-      <Footer v-if="!isPopupRouteApp" />
+      <Footer v-if="!isPopupRouteApp && isAiRouteApp"/>
     </v-main>
   </v-app>
 </template>
@@ -18,6 +18,8 @@ const route = useRoute();
 
 const popupRoutes = ["OrderCollectPopup"]; // 팝업 창에서만 노출할 라우트 이름
 const isPopupRouteApp = computed(() => popupRoutes.includes(route.name));
+const AiRoutes = ["AiCustomerAnalytics"]; // 
+const isAiRouteApp = computed(() => AiRoutes.includes(route.name));
 </script>
 
 <style>

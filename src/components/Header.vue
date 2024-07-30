@@ -34,7 +34,7 @@ const goToAICustomerAnalytics = () => {
 .header {
   padding: 15px 20px;
   background-color: #ffffff;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;

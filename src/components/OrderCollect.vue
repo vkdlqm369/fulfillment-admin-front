@@ -18,6 +18,7 @@
           :totalPages="totalPages"
           @pageChanged="handlePageChange"
         />
+        <Footer />
       </div>
     </div>
 </template>
@@ -28,6 +29,7 @@ import { useRoute } from 'vue-router';
 import NavigationBar from "./ordercollect/NavigationBar.vue";
 import NewTable from "./ordercollect/NewTable.vue";
 import Pagination from "./ordercollect/Pagination.vue";
+import Footer from "./Footer.vue";
 import axios from "axios";
 
 const route = useRoute();
@@ -97,18 +99,18 @@ const isPopupRoute = computed(() => popupRoutes.includes(route.name));
 .content-wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  min-height: 80vh; /* Ensure it takes the full height of the viewport */
 }
 
 .footer-pagination-wrapper {
-  display: flex;
-  flex-direction: column;
-  margin-top: auto;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: white; /* Adjust background color if needed */
 }
 
 .pagination-wrapper {
   text-align: center;
-  padding: 10px 0;
 }
 
 .popup-content {
@@ -119,3 +121,4 @@ const isPopupRoute = computed(() => popupRoutes.includes(route.name));
   flex: none;
 }
 </style>
+
