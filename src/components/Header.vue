@@ -16,17 +16,17 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Header",
-  methods: {
-    goToMainPage() {
-      this.$router.push("/");
-    },
-    goToAICustomerAnalytics() {
-      this.$router.push("/ai-customer-analytics");
-    },
-  },
+<script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goToMainPage = () => {
+  router.push("/");
+};
+
+const goToAICustomerAnalytics = () => {
+  router.push("/ai-customer-analytics");
 };
 </script>
 
