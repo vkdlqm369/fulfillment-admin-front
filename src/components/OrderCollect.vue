@@ -2,7 +2,6 @@
   <div :class="['content-wrapper', { 'popup-active': isPopupRoute }]">
     <NavigationBar
       v-if="!isPopupRoute"
-      @openPopup="openPopup"
       @refreshPage="handleRefreshPage"
     />
     <NewTable
@@ -23,83 +22,75 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue';
+import { useRoute } from 'vue-router';
 import NavigationBar from "./ordercollect/NavigationBar.vue";
 import NewTable from "./ordercollect/NewTable.vue";
 import Pagination from "./ordercollect/Pagination.vue";
 import axios from "axios";
 
-export default {
-  name: "OrderCollect",
-  components: {
-    NavigationBar,
-    NewTable,
-    Pagination,
-  },
-  data() {
-    return {
-      orders: [],
-      groupedData: [],
-      totalPages: 1,
-      currentPage: 1,
-    };
-  },
-  methods: {
-    openPopup(orders) {
-    },
-    isPopup() {
-      return window.opener !== null && !window.opener.closed;
-    },
-    async fetchTableData(page = 1) {
-      try {
-        const url = "/api/table";
-        const params = { currentPage: page - 1 };
+const route = useRoute();
 
-        this.currentPage = page;
-        const response = await axios.get(url, { params });
-        console.log("Response data:", response.data);
+const orders = ref([]);
+const groupedData = ref([]);
+const totalPages = ref(1);
+const currentPage = ref(1);
 
-        this.$nextTick(() => {
-          this.groupedData = response.data.orders;
-          this.totalPages = response.data.totalPages || 1;
-        });
-
-        console.log("Updated groupedData:", this.groupedData);
-        console.log("Updated totalPages:", this.totalPages);
-      } catch (error) {
-        console.error("Error fetching table data:", error);
-      }
-    },
-    handlePageChange(page) {
-      console.log("Page changed:", page);
-      this.fetchTableData(page);
-    },
-    handleRefreshPage() {
-      console.log("Refreshing page");
-      this.fetchTableData(1);
-    },
-    handlePopupMessage(event) {
-      if (event.data === 'refreshPage') {
-        this.handleRefreshPage();
-      }
-    }
-  },
-  created() {
-    if (!this.isPopup()) {
-      this.fetchTableData();
-    }
-    window.addEventListener('message', this.handlePopupMessage);
-  },
-  beforeDestroy() {
-    window.removeEventListener('message', this.handlePopupMessage);
-  },
-  computed: {
-    isPopupRoute() {
-      const popupRoutes = ["OrderCollectPopup"];
-      return popupRoutes.includes(this.$route.name);
-    },
-  },
+const isPopup = () => {
+  return window.opener !== null && !window.opener.closed;
 };
+
+const fetchTableData = async (page = 1) => {
+  try {
+    const url = "/api/table";
+    const params = { currentPage: page - 1 };
+
+    currentPage.value = page;
+    const response = await axios.get(url, { params });
+    console.log("Response data:", response.data);
+
+    nextTick(() => {
+      groupedData.value = response.data.orders;
+      totalPages.value = response.data.totalPages || 1;
+    });
+
+    console.log("Updated groupedData:", groupedData.value);
+    console.log("Updated totalPages:", totalPages.value);
+  } catch (error) {
+    console.error("Error fetching table data:", error);
+  }
+};
+
+const handlePageChange = (page) => {
+  console.log("Page changed:", page);
+  fetchTableData(page);
+};
+
+const handleRefreshPage = () => {
+  console.log("Refreshing page");
+  fetchTableData(1);
+};
+
+const handlePopupMessage = (event) => {
+  if (event.data === 'refreshPage') {
+    handleRefreshPage();
+  }
+};
+
+onMounted(() => {
+  if (!isPopup()) {
+    fetchTableData();
+  }
+  window.addEventListener('message', handlePopupMessage);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('message', handlePopupMessage);
+});
+
+const popupRoutes = ["OrderCollectPopup"];
+const isPopupRoute = computed(() => popupRoutes.includes(route.name));
 </script>
 
 <style scoped>
