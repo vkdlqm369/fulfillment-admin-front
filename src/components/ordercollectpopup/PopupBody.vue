@@ -49,50 +49,42 @@ const dots = ref([".", "..", "..."]);
 const emit = defineEmits(["loading-complete"]);
 let intervalId;
 
-// 각 주문을 일정 간격으로 화면에 표시하는 함수
-function showOrders() {
+watch(() => props.orders, (newOrders) => {
+  if (newOrders) {
+    showOrders(newOrders);
+  }
+});
+
+function showOrders(orders) {
   visibleOrders.value = [];
   loadingComplete.value = false;
   clearInterval(intervalId);
 
-  const totalOrders = props.orders.length; // 전체 주문 개수를 가져옴
-  const maxDuration = 8000; // 모든 주문을 표시하는 데 최대 8초를 설정
-  // 주문 개수에 따라 각 주문을 표시하는 간격을 계산
-  // 개당 0.1초 ( 5초 넘을 시 -> (5초 / 주문개수) )
-  const interval = totalOrders > 50 ? maxDuration / totalOrders : 100;
+  const totalOrders = orders.length; // 전체 주문 개수를 가져옴
+  const interval = 100;
 
   // 각 주문을 순차적으로 화면에 표시
-  props.orders.forEach((order, index) => {
+  orders.forEach((order, index) => {
     setTimeout(async () => {
       visibleOrders.value.push(order); // 주문을 visibleOrders 배열에 추가
       await nextTick(); // DOM 업데이트 후 스크롤 이동
       // 스크롤을 맨 아래 자동 이동
       popupBody.value.scrollTop = popupBody.value.scrollHeight;
 
+      // 마지막 주문인 경우 로딩 완료 상태로 설정
       if (index === totalOrders - 1) {
         loadingComplete.value = true;
-        clearInterval(intervalId);
         emit("loading-complete");
       }
     }, index * interval); // 각 주문을 표시하는 간격을 설정
   });
-  // 모든 주문이 표시된 후 로딩 완료 상태로 변경
-  setTimeout(() => {
-    if (totalOrders === 0) {
-      loadingComplete.value = true;
-      emit("loading-complete");
-    }
-  }, maxDuration);
-}
 
-// props.orders가 변경될 때 showOrders 함수 호출
-watch(
-  () => props.orders,
-  (newOrders) => {
-    showOrders();
-  },
-  { immediate: true }
-);
+  // orders 배열이 비어있는 경우 로딩 완료 상태로 설정
+  if (totalOrders === 0) {
+    loadingComplete.value = true;
+    emit("loading-complete");
+  }
+}
 </script>
 
 <style scoped>

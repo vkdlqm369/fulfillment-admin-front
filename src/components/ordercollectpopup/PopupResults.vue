@@ -61,6 +61,7 @@ watchEffect(() => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: 'Pretendard-SemiBold', sans-serif;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  min-height: 115px;
 }
 
 .popup-results:hover {
