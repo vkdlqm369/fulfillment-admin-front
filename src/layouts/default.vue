@@ -75,7 +75,7 @@ onMounted(async () => {
               class="rounded-lg"
               prepend-icon="mdi-account small=true"
               title="MY PAGE"
-              :to="`/mypage`"
+              to="/mypage"
             ></v-list-item>
           </v-list>
 
@@ -107,6 +107,7 @@ onMounted(async () => {
         v-model="logoutDialog"
         message="로그아웃하시겠습니까?"
         :handleClick="handleLogout"
+        iconColor="secondary_blue"
       />
     </v-card>
   </v-app>

@@ -13,6 +13,20 @@ export const passwordRules = [
     ) || "비밀번호는 10자리 이상의 소문자/숫자/특수문자를 입력해주세요.",
 ];
 
+export const newPasswordRule = (currentPassword) => [
+  (value) => !!value || "비밀번호는 필수값입니다.",
+  (value) =>
+    /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[a-z\d!@#$%^&*]{10,100}$/.test(
+      value
+    ) || "비밀번호는 10자리 이상의 소문자/숫자/특수문자를 입력해주세요.",
+  (value) =>
+    value !== currentPassword || "현재와 다른 비밀번호를 입력해주세요.",
+];
+
+export const confirmPasswordRule = (password) => [
+  (value) => value === password || "동일한 비밀번호를 입력해주세요.",
+];
+
 export const passwordRulesWithoutNorm = [
   (value) => !!value || "비밀번호는 필수값입니다.",
 ];
@@ -30,8 +44,6 @@ export const emailRules = [
 export const authorityRules = [
   (value) => !!value || "권한 선택은 필수값입니다.",
 ];
-
-
 
 export const validateField = (value, rules) => {
   for (let rule of rules) {
@@ -51,8 +63,4 @@ export const validateForm = (fields) => {
     }
   }
   return true;
-};
-
-export const enteredForm = (fields) => {
-  return fields.every((field) => !!field.value);
 };
