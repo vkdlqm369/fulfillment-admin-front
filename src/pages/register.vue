@@ -11,7 +11,6 @@ import {
 import CheckDialog from "@/components/CheckDialog.vue";
 import ChooseDialog from "@/components/ChooseDialog.vue";
 import { postRegister } from "@/utils/api";
-import commonAxios from "@/utils/commonAxios";
 
 const id = ref("");
 const password = ref("");
@@ -79,42 +78,46 @@ const handleSubmit = async () => {
 
 <template>
   <v-app>
-    <v-container fluid class="fill-height py-0">
+    <v-container fluid class="fill-height py-0" style="min-height: 100vh">
       <v-row justify="center" class="fill-height">
-        <v-col
-          cols="12"
-          md="8"
-          lg="6"
-          class="d-flex flex-column fill-height overflow-auto"
-        >
+        <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height">
           <v-toolbar flat>
-            <v-toolbar-title>관리자 등록</v-toolbar-title>
+            <v-toolbar-title style="font-weight: bold"
+              >관리자 등록</v-toolbar-title
+            >
             <v-spacer></v-spacer>
             <template v-slot:append>
               <div class="ma-2">
-                <v-btn color="blue" block @click="backDialog = true">
+                <v-btn
+                  color="secondary_blue"
+                  variant="outlined"
+                  style="font-weight: bold"
+                  block
+                  @click="backDialog = true"
+                >
                   목록으로
                 </v-btn>
               </div>
             </template>
           </v-toolbar>
 
-          <v-card class="flex-grow-1 overflow-y-auto" style="height: 100vh">
-            <v-card-text>
-              <v-form
-                fast-fail
-                ref="form"
-                class="form-style"
-                @submit.prevent="handleSubmit"
-              >
+          <v-card class="flex-grow-1 d-flex flex-column">
+            <v-form
+              fast-fail
+              ref="form"
+              class="form-style"
+              @submit.prevent="handleSubmit"
+              style="height: 100%"
+              ><v-card-text>
                 <!-- 기본정보 섹션 -->
-                <h3>기본정보</h3>
-                <v-container fluid>
+                <v-container fluid style="height: 100%">
+                  <h3>기본정보</h3>
+
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>아이디</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="c-bold">아이디</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -133,8 +136,8 @@ const handleSubmit = async () => {
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>비밀번호</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="c-bold">비밀번호</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -157,8 +160,8 @@ const handleSubmit = async () => {
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>비밀번호 확인</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="c-bold">비밀번호 확인</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -182,8 +185,8 @@ const handleSubmit = async () => {
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>관리자명</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="c-bold">관리자명</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -198,8 +201,8 @@ const handleSubmit = async () => {
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>이메일</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="c-bold">이메일</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -216,8 +219,8 @@ const handleSubmit = async () => {
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span>권한</span>
-                        <span class="text-info">(필수)</span>
+                        <span class="c-bold">권한</span>
+                        <span class="text-secondary_blue"> (필수)</span>
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
@@ -242,7 +245,7 @@ const handleSubmit = async () => {
                   <h3>추가정보</h3>
                   <v-row class="py-2">
                     <v-col cols="4">
-                      <v-list-subheader>부서</v-list-subheader>
+                      <v-list-subheader class="c-bold">부서</v-list-subheader>
                     </v-col>
                     <v-col cols="8">
                       <v-text-field
@@ -255,7 +258,7 @@ const handleSubmit = async () => {
 
                   <v-row class="py-2">
                     <v-col cols="4">
-                      <v-list-subheader>메모</v-list-subheader>
+                      <v-list-subheader class="c-bold">메모</v-list-subheader>
                     </v-col>
                     <v-col cols="8">
                       <v-text-field
@@ -265,18 +268,20 @@ const handleSubmit = async () => {
                       ></v-text-field>
                     </v-col>
                   </v-row>
-
-                  <!-- 등록 버튼 -->
-                  <v-row>
-                    <v-col cols="12">
-                      <v-btn type="submit" color="primary" class="mt-4" block
-                        >등록</v-btn
-                      >
-                    </v-col>
-                  </v-row>
                 </v-container>
-              </v-form>
-            </v-card-text>
+              </v-card-text>
+
+              <!-- 등록 버튼 -->
+              <v-card-actions class="mb-10 justify-center px-8">
+                <v-btn
+                  color="tertiary_blue"
+                  type="submit"
+                  variant="elevated"
+                  block
+                  >등록</v-btn
+                >
+              </v-card-actions>
+            </v-form>
           </v-card>
         </v-col>
       </v-row>
@@ -303,5 +308,10 @@ const handleSubmit = async () => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.c-bold {
+  font-weight: bold;
+  font-size: 16px;
 }
 </style>
