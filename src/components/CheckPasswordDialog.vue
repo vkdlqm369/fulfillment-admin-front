@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { checkPassword } from "@/utils/api";
 import CheckDialog from "@/components/CheckDialog.vue";
 
@@ -53,7 +53,9 @@ const handleSubmit = async () => {
               <v-container fluid>
                 <v-row>
                   <v-col cols="4">
-                    <v-list-subheader><span>아이디</span></v-list-subheader>
+                    <span class="text-title_gray" style="font-weight: bold"
+                      >아이디</span
+                    >
                   </v-col>
                   <v-col cols="8">
                     <div>{{ id }}</div>
@@ -86,7 +88,7 @@ const handleSubmit = async () => {
                   >확인</v-btn
                 >
                 <v-btn
-                  color="title_gray"
+                  color="tertiary_red"
                   size="large"
                   class="mt-2"
                   @click="checkOpen = false"

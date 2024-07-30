@@ -24,55 +24,66 @@ import router from "@/router/index";
 const tableItems = ref([]);
 
 const headerProps = ref({
-  style: "font-weight: bold;",
+  class: "text-secondary_blue",
+  style: "font-weight:bold; font-size:15px",
 });
 
 const headers = [
   {
     title: "관리자번호",
     value: "userId",
-    width: "100px",
+    maxWidth: "*0px",
     align: "center",
     headerProps: headerProps,
   },
-  { title: "아이디", value: "id", width: "90px", headerProps: headerProps },
-  { title: "관리자명", value: "name", width: "90px", headerProps: headerProps },
-  { title: "이메일", value: "email", width: "120px", headerProps: headerProps },
+  { title: "아이디", value: "id", maxWidth: "80px", headerProps: headerProps },
+  {
+    title: "관리자명",
+    value: "name",
+    maxWidth: "80px",
+    headerProps: headerProps,
+  },
+  {
+    title: "이메일",
+    value: "email",
+    maxWidth: "130px",
+    headerProps: headerProps,
+  },
   {
     title: "권한",
     value: "authority",
-    width: "100px",
+    maxWidth: "90px",
     headerProps: headerProps,
   },
   {
     title: "부서",
     value: "department",
-    width: "100px",
+    maxWidth: "90px",
     headerProps: headerProps,
   },
-  { title: "메모", value: "memo", width: "120px", headerProps: headerProps },
+  { title: "메모", value: "memo", maxWidth: "110px", headerProps: headerProps },
   {
     title: "등록일",
     value: "registrationDate",
-    width: "180px",
+    maxWidth: "100px",
     headerProps: headerProps,
   },
   {
     title: "최종로그인",
     value: "lastLoginTime",
-    width: "180px",
+    maxWidth: "100px",
     headerProps: headerProps,
   },
   {
     title: "최종로그인 IP",
     value: "lastLoginIp",
-    width: "120px",
+    maxWidth: "110px",
     headerProps: headerProps,
   },
   {
     title: "활성화유무",
     value: "isUsed",
-    width: "100px",
+    maxWidth: "90px",
     headerProps: headerProps,
   },
   { title: "", value: "btn", width: "30px", headerProps: headerProps },
@@ -123,7 +134,7 @@ function isMaster() {
 
 async function loadUserInfo(item) {
   if (id.value == item) {
-    router.push(`/mypage/${id.value || "defaultId"}`);
+    router.push(`/mypage`);
   } else {
     try {
       const response = await getMyInfo(item);
@@ -149,7 +160,6 @@ async function searchHandler(page = 1) {
   try {
     const response = await getSearch(params);
     totalLists.value = response.data.totalLists;
-    // tableItems.value = response.data.users;
     tableItems.value = response.data.users.map((user) => {
       return {
         authority: convertAuthority(user.authority),
@@ -192,14 +202,12 @@ function checkDeleteMe() {
 function showDeleteDialog() {
   if (selected.value.length == 0) deleteDialogs.value["nonSelect"] = true;
   else if (checkDeleteMe()) deleteDialogs.value["deleteMe"] = true;
-  // else if (checkAlreadyApproved())
-  //   deleteDialogs.value["alreadyApproved"] = true;
   else deleteDialogs.value["delete"] = true;
 }
 
 async function deleteHandler() {
   try {
-    const response = await deleteUser({ data: { ids: selected.value } });
+    await deleteUser({ data: { ids: selected.value } });
     deleteDialogs.value["deleteSuccess"] = true;
   } catch (error) {
     message.value = error.data.message;
@@ -272,6 +280,7 @@ onMounted(async () => {
         <TextBlank
           v-model:inputText="inputMapForSearch.id"
           labelName="아이디"
+          variant="outlined"
           style="max-width: 120px"
           @keyup.enter="searchHandler()"
         />
@@ -279,6 +288,7 @@ onMounted(async () => {
         <TextBlank
           v-model:inputText="inputMapForSearch.name"
           labelName="관리자명"
+          variant="outlined"
           style="max-width: 140px"
           @keyup.enter="searchHandler()"
         />
@@ -286,6 +296,7 @@ onMounted(async () => {
         <TextBlank
           v-model:inputText="inputMapForSearch.email"
           labelName="이메일"
+          variant="outlined"
           style="max-width: 200px"
           @keyup.enter="searchHandler()"
         />
@@ -294,6 +305,7 @@ onMounted(async () => {
           v-model:selected="inputMapForSearch.isUsed"
           style="max-width: 140px"
           labelName="활성화유뮤"
+          variant="outlined"
           :itemList="[
             { name: '선택', value: '' },
             { name: '활성화', value: 'TRUE' },
@@ -305,13 +317,13 @@ onMounted(async () => {
 
       <v-container class="action-container">
         <v-container v-if="isSearch" class="min-w-max-c">
-          <span style="color: red">{{ totalLists }}</span>
+          <span class="text-secondary_red">{{ totalLists }}</span>
           <span>건 검색</span>
         </v-container>
         <v-btn
           v-if="isMaster()"
           variant="elevated"
-          color="primary_blue"
+          color="tertiary_blue"
           class="fixed-h rounded-lg"
           to="/register"
           >관리자 등록</v-btn
@@ -319,6 +331,7 @@ onMounted(async () => {
         <v-btn
           v-if="isMaster()"
           variant="tonal"
+          color="secondary_blue"
           class="fixed-h rounded-lg"
           style="font-weight: bold"
           @click="showApproveDialog"
@@ -326,9 +339,9 @@ onMounted(async () => {
         >
         <v-btn
           v-if="isMaster()"
-          variant="elevated"
-          color="secondary_red"
+          variant="tonal"
           class="fixed-h rounded-lg"
+          color="secondary_red"
           style="font-weight: bold"
           @click="showDeleteDialog"
           >삭제</v-btn
@@ -372,10 +385,12 @@ onMounted(async () => {
           message="삭제가 완료되었습니다."
           @close="searchHandler"
           icon="mdi-check-bold"
+          iconColor="primary_green"
         />
 
         <TextSelection
           v-model:selected="inputMapForSearch.showList"
+          variant="outlined"
           :itemList="[
             { name: '10개씩 보기', value: 10 },
             { name: '20개씩 보기', value: 20 },
@@ -391,29 +406,32 @@ onMounted(async () => {
     <v-container v-if="isSearch" class="content-container">
       <v-row>
         <v-col>
-          <v-data-table-virtual
-            v-model="selected"
-            :items="tableItems"
-            :headers="headers"
-            :loading="loading"
-            loading-text="Loading... Please wait"
-            :show-select="isMaster()"
-            height="60vh"
-            fixed-header
-            hover
-            sticky
-          >
-            <template v-slot:item.btn="row">
-              <v-btn
-                v-if="isMaster()"
-                style="font-weight: bold"
-                variant="tonal"
-                @click="loadUserInfo(row.item.id)"
-              >
-                수정
-              </v-btn></template
+          <div style="max-">
+            <v-data-table-virtual
+              v-model="selected"
+              :items="tableItems"
+              :headers="headers"
+              :loading="loading"
+              loading-text="Loading... Please wait"
+              :show-select="isMaster()"
+              height="60vh"
+              fixed-header
+              hover
+              sticky
             >
-          </v-data-table-virtual>
+              <template v-slot:item.btn="row">
+                <v-btn
+                  v-if="isMaster()"
+                  style="font-weight: bold"
+                  variant="tonal"
+                  color="title_gray"
+                  @click="loadUserInfo(row.item.id)"
+                >
+                  수정
+                </v-btn></template
+              >
+            </v-data-table-virtual>
+          </div>
         </v-col>
       </v-row>
       <v-row>

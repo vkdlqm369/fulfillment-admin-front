@@ -75,14 +75,19 @@ onMounted(async () => {
               class="rounded-lg"
               prepend-icon="mdi-account small=true"
               title="MY PAGE"
-              :to="`/mypage/${id}`"
+              :to="`/mypage`"
             ></v-list-item>
           </v-list>
 
           <template v-slot:append>
             <!-- <v-btn @click="toggleTheme">toggle theme</v-btn> -->
             <div class="ma-2 mb-5">
-              <v-btn v-if="!rail" block @click="logoutDialog = true">
+              <v-btn
+                v-if="!rail"
+                color="tertiary_blue"
+                block
+                @click="logoutDialog = true"
+              >
                 Logout
               </v-btn>
               <v-btn
