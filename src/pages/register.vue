@@ -6,6 +6,7 @@ import {
   nameRules,
   emailRules,
   authorityRules,
+  confirmPasswordRule,
   validateForm,
 } from "@/utils/validationRules";
 import CheckDialog from "@/components/CheckDialog.vue";
@@ -29,10 +30,6 @@ const backDialog = ref(false);
 const message = ref("");
 const registerDoneDialog = ref(false);
 
-const confirmPasswordRules = [
-  (value) => value === password.value || "동일한 비밀번호를 입력해주세요.",
-];
-
 const items = [
   { title: "일반 관리자", value: "ADMIN" },
   { title: "통합 관리자", value: "MASTER" },
@@ -45,9 +42,11 @@ const handleSubmit = async () => {
     { value: password.value, rules: passwordRules },
     {
       value: confirmPassword.value,
-      rules: confirmPasswordRules,
+      rules: confirmPasswordRule(password.value),
     },
+    { value: name.value, rules: nameRules },
     { value: email.value, rules: emailRules },
+    { value: authority.value, rules: authorityRules },
   ];
 
   const validationMessage = validateForm(fieldsWithRules);
@@ -66,7 +65,7 @@ const handleSubmit = async () => {
     };
 
     try {
-      const response = await postRegister(requestBody);
+      await postRegister(requestBody);
       registerDoneDialog.value = true;
     } catch (error) {
       message.value = error.data.message;
@@ -108,7 +107,8 @@ const handleSubmit = async () => {
               class="form-style"
               @submit.prevent="handleSubmit"
               style="height: 100%"
-              ><v-card-text>
+            >
+              <v-card-text>
                 <!-- 기본정보 섹션 -->
                 <v-container fluid style="height: 100%">
                   <h3>기본정보</h3>
@@ -178,7 +178,7 @@ const handleSubmit = async () => {
                           showPasswordCheck = !showPasswordCheck
                         "
                         v-model="confirmPassword"
-                        :rules="confirmPasswordRules"
+                        :rules="confirmPasswordRule(password)"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -290,14 +290,15 @@ const handleSubmit = async () => {
       v-model="backDialog"
       message="목록으로 이동하시겠습니까?"
       :to="'/search'"
+      iconColor="secondary_blue"
     />
     <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>
     <CheckDialog
       v-model="registerDoneDialog"
-      message="
-    회원 등록이 완료되었습니다. 
-    관리자 조회 페이지로 이동합니다. "
+      message="회원 등록이 완료되었습니다. 관리자 조회 페이지로 이동합니다."
       :to="'/search'"
+      icon="mdi-check-bold"
+      iconColor="primary_green"
     ></CheckDialog>
   </v-app>
 </template>

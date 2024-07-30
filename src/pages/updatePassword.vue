@@ -4,6 +4,12 @@ import { ref } from "vue";
 import Cookies from "js-cookie";
 import router from "@/router";
 import commonAxios from "@/utils/commonAxios";
+import {
+  passwordRules,
+  newPasswordRule,
+  confirmPasswordRule,
+  validateForm,
+} from "@/utils/validationRules";
 
 const currentPassword = ref("");
 const newPassword = ref("");
@@ -12,30 +18,37 @@ const showPassword = ref(false);
 const showNewPassword = ref(false);
 const showConfirmNewPassword = ref(false);
 const updateDialog = ref(false);
-const updateFailDialog = ref(false);
-
-const checkPasswordRule = [
-  (value) =>
-    value !== currentPassword.value || " 현재와 다른 비밀번호를 입력해주세요.",
-];
-
-const confirmPasswordRules = [
-  (value) => value === newPassword.value || "동일한 비밀번호를 입력해주세요.",
-];
+const validationDialog = ref(false);
+const message = ref("");
 
 const submitForm = async () => {
-  const requestBody = {
-    currentPassword: currentPassword.value,
-    newPassword: newPassword.value,
-  };
+  const fieldsWithRules = [
+    { value: newPassword.value, rules: passwordRules },
+    { value: newPassword.value, rules: newPasswordRule(currentPassword.value) },
+    {
+      value: confirmNewPassword.value,
+      rules: confirmPasswordRule(newPassword.value),
+    },
+  ];
+  const validationMessage = validateForm(fieldsWithRules);
 
-  try {
-    await updatePassword(requestBody);
-    console.log("업데이트 성공");
-    updateDialog.value = true;
-  } catch {
-    console.log("비밀번호 검증에 실패했습니다.");
-    updateFailDialog.value = true;
+  if (validationMessage !== true) {
+    message.value = validationMessage;
+    validationDialog.value = true;
+  } else {
+    const requestBody = {
+      currentPassword: currentPassword.value,
+      newPassword: newPassword.value,
+    };
+
+    try {
+      await updatePassword(requestBody);
+      console.log("업데이트 성공");
+      updateDialog.value = true;
+    } catch (error) {
+      message.value = error.data.message;
+      validationDialog.value = true;
+    }
   }
 };
 
@@ -100,7 +113,7 @@ const handleDialogClose = async () => {
                     persistent-hint
                     required
                     v-model="newPassword"
-                    :rules="checkPasswordRule"
+                    :rules="newPasswordRule(currentPassword)"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -122,7 +135,7 @@ const handleDialogClose = async () => {
                     persistent-hint
                     required
                     v-model="confirmNewPassword"
-                    :rules="confirmPasswordRules"
+                    :rules="confirmPasswordRule(newPassword)"
                     @keyup.enter="submitForm"
                   ></v-text-field>
                 </v-col>
@@ -154,11 +167,7 @@ const handleDialogClose = async () => {
         iconColor="primary_green"
       ></CheckDialog>
 
-      <CheckDialog
-        v-model="updateFailDialog"
-        message="
-        비밀번호가 현재 비밀번호와 일치하지 않습니다."
-      ></CheckDialog>
+      <CheckDialog v-model="validationDialog" :message="message" />
     </v-container>
   </v-container>
 </template>

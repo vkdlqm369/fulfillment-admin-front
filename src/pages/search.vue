@@ -32,7 +32,7 @@ const headers = [
   {
     title: "관리자번호",
     value: "userId",
-    maxWidth: "*0px",
+    maxWidth: "70px",
     align: "center",
     headerProps: headerProps,
   },
@@ -134,7 +134,7 @@ function isMaster() {
 
 async function loadUserInfo(item) {
   if (id.value == item) {
-    router.push(`/mypage`);
+    router.push("/mypage");
   } else {
     try {
       const response = await getMyInfo(item);
@@ -273,7 +273,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <v-container style="min-height: 100vh">
+  <v-container style="min-height: 100vh" class="flex-grow-1 overflow-x-auto">
     <v-container>
       <h1 style="margin: 15px" class="content-container">관리자 조회</h1>
       <v-container class="search-container">
@@ -352,6 +352,7 @@ onMounted(async () => {
           :message="`총 ${selected.length}명의 관리자를 삭제 하시겠습니까?`"
           :handleClick="deleteHandler"
           icon="mdi-delete"
+          iconColor="primary_red"
         />
 
         <CheckDialog
@@ -368,6 +369,8 @@ onMounted(async () => {
           v-model="approveDialogs['approve']"
           :message="`총 ${selected.length}명의 관리자를 승인 하시겠습니까?`"
           :handleClick="approveHandler"
+          icon="mdi-check-bold"
+          iconColor="secondary_blue"
         />
 
         <CheckDialog
@@ -406,32 +409,33 @@ onMounted(async () => {
     <v-container v-if="isSearch" class="content-container">
       <v-row>
         <v-col>
-          <div style="max-">
-            <v-data-table-virtual
-              v-model="selected"
-              :items="tableItems"
-              :headers="headers"
-              :loading="loading"
-              loading-text="Loading... Please wait"
-              :show-select="isMaster()"
-              height="60vh"
-              fixed-header
-              hover
-              sticky
-            >
-              <template v-slot:item.btn="row">
-                <v-btn
-                  v-if="isMaster()"
-                  style="font-weight: bold"
-                  variant="tonal"
-                  color="title_gray"
-                  @click="loadUserInfo(row.item.id)"
-                >
-                  수정
-                </v-btn></template
+          <v-data-table
+            v-model="selected"
+            :items="tableItems"
+            :headers="headers"
+            :loading="loading"
+            loading-text="Loading... Please wait"
+            :show-select="isMaster()"
+            hide-default-footer
+            :items-per-page="inputMapForSearch.showList"
+            height="60vh"
+            width="40vw"
+            fixed-header
+            hover
+            sticky
+          >
+            <template v-slot:item.btn="row">
+              <v-btn
+                v-if="isMaster()"
+                style="font-weight: bold"
+                variant="tonal"
+                color="title_gray"
+                @click="loadUserInfo(row.item.id)"
               >
-            </v-data-table-virtual>
-          </div>
+                수정
+              </v-btn></template
+            >
+          </v-data-table>
         </v-col>
       </v-row>
       <v-row>
@@ -459,9 +463,15 @@ onMounted(async () => {
       message="수정이 완료되었습니다."
       @close="searchHandler"
       icon="mdi-check-bold"
+      iconColor="primary_green"
     />
 
-    <CheckDialog v-model="validationDialog" :message="message" />
+    <CheckDialog
+      v-model="validationDialog"
+      :message="message"
+      icon="mdi-check-bold"
+      iconColor="secondary_blue"
+    />
   </v-container>
 </template>
 
