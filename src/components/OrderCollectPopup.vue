@@ -43,7 +43,7 @@ function updateCounts(isSuccess) {
 
 // 컴포넌트가 마운트될 때 (화면에 나타날 때) 실행
 onMounted(() => {
-  // 'message' 이벤트 리스너를 등록하여 부모 창에서 오는 메시지를 수신할 준비를 합니다.
+  // 'message' 이벤트 리스너를 등록하여 부모 창에서 오는 메시지를 수신할 준비
   window.addEventListener('message', handleMessage);
 });
 
