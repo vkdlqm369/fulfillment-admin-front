@@ -21,7 +21,7 @@ const headerProps = ref(
 )
 
 const headers = [
-  { title: "관리자번호", value: "userId", maxWidth: "*0px", align: 'center', headerProps: headerProps},
+  { title: "관리자번호", value: "userId", maxWidth: "70px", align: 'center', headerProps: headerProps},
   { title: "아이디", value: "id", maxWidth: "80px", headerProps: headerProps },
   { title: "관리자명", value: "name", maxWidth: "80px", headerProps: headerProps },
   { title: "이메일", value: "email", maxWidth: "130px", headerProps: headerProps },
@@ -34,21 +34,6 @@ const headers = [
   { title: "활성화유무", value: "isUsed", maxWidth: "90px", headerProps: headerProps },
   { title: "", value: "btn" , width: "30px", headerProps: headerProps}
 ];
-
-// const headers = [
-//   { title: "관리자번호", value: "userId", width: "100px", align: 'center', headerProps: headerProps},
-//   { title: "아이디", value: "id", width: "90px", headerProps: headerProps },
-//   { title: "관리자명", value: "name", width: "90px", headerProps: headerProps },
-//   { title: "이메일", value: "email", width: "120px", headerProps: headerProps },
-//   { title: "권한", value: "authority", width: "100px", headerProps: headerProps},
-//   { title: "부서", value: "department", width: "100px", headerProps: headerProps },
-//   { title: "메모", value: "memo", width: "120px", headerProps: headerProps },
-//   { title: "등록일", value: "registrationDate", width: "180px", headerProps: headerProps },
-//   { title: "최종로그인", value: "lastLoginTime", width: "180px", headerProps: headerProps },
-//   { title: "최종로그인 IP", value: "lastLoginIp", width: "120px", headerProps: headerProps },
-//   { title: "활성화유무", value: "isUsed", width: "100px", headerProps: headerProps },
-//   { title: "", value: "btn", width: "30px", headerProps: headerProps}
-// ];
 
 const inputMapForSearch = ref({
   id: "",
@@ -100,7 +85,7 @@ function isMaster(){
 async function loadUserInfo(item){
 
   if(id.value == item){
-    router.push(`/mypage/${id.value || 'defaultId'}`)
+    router.push("/mypage")
   }
   else{
     try{
@@ -251,7 +236,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <v-container style="min-height: 100vh;">
+  <v-container style="min-height: 100vh;"  class="flex-grow-1 overflow-x-auto">
     <v-container>
       <h1 style="margin: 15px" class="content-container">관리자 조회</h1>
       <v-container class="search-container">
@@ -283,18 +268,19 @@ onMounted(async () => {
         v-model:selected="inputMapForSearch.isUsed"
         style="max-width: 140px"
         labelName="활성화유뮤"
+        variant="outlined"
         :itemList="[
           { name: '선택', value: '' },
           { name: '활성화', value: 'TRUE' },
           { name: '비활성화', value: 'FALSE' },
         ]"
       />
-      <SearchBtn class="fixed-h bg-black" @click="searchHandler()" />
+      <SearchBtn class="fixed-h" @click="searchHandler()" />
     </v-container>
 
     <v-container class="action-container">
       <v-container v-if="isSearch" class="min-w-max-c">
-        <span style="color: red">{{ totalLists }}</span>
+        <span style="color: red" >{{ totalLists }}</span>
         <span>건 검색</span>
       </v-container>
       <v-btn 
@@ -361,6 +347,7 @@ onMounted(async () => {
 
       <TextSelection
         v-model:selected="inputMapForSearch.showList"
+        variant="outlined"
         :itemList="[
           { name: '10개씩 보기', value: 10 },
           { name: '20개씩 보기', value: 20 },
@@ -376,7 +363,6 @@ onMounted(async () => {
   <v-container v-if="isSearch" class="content-container">
     <v-row>
       <v-col>
-        <div style="max-">
           <v-data-table-virtual
             v-model="selected"
             :items="tableItems"
@@ -385,6 +371,7 @@ onMounted(async () => {
             loading-text="Loading... Please wait"
             :show-select="isMaster()"
             height="60vh"
+            width="40vw"
             fixed-header
             hover
             sticky
@@ -397,7 +384,6 @@ onMounted(async () => {
 수정
           </v-btn></template>
         </v-data-table-virtual>
-        </div>
       </v-col>
     </v-row>
     <v-row>

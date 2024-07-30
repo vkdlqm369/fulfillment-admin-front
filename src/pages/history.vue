@@ -5,9 +5,6 @@ import SearchBtn from "../components/SearchBtn.vue";
 import { getHistory } from "@/utils/api";
 import { convertTime } from "@/utils/convertFormat"
 import router from "@/router";
-import LoadingSpinnerVue from "@/components/LoadingSpinner.vue";
-
-
 
 const tableItems = ref([]);
 
@@ -77,7 +74,6 @@ async function searchHandler (page = 1) {
 </script>
 
 <template>
-  <LoadingSpinner v-model="loading"/>
   <v-container style="min-height: 100vh">
     <v-container>
       <h1 style="margin: 15px" class="content-container">
@@ -87,6 +83,7 @@ async function searchHandler (page = 1) {
         <TextBlank
           v-model:inputText="inputMapForSearch.id"
           labelName="아이디"
+          variant="outlined"
           style="max-width: 200px"
           @keyup.enter="searchHandler()"
         />
@@ -94,6 +91,7 @@ async function searchHandler (page = 1) {
       <TextBlank
         v-model:inputText="inputMapForSearch.name"
         labelName="관리자명"
+        variant="outlined"
         style="max-width: 200px"
         @keyup.enter="searchHandler()"
       />
@@ -108,6 +106,7 @@ async function searchHandler (page = 1) {
       </v-container>
       <TextSelection
         v-model:selected="inputMapForSearch.showList"
+        variant="outlined"
         :itemList="[
           { name: '10개씩 보기', value: '10' },
           { name: '20개씩 보기', value: '20' },

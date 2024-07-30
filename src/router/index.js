@@ -38,7 +38,7 @@ const routes = [
     meta: { layout: "default" },
   },
   {
-    path: '/mypage/:id',
+    path: '/mypage',
     component: MyPage,
     meta: { layout: "default" },
   },
