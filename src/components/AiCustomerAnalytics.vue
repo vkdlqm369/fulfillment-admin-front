@@ -41,10 +41,6 @@
     color: white;
   }
   
-  main {
-
-  }
-  
   button {
     padding: 10px 20px;
     background-color: #42b983;
