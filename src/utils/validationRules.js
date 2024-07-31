@@ -24,6 +24,7 @@ export const newPasswordRule = (currentPassword) => [
 ];
 
 export const confirmPasswordRule = (password) => [
+  (value) => !!value || "비밀번호 확인은 필수값입니다.",
   (value) => value === password || "동일한 비밀번호를 입력해주세요.",
 ];
 
@@ -36,9 +37,8 @@ export const nameRules = [(value) => !!value || "관리자명은 필수값입니
 export const emailRules = [
   (value) => !!value || "이메일은 필수값입니다.",
   (value) =>
-    /^[a-zA-Z0-9]([-_.]?[a-zA-Z0-9])*@[a-zA-Z0-9]([-_.]?[A-Za-z0-9])*.[a-zA-Z]{2,3}$/.test(
-      value
-    ) || "이메일 형식에 맞게 작성해주십시오",
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) ||
+    "이메일 형식에 맞게 작성해주십시오",
 ];
 
 export const authorityRules = [

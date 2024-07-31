@@ -1,5 +1,4 @@
 <script setup>
-import LoadingSpinnerVue from "@/components/LoadingSpinner.vue";
 import { getMyInfo, updateProfile, getAuthority } from "@/utils/api";
 import {
   convertAuthority,
@@ -9,8 +8,6 @@ import {
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
-// Merry20033!
-
 const user = ref({});
 const id = ref("");
 
@@ -18,8 +15,6 @@ const updateInfoDialog = ref(false);
 const validationDialog = ref(false);
 const message = ref("");
 const loading = ref(false);
-
-const router = useRouter();
 
 const fetchUser = async (id) => {
   try {
@@ -192,7 +187,7 @@ const submitForm = async () => {
                       <span
                         class="text-title_gray"
                         style="font-weight: bold; font-size: 16px"
-                        >사용여부</span
+                        >활성화 여부</span
                       >
                     </v-col>
                     <v-col cols="8">
@@ -240,7 +235,7 @@ const submitForm = async () => {
                   </v-row>
                 </v-container>
                 <v-row justify="center">
-                  <v-col cols="8">
+                  <v-col cols="12" class="pa-5">
                     <v-btn
                       @click="submitForm"
                       color="tertiary_blue"
