@@ -31,14 +31,9 @@ const handleSubmit = async () => {
 
 <template>
   <v-dialog v-model="checkOpen" persistent>
-    <v-container fluid class="fill-height py-0" style="height: 100vh">
-      <v-row justify="center" class="fill-height">
-        <v-col
-          cols="12"
-          md="8"
-          lg="6"
-          class="d-flex flex-column fill-height overflow-auto"
-        >
+    <v-container fluid class="py-0">
+      <v-row justify="center">
+        <v-col cols="12" md="8" lg="6" class="d-flex flex-column">
           <v-card>
             <v-card-title>비밀번호 확인</v-card-title>
             <v-card-text>
@@ -48,9 +43,9 @@ const handleSubmit = async () => {
             <v-spacer></v-spacer>
           </v-card>
           <v-divider></v-divider>
-          <v-card style="height: 30vh">
+          <v-card style="height: 250px">
             <v-card-text>
-              <v-container fluid>
+              <v-container>
                 <v-row>
                   <v-col cols="4">
                     <span class="text-title_gray" style="font-weight: bold"
@@ -71,7 +66,7 @@ const handleSubmit = async () => {
                       @keyup.enter="handleSubmit"
                       variant="outlined"
                       density="compact"
-                      width="50vh"
+                      max-width="80%"
                       :type="passwordShow ? 'text' : 'password'"
                       :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
                       @click:append="passwordShow = !passwordShow"

@@ -139,7 +139,7 @@ const emit = defineEmits(["updateOthers"]);
                 <v-row>
                   <v-col cols="4">
                     <v-list-subheader>
-                      <span>사용여부</span>
+                      <span>활성화유무</span>
                     </v-list-subheader>
                   </v-col>
                   <v-col cols="8">

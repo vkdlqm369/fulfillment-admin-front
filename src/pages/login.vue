@@ -25,7 +25,7 @@ const handleSubmit = async () => {
   ];
 
   const validationMessage = validateForm(fieldsWithRules);
-  if (!validationMessage) {
+  if (validationMessage !== true) {
     message.value = validationMessage;
     validationDialog.value = true;
   } else {
@@ -65,6 +65,7 @@ const handleSubmit = async () => {
           v-model="id"
           :rules="idRules"
           label="아이디"
+          class="mb-3"
         ></v-text-field>
 
         <v-text-field
