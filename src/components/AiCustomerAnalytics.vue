@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header>
+    <header class="header">
       <h1>Customer Analysis Dashboard</h1>
     </header>
     <div class="table-container">
@@ -13,8 +13,8 @@
             <tr>
               <th>No.</th>
               <th>Name</th>
-              <th>Email</th>
-              <th>Total Purchase Amount</th>
+              <th>Phone Number</th>
+              <th>Ai Customer Analysis</th>
             </tr>
           </thead>
           <tbody>
@@ -28,76 +28,56 @@
         </table>
       </template>
     </div>
-    <CustomerDetail v-if="showModal" :customer="selectedCustomer" @close="showModal = false" />
+    <AiCustomerDetail v-if="showModal" :customer="selectedCustomer" @close="showModal = false" />
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed } from 'vue';
-import CustomerDetail from './AiCustomerDetail.vue';
+import AiCustomerDetail from './AiCustomerDetail.vue';
 
-export default {
-  name: 'App',
-  components: {
-    CustomerDetail,
-  },
-  setup() {
-    const customers = ref([
-      { id: 1, name: '정다은', email: 'daneun@example.com', totalPurchase: 120000 },
-      { id: 2, name: '윤도윤', email: 'doyoon@example.com', totalPurchase: 90000 },
-      { id: 3, name: '김민준', email: 'minjun@example.com', totalPurchase: 150000 },
-      { id: 4, name: '강하늘', email: 'haneul@example.com', totalPurchase: 50000 },
-      { id: 5, name: '이서윤', email: 'seoyun@example.com', totalPurchase: 75000 },
-      // 더 많은 고객 데이터 추가
-    ]);
+const customers = ref([
+  { id: 1, name: '정다은', email: '010-1234-5678', totalPurchase: 120000 },
+  { id: 2, name: '윤도윤', email: '010-1234-5678', totalPurchase: 90000 },
+  { id: 3, name: '김민준', email: '010-1234-5678', totalPurchase: 150000 },
+  { id: 4, name: '강하늘', email: '010-1234-5678', totalPurchase: 50000 },
+  { id: 5, name: '이서윤', email: '010-1234-5678', totalPurchase: 75000 },
+  // 더 많은 고객 데이터 추가
+]);
 
-    const searchQuery = ref('');
-    const selectedCustomer = ref(null);
-    const showModal = ref(false);
+const searchQuery = ref('');
+const selectedCustomer = ref(null);
+const showModal = ref(false);
 
-    const filteredCustomers = computed(() => {
-      return customers.value.filter(customer => customer.name.includes(searchQuery.value));
-    });
+const filteredCustomers = computed(() => {
+  return customers.value.filter(customer => customer.name.includes(searchQuery.value));
+});
 
-    const selectCustomer = (customer) => {
-      selectedCustomer.value = customer;
-      showModal.value = true;
-    };
-
-    return {
-      searchQuery,
-      filteredCustomers,
-      selectedCustomer,
-      showModal,
-      selectCustomer,
-    };
-  },
-  filters: {
-    currency(value) {
-      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-    },
-  },
+const selectCustomer = (customer) => {
+  selectedCustomer.value = customer;
+  showModal.value = true;
 };
+
+function currency(value) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+}
 </script>
 
 <style scoped>
 @import '@/assets/css/pretendard.css';
 
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-header, footer {
-  background-color: #333;
-  color: white;
-  padding: 10px;
-}
-
-.search-container {
-  margin: 20px;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Pretendard-Regular', sans-serif;
+  margin-bottom: 0px;
+  color: black;
 }
 
 .table-container {

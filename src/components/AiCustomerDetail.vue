@@ -19,46 +19,39 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed } from 'vue';
+import { toRefs } from 'vue';
 
-export default {
-  name: 'CustomerDetail',
-  props: {
-    customer: Object,
-  },
-  emits: ['close'],
-  setup(props, { emit }) {
-    const purchaseDetails = computed(() => {
-      // 더미 데이터
-      return [
-        { name: 'Product A', date: '2024-06-01', amount: 30000 },
-        { name: 'Product B', date: '2024-06-15', amount: 45000 },
-        { name: 'Product C', date: '2024-07-01', amount: 60000 },
-      ];
-    });
+const props = defineProps({
+  customer: Object,
+});
 
-    const purchaseFrequency = computed(() => {
-      // 더미 데이터
-      return 'Monthly';
-    });
+const emit = defineEmits(['close']);
 
-    const closeModal = () => {
-      emit('close');
-    };
+const { customer } = toRefs(props);
 
-    return {
-      purchaseDetails,
-      purchaseFrequency,
-      closeModal,
-    };
-  },
-  filters: {
-    currency(value) {
-      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-    },
-  },
+const purchaseDetails = computed(() => {
+  // 더미 데이터
+  return [
+    { name: 'Product A', date: '2024-06-01', amount: 30000 },
+    { name: 'Product B', date: '2024-06-15', amount: 45000 },
+    { name: 'Product C', date: '2024-07-01', amount: 60000 },
+  ];
+});
+
+const purchaseFrequency = computed(() => {
+  // 더미 데이터
+  return 'Monthly';
+});
+
+const closeModal = () => {
+  emit('close');
 };
+
+function currency(value) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+}
 </script>
 
 <style scoped>

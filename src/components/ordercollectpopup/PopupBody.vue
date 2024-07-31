@@ -17,11 +17,8 @@
         </div>
         <div class="order-status">
           <span :class="{ success: order.success, failure: !order.success }" class="status-text">
-            {{ order.success ? "성공" : "실패" }}
+            {{ order.success ? "성공" : `실패 : ${order.errMsg}` }}
           </span>
-          <!-- 에러 메시지 표시 -->
-          <div v-if="!order.success && order.errMsg" class="error-message">{{ order.errMsg }}</div>
-          <div v-if="order.success && order.errMsg" class="success-message">{{ order.errMsg }}</div>
         </div>
       </div>
     </div>
@@ -30,7 +27,7 @@
 
 
 <script setup>
-import { ref, watch, nextTick, defineEmits } from "vue";
+import { ref, watch, nextTick} from "vue";
 
 // 부모 컴포넌트에서 전달된 props를 정의
 const props = defineProps({
@@ -45,9 +42,7 @@ const visibleOrders = ref([]);
 // popupBody 요소를 참조하기 위한 ref 변수
 const popupBody = ref(null);
 const loadingComplete = ref(false);
-const dots = ref([".", "..", "..."]);
 const emit = defineEmits(["loading-complete"]);
-let intervalId;
 
 watch(() => props.orders, (newOrders) => {
   if (newOrders) {
@@ -58,7 +53,6 @@ watch(() => props.orders, (newOrders) => {
 function showOrders(orders) {
   visibleOrders.value = [];
   loadingComplete.value = false;
-  clearInterval(intervalId);
 
   const totalOrders = orders.length; // 전체 주문 개수를 가져옴
   const interval = 100;
@@ -128,17 +122,17 @@ function showOrders(orders) {
 .order-info {
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .order-number {
-  font-size: 1em; /* 폰트 크기 조정 */
+  font-size: 0.95em; /* 폰트 크기 조정 */
   color: #333;
 }
 
 .order-detail {
-  font-size: 1em;
+  font-size: 0.95em; /* 폰트 크기 조정 */
   color: #333;
-  margin-right: 40px; /* 오른쪽 마진 추가 */
 }
 
 .success {
@@ -148,8 +142,8 @@ function showOrders(orders) {
 
 .failure {
   color: #f44336; /* 실패 시 빨간색 */
+  font-size: 0.7em; 
   font-family: "Pretendard-Semibold", sans-serif;
-  position: relative;
 }
 
 .order-status {
@@ -161,39 +155,13 @@ function showOrders(orders) {
   display: inline;
 }
 
-.error-message {
-  font-size: 0.65em; /* 폰트 크기를 작게 조정 */
-  color: #721c24;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-  padding: 2px 5px;
-  display: none;
-  white-space: nowrap;
-  margin-left: 10px; /* 왼쪽 마진 추가하여 약간의 간격을 둠 */
-}
-
 .success-message {
   font-size: 0.65em; /* 폰트 크기를 작게 조정 */
   color: #4caf50;
-  background-color: #e8f5e9;
-  border: 1px solid #c8e6c9;
   border-radius: 4px;
   padding: 2px 5px;
   display: none;
   white-space: nowrap;
   margin-left: 10px; /* 왼쪽 마진 추가하여 약간의 간격을 둠 */
-}
-
-.order-item:hover .status-text {
-  display: none;
-}
-
-.order-item:hover .error-message {
-  display: inline;
-}
-
-.order-item:hover .success-message {
-  display: inline;
 }
 </style>

@@ -160,7 +160,7 @@ onMounted(() => {
 .filters {
   display: flex;
   align-items: center;
-  padding: 15px;
+  padding: 20px;
   background-color: #ffffff;
   border-radius: 12px; /* 반경을 추가하여 더 부드럽게 만듦 */
   gap: 20px; /* 날짜 선택과 버튼 사이의 간격을 조정 */
