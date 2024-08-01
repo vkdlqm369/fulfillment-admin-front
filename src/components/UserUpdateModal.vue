@@ -93,6 +93,8 @@ import {
                                 key="value"
                                 item-title="name"
                                 item-value="value"
+                                variant="outlined"
+                                density="compact"
                         ></v-select>
                         </v-col>
                     </v-row>

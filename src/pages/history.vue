@@ -111,6 +111,7 @@ async function searchHandler (page = 1) {
       </v-container>
       <TextSelection
         v-model:selected="inputMapForSearch.showList"
+        variant="outlined"
         :itemList="[
           { name: '10개씩 보기', value: '10' },
           { name: '20개씩 보기', value: '20' },
@@ -126,16 +127,18 @@ async function searchHandler (page = 1) {
   <v-container v-if="isSearch" class="content-container">
     <v-row>
       <v-col>
-        <v-data-table-virtual  
+        <v-data-table  
             :items="tableItems"
             :headers="headers"
             :loading="loading" 
             loading-text="Loading... Please wait"
             height="52vh"
+            hide-default-footer
+            :items-per-page="inputMapForSearch.showList"
             fixed-header
             hover
             sticky
-        ></v-data-table-virtual>
+        ></v-data-table>
       </v-col>
     </v-row>
     <v-row>

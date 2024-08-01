@@ -14,13 +14,14 @@ const tableItems = ref([]);
 
 const headerProps = ref(
   {
-    class: "text-secondary_blue",
-    style: "font-weight:bold; font-size:15px"
+   class: "text-secondary_blue",
+   style: "font-weight:bold; font-size:15px"
+
   }
 )
 
 const headers = [
-  { title: "관리자번호", value: "userId", maxWidth: "*0px", align: 'center', headerProps: headerProps},
+  { title: "관리자번호", value: "userId", maxWidth: "70px", align: 'center', headerProps: headerProps},
   { title: "아이디", value: "id", maxWidth: "80px", headerProps: headerProps },
   { title: "관리자명", value: "name", maxWidth: "80px", headerProps: headerProps },
   { title: "이메일", value: "email", maxWidth: "130px", headerProps: headerProps },
@@ -33,21 +34,6 @@ const headers = [
   { title: "활성화유무", value: "isUsed", maxWidth: "90px", headerProps: headerProps },
   { title: "", value: "btn" , width: "30px", headerProps: headerProps}
 ];
-
-// const headers = [
-//   { title: "관리자번호", value: "userId", width: "100px", align: 'center', headerProps: headerProps},
-//   { title: "아이디", value: "id", width: "90px", headerProps: headerProps },
-//   { title: "관리자명", value: "name", width: "90px", headerProps: headerProps },
-//   { title: "이메일", value: "email", width: "120px", headerProps: headerProps },
-//   { title: "권한", value: "authority", width: "100px", headerProps: headerProps},
-//   { title: "부서", value: "department", width: "100px", headerProps: headerProps },
-//   { title: "메모", value: "memo", width: "120px", headerProps: headerProps },
-//   { title: "등록일", value: "registrationDate", width: "180px", headerProps: headerProps },
-//   { title: "최종로그인", value: "lastLoginTime", width: "180px", headerProps: headerProps },
-//   { title: "최종로그인 IP", value: "lastLoginIp", width: "120px", headerProps: headerProps },
-//   { title: "활성화유무", value: "isUsed", width: "100px", headerProps: headerProps },
-//   { title: "", value: "btn", width: "30px", headerProps: headerProps}
-// ];
 
 const inputMapForSearch = ref({
   id: "",
@@ -99,7 +85,7 @@ function isMaster(){
 async function loadUserInfo(item){
 
   if(id.value == item){
-    router.push(`/mypage/${id.value || 'defaultId'}`)
+    router.push("/mypage")
   }
   else{
     try{
@@ -250,7 +236,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <v-container style="min-height: 100vh;">
+  <v-container style="min-height: 100vh;"  class="flex-grow-1 overflow-x-auto">
     <v-container>
       <h1 style="margin: 15px" class="content-container">관리자 조회</h1>
       <v-container class="search-container">
@@ -294,19 +280,19 @@ onMounted(async () => {
 
     <v-container class="action-container">
       <v-container v-if="isSearch" class="min-w-max-c">
-        <span class="text-secondary_red">{{ totalLists }}</span>
+        <span style="color: red" >{{ totalLists }}</span>
         <span>건 검색</span>
       </v-container>
       <v-btn 
         v-if="isMaster()"
         variant="elevated"
-        color="tertiary_blue"
+        color="#5A72A0"
         class="fixed-h rounded-lg" 
         to="/register">관리자 등록</v-btn>
         <v-btn
           v-if="isMaster()"
           variant="tonal"
-          color="secondary_blue"
+          color="#6EACDE"
           class="fixed-h rounded-lg"
           style="font-weight: bold"
           @click="showApproveDialog"
@@ -315,8 +301,7 @@ onMounted(async () => {
       <v-btn 
         v-if="isMaster()" 
         variant="tonal"
-        class="fixed-h rounded-lg" 
-        color="secondary_red"
+        class="fixed-h text-error rounded-lg" 
         style="font-weight:bold;"
         @click="showDeleteDialog">삭제</v-btn>
 
@@ -358,7 +343,6 @@ onMounted(async () => {
           message="삭제가 완료되었습니다."
           @close="searchHandler"
           icon="mdi-check-bold"
-          iconColor="primary_green"
         />
 
       <TextSelection
@@ -379,29 +363,29 @@ onMounted(async () => {
   <v-container v-if="isSearch" class="content-container">
     <v-row>
       <v-col>
-        <div style="max-">
-          <v-data-table-virtual
+          <v-data-table
             v-model="selected"
             :items="tableItems"
             :headers="headers"
             :loading="loading"
             loading-text="Loading... Please wait"
             :show-select="isMaster()"
+            hide-default-footer
+            :items-per-page="inputMapForSearch.showList"
             height="60vh"
+            width="40vw"
             fixed-header
             hover
             sticky
           >
         <template v-slot:item.btn="row">
           <v-btn v-if="isMaster()"  
-              style="font-weight: bold;"
+              style="font-weight: bold; background-color: teal;"
               variant="tonal"
-              color="title_gray"
               @click="loadUserInfo(row.item.id)">
-              수정
+수정
           </v-btn></template>
-        </v-data-table-virtual>
-        </div>
+        </v-data-table>
       </v-col>
     </v-row>
     <v-row>
