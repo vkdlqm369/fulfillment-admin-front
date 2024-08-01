@@ -24,7 +24,6 @@ export default createVuetify({
           secondary_blue: "#A5D7E8",
           tertiary_blue: "#527A99",
 
-
           primary_red: "#C72C41",
           secondary_red: "#EE4540",
           tertiary_red: "#801336",
@@ -34,7 +33,6 @@ export default createVuetify({
           tertiary_green: "#040D12",
 
           title_gray: "#BDBDBD",
-
         },
       },
     },
