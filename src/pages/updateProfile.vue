@@ -1,9 +1,9 @@
 <script setup>
-import LoadingSpinnerVue from '@/components/LoadingSpinner.vue';
 import { getMyInfo, updateProfile, getAuthority } from '@/utils/api';
 import { convertAuthority, convertIsUsed, convertTime } from '@/utils/convertFormat';
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import ChooseDialog from '@/components/ChooseDialog.vue';
+import CheckDialog from '@/components/CheckDialog.vue';
 
 const user = ref({});
 const id = ref("");
@@ -12,13 +12,15 @@ const updateInfoDialog = ref(false);
 const validationDialog = ref(false)
 const message = ref('')
 const loading = ref(false)
+const userCheck = ref({});
+const noneChangeDialog = ref(false)
 
-const router = useRouter();
 
 const fetchUser = async (id) => {
   try {
     const response = await getMyInfo(id);
     user.value = response.data
+    userCheck.value = { ...response.data };
   } catch (error) {
     message.value = error.data.message;
     validationDialog.value = true;
@@ -51,17 +53,22 @@ const submitForm = async() => {
       department: "",
       memo: ""
     }
+  
   requestBody = user.value
 
-    try {
-        const response = await updateProfile(requestBody);
-        console.log("업데이트 성공")
-        updateInfoDialog.value = true;
-    } catch(error) {
-        console.log(error)
-        message.value = error.data.message;
-        validationDialog.value = true;
+  try {
+    if (JSON.stringify(user.value) === JSON.stringify(userCheck.value)) {
+      noneChangeDialog.value = true;
+      return;
     }
+
+    const response = await updateProfile(requestBody);
+    console.log("업데이트 성공")
+    updateInfoDialog.value = true;
+  } catch (error) {
+    message.value = error.response.data.message;
+    validationDialog.value = true;
+  }
 }
 
 
@@ -208,6 +215,16 @@ const submitForm = async() => {
  
         </v-col>
       </v-row>
+
+      <ChooseDialog 
+        v-model="noneChangeDialog" 
+        message="
+        수정된 정보가 없습니다. 
+        회원 정보 수정을 취소하시겠습니까?"
+        :to="'/mypage/:id'"
+      ></ChooseDialog>
+
+
       <CheckDialog 
         v-model="updateInfoDialog" 
         message="
@@ -221,6 +238,9 @@ const submitForm = async() => {
             v-model="validationDialog"
             :message="message"
         />
+
+         
+
     </v-container>
   </v-app>
 
