@@ -25,7 +25,7 @@ const handleSubmit = async () => {
   ];
 
   const validationMessage = validateForm(fieldsWithRules);
-  if (!validationMessage) {
+  if (validationMessage !== true) {
     message.value = validationMessage;
     validationDialog.value = true;
   } else {
@@ -65,6 +65,7 @@ const handleSubmit = async () => {
           v-model="id"
           :rules="idRules"
           label="아이디"
+          class="mb-3"
         ></v-text-field>
 
         <v-text-field
@@ -76,7 +77,7 @@ const handleSubmit = async () => {
           :type="showPassword ? 'text' : 'password'"
           @click:append-inner="showPassword = !showPassword"
         ></v-text-field>
-        <v-btn type="submit" color="#5A72A0" block>LOGIN</v-btn>
+        <v-btn type="submit" color="tertiary_blue" block>LOGIN</v-btn>
       </v-form>
     </v-sheet>
     <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>

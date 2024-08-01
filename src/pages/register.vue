@@ -6,14 +6,12 @@ import {
   nameRules,
   emailRules,
   authorityRules,
+  confirmPasswordRule,
   validateForm,
 } from "@/utils/validationRules";
 import CheckDialog from "@/components/CheckDialog.vue";
 import ChooseDialog from "@/components/ChooseDialog.vue";
 import { postRegister } from "@/utils/api";
-import commonAxios from "@/utils/commonAxios";
-import { errorMessages } from "vue/compiler-sfc";
-
 
 const id = ref("");
 const password = ref("");
@@ -30,11 +28,7 @@ const showPasswordCheck = ref(false);
 const validationDialog = ref(false);
 const backDialog = ref(false);
 const message = ref("");
-const registerDoneDialog = ref(false)
-
-const confirmPasswordRules = [
-  value => value === password.value || '동일한 비밀번호를 입력해주세요.'
-]
+const registerDoneDialog = ref(false);
 
 const items = [
   { title: "일반 관리자", value: "ADMIN" },
@@ -48,12 +42,14 @@ const handleSubmit = async () => {
     { value: password.value, rules: passwordRules },
     {
       value: confirmPassword.value,
-      rules: confirmPasswordRules,
+      rules: confirmPasswordRule(password.value),
     },
+    { value: name.value, rules: nameRules },
     { value: email.value, rules: emailRules },
+    { value: authority.value, rules: authorityRules },
   ];
 
-const validationMessage = validateForm(fieldsWithRules);
+  const validationMessage = validateForm(fieldsWithRules);
   if (validationMessage !== true) {
     message.value = validationMessage;
     validationDialog.value = true;
@@ -69,9 +65,9 @@ const validationMessage = validateForm(fieldsWithRules);
     };
 
     try {
-      const response = await postRegister(requestBody);
+      await postRegister(requestBody);
       registerDoneDialog.value = true;
-    } catch(error) {
+    } catch (error) {
       message.value = error.data.message;
       validationDialog.value = true;
     }
@@ -81,37 +77,41 @@ const validationMessage = validateForm(fieldsWithRules);
 
 <template>
   <v-app>
-    <v-container fluid class="fill-height py-0">
+    <v-container fluid class="fill-height py-0" style="min-height: 100vh">
       <v-row justify="center" class="fill-height">
-        <v-col
-          cols="12"
-          md="8"
-          lg="6"
-          class="d-flex flex-column fill-height overflow-auto"
-        >
+        <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height">
           <v-toolbar flat>
-            <v-toolbar-title style="font-weight: bold;">관리자 등록</v-toolbar-title>
+            <v-toolbar-title style="font-weight: bold"
+              >관리자 등록</v-toolbar-title
+            >
             <v-spacer></v-spacer>
             <template v-slot:append>
               <div class="ma-2">
-                <v-btn color="secondary_blue" variant="outlined" style="font-weight: bold" block @click="backDialog = true">
+                <v-btn
+                  color="secondary_blue"
+                  variant="outlined"
+                  style="font-weight: bold"
+                  block
+                  @click="backDialog = true"
+                >
                   목록으로
                 </v-btn>
               </div>
             </template>
           </v-toolbar>
 
-          <v-card class="flex-grow-1 overflow-y-auto" style="height: 100vh">
-            <v-card-text>
-              <v-form
-                fast-fail
-                ref="form"
-                class="form-style"
-                @submit.prevent="handleSubmit"
-              >
+          <v-card class="flex-grow-1 d-flex flex-column">
+            <v-form
+              fast-fail
+              ref="form"
+              class="form-style"
+              @submit.prevent="handleSubmit"
+              style="height: 100%"
+            >
+              <v-card-text>
                 <!-- 기본정보 섹션 -->
-                <v-container fluid>
-                <h3>기본정보</h3>
+                <v-container fluid style="height: 100%">
+                  <h3>기본정보</h3>
 
                   <v-row class="py-2">
                     <v-col cols="4">
@@ -178,7 +178,7 @@ const validationMessage = validateForm(fieldsWithRules);
                           showPasswordCheck = !showPasswordCheck
                         "
                         v-model="confirmPassword"
-                        :rules="confirmPasswordRules"
+                        :rules="confirmPasswordRule(password)"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -268,18 +268,20 @@ const validationMessage = validateForm(fieldsWithRules);
                       ></v-text-field>
                     </v-col>
                   </v-row>
-
-                  <!-- 등록 버튼 -->
-                  <v-row>
-                    <v-col cols="12">
-                      <v-btn color="tertiary_blue" type="submit" class="mt-4" block
-                        >등록</v-btn
-                      >
-                    </v-col>
-                  </v-row>
                 </v-container>
-              </v-form>
-            </v-card-text>
+              </v-card-text>
+
+              <!-- 등록 버튼 -->
+              <v-card-actions class="mb-10 justify-center px-8">
+                <v-btn
+                  color="tertiary_blue"
+                  type="submit"
+                  variant="elevated"
+                  block
+                  >등록</v-btn
+                >
+              </v-card-actions>
+            </v-form>
           </v-card>
         </v-col>
       </v-row>
@@ -288,12 +290,16 @@ const validationMessage = validateForm(fieldsWithRules);
       v-model="backDialog"
       message="목록으로 이동하시겠습니까?"
       :to="'/search'"
+      iconColor="secondary_blue"
     />
     <CheckDialog v-model="validationDialog" :message="message"></CheckDialog>
-    <CheckDialog v-model="registerDoneDialog" 
-    message="
-    회원 등록이 완료되었습니다. 
-    관리자 조회 페이지로 이동합니다. " :to="'/search'"></CheckDialog>
+    <CheckDialog
+      v-model="registerDoneDialog"
+      message="회원 등록이 완료되었습니다. 관리자 조회 페이지로 이동합니다."
+      :to="'/search'"
+      icon="mdi-check-bold"
+      iconColor="primary_green"
+    ></CheckDialog>
   </v-app>
 </template>
 
@@ -305,7 +311,7 @@ const validationMessage = validateForm(fieldsWithRules);
   overflow: hidden;
 }
 
-.c-bold{
+.c-bold {
   font-weight: bold;
   font-size: 16px;
 }
