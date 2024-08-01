@@ -77,6 +77,7 @@ function formatPhoneNumber(phoneNumber) {
   border-collapse: separate;
   border-spacing: 0;
   font-family: 'Pretendard-Regular', sans-serif;
+  text-align: center; /* 모든 요소 가운데 정렬 */
 }
 
 .modern-table th,

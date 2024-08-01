@@ -168,6 +168,8 @@ onMounted(() => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 박스에 그림자 추가 */
   font-family: 'Pretendard-Regular', sans-serif;
   justify-content: center; /* 전체적인 정렬을 중앙으로 이동 */
+  width: 100%; /* 화면에 맞게 너비 설정 */
+  height: 75px; /* 고정된 높이 */
 }
 
 /* datepicker 스타일 */

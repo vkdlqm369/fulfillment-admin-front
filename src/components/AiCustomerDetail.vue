@@ -2,9 +2,9 @@
   <div class="modal-overlay" @click.self="closeModal">
     <div class="modal">
       <button class="close-button" @click="closeModal">X</button>
-      <h2>{{ customer.name }}'s Purchase Details</h2>
+      <h2>{{ customer.name }}'s Purchase Analysis</h2>
       <section>
-        <h3>Purchased Products</h3>
+        <h3>이전 구매목록</h3>
         <ul>
           <li v-for="(product, index) in purchaseDetails" :key="index">
             {{ product.name }} - {{ product.date }} - {{ product.amount | currency }}
@@ -12,15 +12,15 @@
         </ul>
       </section>
       <section>
-        <h3>Purchase Frequency</h3>
-        <p>{{ purchaseFrequency }}</p>
+        <h3>Recommended product</h3>
+        <p>{{ recommendedProduct }}</p>
       </section>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { toRefs } from 'vue';
 
 const props = defineProps({
@@ -31,18 +31,20 @@ const emit = defineEmits(['close']);
 
 const { customer } = toRefs(props);
 
-const purchaseDetails = computed(() => {
-  // 더미 데이터
-  return [
-    { name: 'Product A', date: '2024-06-01', amount: 30000 },
-    { name: 'Product B', date: '2024-06-15', amount: 45000 },
-    { name: 'Product C', date: '2024-07-01', amount: 60000 },
-  ];
-});
+const purchaseDetails = ref([
+  { name: 'Product A', date: '2024-06-01', amount: 30000 },
+  { name: 'Product B', date: '2024-06-15', amount: 45000 },
+  { name: 'Product C', date: '2024-07-01', amount: 60000 },
+]);
+const recommendedProduct = ref('Monthly');
 
-const purchaseFrequency = computed(() => {
-  // 더미 데이터
-  return 'Monthly';
+onMounted(() => {
+  // 실제 API 호출 로직 주석처리
+  // const response = await fetch(`https://api.example.com/customer/${customer.value.id}/details`);
+  // const data = await response.json();
+
+  // purchaseDetails.value = data.purchaseDetails;
+  // recommendedProduct.value = data.recommendedProduct;
 });
 
 const closeModal = () => {
