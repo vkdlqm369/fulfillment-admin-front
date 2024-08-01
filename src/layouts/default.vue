@@ -4,15 +4,14 @@ import commonAxios from "@/utils/commonAxios";
 import Cookies from "js-cookie";
 import router from "@/router";
 import ChooseDialog from "@/components/ChooseDialog.vue";
-import vuetify from "@/plugins/vuetify";
-
 import { getAuthority } from "@/utils/api";
+import { useTheme } from "vuetify";
 
 const logoutDialog = ref(false);
 const authority = ref("");
 const drawer = ref(true);
 const rail = ref(false);
-const id = ref('')
+const id = ref("");
 
 const handleLogout = async () => {
   Cookies.remove("accessToken");
@@ -20,6 +19,10 @@ const handleLogout = async () => {
   await router.push("/login");
 };
 
+// const theme = useTheme();
+// function toggleTheme() {
+//   theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+// }
 
 onMounted(async () => {
   try {
@@ -72,13 +75,19 @@ onMounted(async () => {
               class="rounded-lg"
               prepend-icon="mdi-account small=true"
               title="MY PAGE"
-              :to="`/mypage/${id}`"
+              to="/mypage"
             ></v-list-item>
           </v-list>
 
           <template v-slot:append>
-            <div class="ma-2">
-              <v-btn color="tertiary_blue" v-if="!rail" block @click="logoutDialog = true">
+            <!-- <v-btn @click="toggleTheme">toggle theme</v-btn> -->
+            <div class="ma-2 mb-5">
+              <v-btn
+                v-if="!rail"
+                color="tertiary_blue"
+                block
+                @click="logoutDialog = true"
+              >
                 Logout
               </v-btn>
               <v-btn
@@ -98,6 +107,7 @@ onMounted(async () => {
         v-model="logoutDialog"
         message="로그아웃하시겠습니까?"
         :handleClick="handleLogout"
+        iconColor="secondary_blue"
       />
     </v-card>
   </v-app>

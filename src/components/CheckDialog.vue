@@ -16,11 +16,11 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(["close"]);
 
 const closeDialog = () => {
   isOpen.value = false;
-  emit('close')
+  emit("close");
 };
 </script>
 

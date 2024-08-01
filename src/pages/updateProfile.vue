@@ -1,9 +1,12 @@
 <script setup>
-import { getMyInfo, updateProfile, getAuthority } from '@/utils/api';
-import { convertAuthority, convertIsUsed, convertTime } from '@/utils/convertFormat';
-import { ref, onMounted } from 'vue';
-import ChooseDialog from '@/components/ChooseDialog.vue';
-import CheckDialog from '@/components/CheckDialog.vue';
+import { getMyInfo, updateProfile, getAuthority } from "@/utils/api";
+import {
+  convertAuthority,
+  convertIsUsed,
+  convertTime,
+} from "@/utils/convertFormat";
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 const user = ref({});
 const id = ref("");
@@ -25,28 +28,26 @@ const fetchUser = async (id) => {
     message.value = error.data.message;
     validationDialog.value = true;
   }
-  loading.value = false
+  loading.value = false;
 };
 
 onMounted(async () => {
-    loading.value = true
-    try{
-      const response = await getAuthority();
-      id.value = response.data.id;
-    }
-    catch(error){
-          message.value = error.data.message;
-          validationDialog.value = true;
-          loading.value = false
-    }
+  loading.value = true;
+  try {
+    const response = await getAuthority();
+    id.value = response.data.id;
+  } catch (error) {
+    message.value = error.data.message;
+    validationDialog.value = true;
+    loading.value = false;
+  }
 
   if (id.value) {
     fetchUser(id.value);
   }
 });
 
-const submitForm = async() => {
-
+const submitForm = async () => {
   let requestBody = {
       name: "",
       email: "",
@@ -76,34 +77,45 @@ const submitForm = async() => {
 
 <template>
   <v-app>
-    <v-container fluid class="fill-height py-0">
-      <v-row justify="center" class="fill-height" >
-        <v-col cols="12" md="8" lg="6" class="d-flex flex-column fill-height overflow-auto">
-          <v-toolbar flat>
-            <v-toolbar-title style="font-weight: bold">회원 정보 수정</v-toolbar-title>
-            <v-spacer></v-spacer>
-          </v-toolbar>
+    <v-container class="py-0g" style="height: 100%; display: table">
+      <v-container style="display: table-cell; vertical-align: middle">
+        <v-row justify="center">
+          <v-col
+            cols="12"
+            md="8"
+            lg="6"
+            class="d-flex flex-column overflow-auto"
+          >
+            <v-toolbar flat>
+              <v-toolbar-title style="font-weight: bold"
+                >회원 정보 수정</v-toolbar-title
+              >
+              <v-spacer></v-spacer>
+            </v-toolbar>
 
-          <v-card 
-          class="flex-grow-1 overflow-y-auto" style="height: 100vh;">
-            <v-card-text >
-                <!-- 회원 정보 섹션 -->
+            <v-card class="flex-grow-1">
+              <v-card-text>
                 <h3>회원정보</h3>
                 <v-container fluid>
-
                   <v-row class="py-3">
                     <v-col cols="4">
-                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">아이디</span>
+                      <span
+                        class="text-title_gray"
+                        style="font-weight: bold; font-size: 16px"
+                        >아이디</span
+                      >
                     </v-col>
                     <v-col cols="8">
                       <div>{{ user.id }}</div>
                     </v-col>
                   </v-row>
-                    
+
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span style="font-weight: bold; font-size: 16px;">관리자명</span>
+                        <span style="font-weight: bold; font-size: 16px"
+                          >관리자명</span
+                        >
                       </v-list-subheader>
                     </v-col>
 
@@ -119,22 +131,28 @@ const submitForm = async() => {
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span style="font-weight: bold; font-size: 16px;">이메일</span>
+                        <span style="font-weight: bold; font-size: 16px"
+                          >이메일</span
+                        >
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <v-text-field 
-                      label="예: test1234@test.co.kr" 
-                      variant="outlined" 
-                      density="compact"
-                      v-model="user.email" 
+                      <v-text-field
+                        label="예: test1234@test.co.kr"
+                        variant="outlined"
+                        density="compact"
+                        v-model="user.email"
                       ></v-text-field>
                     </v-col>
                   </v-row>
 
                   <v-row class="py-3">
                     <v-col cols="4">
-                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">권한</span>
+                      <span
+                        class="text-title_gray"
+                        style="font-weight: bold; font-size: 16px"
+                        >권한</span
+                      >
                     </v-col>
                     <v-col cols="8">
                       <div>{{ convertAuthority(user.authority) }}</div>
@@ -144,34 +162,44 @@ const submitForm = async() => {
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span style="font-weight: bold; font-size: 16px;">부서</span>
+                        <span style="font-weight: bold; font-size: 16px"
+                          >부서</span
+                        >
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <v-text-field 
-                      variant="outlined" 
-                      density="compact" 
-                      v-model = "user.department"></v-text-field>
+                      <v-text-field
+                        variant="outlined"
+                        density="compact"
+                        v-model="user.department"
+                      ></v-text-field>
                     </v-col>
                   </v-row>
 
                   <v-row class="py-2">
                     <v-col cols="4">
                       <v-list-subheader>
-                        <span style="font-weight: bold; font-size: 16px;">메모</span>
+                        <span style="font-weight: bold; font-size: 16px"
+                          >메모</span
+                        >
                       </v-list-subheader>
                     </v-col>
                     <v-col cols="8">
-                      <v-text-field 
-                      variant="outlined" 
-                      density="compact" 
-                      v-model = "user.memo"></v-text-field>
+                      <v-text-field
+                        variant="outlined"
+                        density="compact"
+                        v-model="user.memo"
+                      ></v-text-field>
                     </v-col>
                   </v-row>
 
                   <v-row class="py-3">
                     <v-col cols="4">
-                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">사용여부</span>
+                      <span
+                        class="text-title_gray"
+                        style="font-weight: bold; font-size: 16px"
+                        >활성화 여부</span
+                      >
                     </v-col>
                     <v-col cols="8">
                       <div>{{ convertIsUsed(user.isUsed) }}</div>
@@ -180,7 +208,11 @@ const submitForm = async() => {
 
                   <v-row class="py-3">
                     <v-col cols="4">
-                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">등록일</span>
+                      <span
+                        class="text-title_gray"
+                        style="font-weight: bold; font-size: 16px"
+                        >등록일</span
+                      >
                     </v-col>
                     <v-col cols="8">
                       <div>{{ convertTime(user.registrationDate) }}</div>
@@ -189,7 +221,11 @@ const submitForm = async() => {
 
                   <v-row class="py-3">
                     <v-col cols="4">
-                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">최종 로그인 시간</span>
+                      <span
+                        class="text-title_gray"
+                        style="font-weight: bold; font-size: 16px"
+                        >최종 로그인 시간</span
+                      >
                     </v-col>
                     <v-col cols="8">
                       <div>{{ convertTime(user.lastLoginTime) }}</div>
@@ -198,7 +234,11 @@ const submitForm = async() => {
 
                   <v-row class="py-3">
                     <v-col cols="4">
-                        <span class="text-title_gray" style="font-weight: bold; font-size: 16px;">최종 로그인 IP</span>
+                      <span
+                        class="text-title_gray"
+                        style="font-weight: bold; font-size: 16px"
+                        >최종 로그인 IP</span
+                      >
                     </v-col>
                     <v-col cols="8">
                       <div>{{ user.lastLoginIp }}</div>
@@ -221,7 +261,7 @@ const submitForm = async() => {
         message="
         수정된 정보가 없습니다. 
         회원 정보 수정을 취소하시겠습니까?"
-        :to="'/mypage/:id'"
+        :to="'/mypage'"
       ></ChooseDialog>
 
 
@@ -230,19 +270,15 @@ const submitForm = async() => {
         message="
         회원 정보 변경이 완료되었습니다
         마이 페이지로 이동합니다."
-        :to="'/mypage/:id'"
-        icon="mdi-check-bold"
-      ></CheckDialog>
+          :to="'/mypage'"
+          icon="mdi-check-bold"
+          iconColor="primary_green"
+        ></CheckDialog>
 
-        <CheckDialog
-            v-model="validationDialog"
-            :message="message"
-        />
-
-         
-
+        <CheckDialog v-model="validationDialog" :message="message" />
+      </v-container>
     </v-container>
   </v-app>
 
-  <LoadingSpinner v-model="loading"/>
+  <LoadingSpinner v-model="loading" />
 </template>
