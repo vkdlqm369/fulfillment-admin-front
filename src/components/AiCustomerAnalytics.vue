@@ -14,17 +14,21 @@
               <th class="column-no">NO.</th>
               <th class="column-name">이름</th>
               <th class="column-phone">휴대폰 번호</th>
+              <th class="column-orders">통합 주문 건수</th>
               <th class="column-analysis">고객 맞춤 AI 주문 분석</th>
+              <th class="column-time">주문 분석 시간</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(customer, index) in filteredCustomers" :key="customer.id" @click="selectCustomer(customer)">
+            <tr v-for="(customer, index) in sortedCustomers" :key="customer.id" @click="selectCustomer(customer)">
               <td class="column-no">{{ index + 1 }}</td>
               <td class="column-name">{{ customer.name }}</td>
-              <td class="column-phone">{{ customer.phoneNumber }}</td>
+              <td class="column-phone">{{ formatPhoneNumber(customer.phoneNumber) }}</td>
+              <td class="column-orders">{{ customer.totalOrders }}</td>
               <td class="column-analysis" :class="{'analysis-pending': !customer.aiCollected, 'analysis-completed': customer.aiCollected}">
                 {{ getAnalysisText(customer) }}
               </td>
+              <td class="column-time">{{ formatAnalyzedTime(customer.analyzedTime) }}</td>
             </tr>
           </tbody>
         </table>
@@ -47,16 +51,16 @@ const showModal = ref(false);
 onMounted(() => {
   // 예시 데이터를 로드
   customers.value = [
-    { id: 1, name: '김준영', phoneNumber: '01038841210', aiCollected: false },
-    { id: 2, name: '이흥원', phoneNumber: '01093171421', aiCollected: false },
-    { id: 3, name: '한서우', phoneNumber: '01034567890', aiCollected: false },
-    { id: 4, name: '강민성', phoneNumber: '01045678901', aiCollected: false },
-    { id: 5, name: '최서현', phoneNumber: '01056789012', aiCollected: false },
-    { id: 6, name: '유민호', phoneNumber: '01067890123', aiCollected: false },
-    { id: 7, name: '윤도윤', phoneNumber: '01078901234', aiCollected: false },
-    { id: 8, name: '강지훈', phoneNumber: '01090123456', aiCollected: false },
-    { id: 9, name: '박민지', phoneNumber: '01001234567', aiCollected: false },
-    { id: 10, name: '이준서', phoneNumber: '01023456789', aiCollected: false }
+    { id: 1, name: '김준영', phoneNumber: '01038841210', totalOrders: 5, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
+    { id: 2, name: '이흥원', phoneNumber: '01093171421', totalOrders: 8, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
+    { id: 3, name: '한서우', phoneNumber: '01034567890', totalOrders: 3, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
+    { id: 4, name: '강민성', phoneNumber: '01045678901', totalOrders: 10, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
+    { id: 5, name: '최서현', phoneNumber: '01056789012', totalOrders: 2, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
+    { id: 6, name: '유민호', phoneNumber: '01067890123', totalOrders: 12, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
+    { id: 7, name: '윤도윤', phoneNumber: '01078901234', totalOrders: 7, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
+    { id: 8, name: '강지훈', phoneNumber: '01090123456', totalOrders: 15, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
+    { id: 9, name: '박민지', phoneNumber: '01001234567', totalOrders: 9, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
+    { id: 10, name: '이준서', phoneNumber: '01023456789', totalOrders: 6, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' }
   ];
 });
 
@@ -64,11 +68,23 @@ const filteredCustomers = computed(() => {
   return customers.value.filter(customer => customer.name.includes(searchQuery.value));
 });
 
+const sortedCustomers = computed(() => {
+  return filteredCustomers.value.slice().sort((a, b) => b.totalOrders - a.totalOrders);
+});
+
+const formatPhoneNumber = (phoneNumber) => {
+  return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+};
+
+const formatAnalyzedTime = (analyzedTime) => {
+  return analyzedTime.split('.')[0];
+};
+
 const selectCustomer = (customer) => {
   if (!customer.aiCollected) {
     /*
     API 호출
-    await fetch(`https://api.example.com/analyze/${customer.id}`, { method: 'GET' });
+    { method: 'GET' });
     customer.aiCollected = true; // AI 분석 완료
     DB 저장 로직을 추가
     */
@@ -78,12 +94,11 @@ const selectCustomer = (customer) => {
 };
 
 const closeModal = () => {
-  selectedCustomer.value.aiCollected = true; // 임시로 aiCollected 값을 true로 변경
   showModal.value = false;
 };
 
 const getAnalysisText = (customer) => {
-  return customer.aiCollected ? '주문 수집이 완료 되었습니다. 확인하시려면 해당 고객을 클릭해주세요' : '주문 분석을 하시려면 해당 고객을 클릭해주세요';
+  return customer.aiCollected ? '추천 상품: ' + customer.personalizedRecommendations.join(', ') : '주문 분석을 하시려면 해당 고객을 클릭해주세요';
 };
 </script>
 
@@ -128,26 +143,44 @@ const getAnalysisText = (customer) => {
   white-space: nowrap;
   transition: background-color 0.3s ease, color 0.3s ease;
   height: 50px; /* 모든 행의 기본 높이 설정 */
+  border-top: 1px solid #b6bfc5; /* 상단 구분선을 위한 보더 추가 */
+  border-bottom: 1px solid #b6bfc5; /* 하단 구분선을 위한 보더 추가 */
+  border-left: none; /* 좌측 구분선 제거 */
+  border-right: none; /* 우측 구분선 제거 */
+}
+
+.modern-table th {
+  border: none; /* 테이블 제목(th)의 보더를 제거 */
 }
 
 .modern-table th.column-no,
 .modern-table td.column-no {
-  width: 50px; /* No. 열의 너비 조정 */
+  width: 5%; /* No. 열의 너비 조정 */
 }
 
 .modern-table th.column-name,
 .modern-table td.column-name {
-  width: 200px; /* Name 열의 너비 조정 */
+  width: 10%; /* Name 열의 너비 조정 */
 }
 
 .modern-table th.column-phone,
 .modern-table td.column-phone {
-  width: 150px; /* Phone Number 열의 너비 조정 */
+  width: 10%; /* Phone Number 열의 너비 조정 */
+}
+
+.modern-table th.column-orders,
+.modern-table td.column-orders {
+  width: 1%; /* 통합 주문 건수 열의 너비 조정 */
 }
 
 .modern-table th.column-analysis,
 .modern-table td.column-analysis {
-  width: 250px; /* Ai Customer Analysis 열의 너비 조정 */
+  width: 70%; /* Ai Customer Analysis 열의 너비 조정 */
+}
+
+.modern-table th.column-time,
+.modern-table td.column-time {
+  width: 10%; /* 주문 분석 시간 열의 너비 조정 */
 }
 
 .modern-table thead {

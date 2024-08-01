@@ -3,7 +3,7 @@
     <v-main class="main-background">
       <Header v-if="!isPopupRouteApp" />
       <router-view></router-view>
-      <Footer v-if="!isPopupRouteApp && isAiRouteApp"/>
+      <Footer v-if="!isPopupRouteApp"/>
     </v-main>
   </v-app>
 </template>
