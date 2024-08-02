@@ -17,7 +17,7 @@
               <th class="column-no">NO.</th>
               <th class="column-name">이름</th>
               <th class="column-phone">휴대폰 번호</th>
-              <th class="column-orders">통합 주문 건수</th>
+              <th class="column-orders">주문 건수</th>
               <th class="column-analysis">고객 맞춤 AI 주문 분석</th>
               <th class="column-time">주문 분석 시간</th>
             </tr>
@@ -28,7 +28,7 @@
               <td class="column-name">{{ customer.name }}</td>
               <td class="column-phone">{{ formatPhoneNumber(customer.phoneNumber) }}</td>
               <td class="column-orders">{{ customer.orderCount }}</td>
-              <td class="column-analysis" :class="getAnalysisClass(customer)">
+              <td :class="getAnalysisClass(customer)">
                 {{ getAnalysisText(customer) }}
               </td>
               <td class="column-time">{{ formatAnalyzedTime(customer.analyzedTime) }}</td>
@@ -46,23 +46,16 @@ import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import AiCustomerDetail from './AiCustomerDetail.vue';
 
-// 고객 데이터 배열을 저장하는 변수
 const customers = ref([]);
-
-// 검색 쿼리를 저장하는 변수
 const searchQuery = ref('');
-
-// 선택된 고객 정보를 저장하는 변수
 const selectedCustomer = ref(null);
-
-// 모달 창 표시 여부를 저장하는 변수
 const showModal = ref(false);
 
-// 임시 테이블 데이터를 로드하는 함수
 const loadTempTable = async () => {
-  const response = await axios.get('/api/CustomersAiAnalysis');
-  customers.value = response.data;
-  saveToSessionStorage(response.data);
+  const response = await fetch('/api/CustomersAiAnalysis');
+  const data = await response.json();
+  customers.value = data.orders;
+  saveToSessionStorage(data.orders);
 };
 
 // 세션 스토리지에 데이터를 저장하는 함수
@@ -83,7 +76,6 @@ onMounted(() => {
   loadFromSessionStorage();
 });
 
-// 검색 쿼리에 따라 필터링된 고객 데이터를 계산하는 함수
 const filteredCustomers = computed(() => {
   return Array.isArray(customers.value) ? customers.value.filter(customer => customer.name.includes(searchQuery.value)) : [];
 });
@@ -93,12 +85,10 @@ const sortedCustomers = computed(() => {
   return filteredCustomers.value.slice().sort((a, b) => b.orderCount - a.orderCount);
 });
 
-// 전화번호 형식을 변환하는 함수
 const formatPhoneNumber = (phoneNumber) => {
   return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
 };
 
-// 분석 시간을 형식화하는 함수
 const formatAnalyzedTime = (analyzedTime) => {
   return analyzedTime ? analyzedTime.split('.')[0] : '';
 };
@@ -117,39 +107,42 @@ const selectCustomer = (customer) => {
     fetchCustomerData(customer.id);
   }
 };
-
-// 고객 데이터를 서버에서 가져오는 함수
+// 고객 데이터를 가져옴
 const fetchCustomerData = async (customerId) => {
   try {
+    console.log("Fetching data for customer ID:", customerId);
     const response = await axios.get(`/api/CustomersAiAnalysis/${customerId}`);
-    const index = customers.value.findIndex(c => c.id === customerId);
-    if (index !== -1) {
-      customers.value[index] = { ...customers.value[index], ...response.data };
-      saveToSessionStorage(customers.value);
+    console.log("API response:", response); // 전체 API 응답 로그
+    if (response.data) {
+      // 주어진 고객 ID로 API 요청을 보내서 고객 데이터를 가져옴
+      const index = customers.value.findIndex(c => c.id === customerId);
+      if (index !== -1) {
+        customers.value[index].personalizedRecommendations = response.data.personalizedRecommendations;
+        customers.value[index].frequentOrders = response.data.frequentOrders;
+        customers.value[index].personalizedRecommendationsReason = response.data.personalizedRecommendationsReason;
+        customers.value[index].customerSegments = response.data.customerSegments;
+        customers.value[index].analyzedTime = new Date().toISOString();
+        // 업데이트된 고객 데이터를 세션 스토리지에 저장
+        saveToSessionStorage(customers.value);
+      }
+    } else {
+      console.error("Invalid response data:", response.data);
     }
   } catch (error) {
     console.error("API 요청 중 오류 발생:", error);
   }
 };
 
-// 모달 창을 닫을 때 호출되는 함수
-const handleCloseModal = async (updatedCustomer) => {
+const handleCloseModal = (updatedCustomer) => {
   showModal.value = false;
   const index = customers.value.findIndex(c => c.id === updatedCustomer.id);
   if (index !== -1) {
     customers.value[index] = { ...updatedCustomer };
     saveToSessionStorage(customers.value);
-
-    try {
-      await axios.post('/api/saveCustomerData', updatedCustomer);
-      console.log("Customer data saved successfully");
-    } catch (error) {
-      console.error("Error saving customer data:", error);
-    }
   }
 };
 
-// 고객의 주문 분석 상태에 따라 CSS 클래스를 반환하는 함수
+// 고객의 주문 분석 상태에 따라 CSS 클래스를 반환
 const getAnalysisClass = (customer) => {
   if (customer.orderCount < 3) {
     return 'analysis-low-orders';
@@ -160,12 +153,11 @@ const getAnalysisClass = (customer) => {
 // 고객의 주문 분석 상태에 따라 텍스트를 반환하는 함수
 const getAnalysisText = (customer) => {
   if (customer.orderCount < 3) {
-    return '주문 건수가 적어서 분석할 수 없습니다. 주문 분석은 3회 이상 수집되어야 제공됩니다.';
+    return '주문 건수가 적어서 분석할 수 없습니다. 주문 분석은 3회 이상 수집되어야 합니다.';
   }
-  return customer.personalizedRecommendations ? '추천 상품: ' + customer.personalizedRecommendations.join(', ') : '주문 분석을 하시려면 해당 고객을 클릭해주세요';
+  return customer.personalizedRecommendations ? '추천 상품 : ' + customer.personalizedRecommendations.join(', ') : '주문 분석을 하시려면 해당 고객을 클릭해주세요';
 };
 </script>
-
 
 <style scoped>
 @import '@/assets/css/pretendard.css';
@@ -275,7 +267,7 @@ const getAnalysisText = (customer) => {
 
 .modern-table th.column-time,
 .modern-table td.column-time {
-  width: 10%; /* 주문 분석 시간 열의 너비 조정 */
+  width: 20%; /* 주문 분석 시간 열의 너비 조정 */
 }
 
 .modern-table thead {

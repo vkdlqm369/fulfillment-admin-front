@@ -49,12 +49,16 @@ const personalizedRecommendationsReason = ref('');
 const isLoading = ref(true); // 로딩 상태 추가
 const loadingMessage = ref('Loading');
 
+//고객 데이터를 가져옴
 const fetchCustomerData = async (customerId) => {
   try {
     console.log("Fetching data for customer ID:", customerId);
     const response = await axios.get(`/api/CustomersAiAnalysis/${customerId}`);
     console.log("API response data:", response);
+
+     // API 응답 데이터가 유효한지 확인
     if (response.data && response.data.frequentOrders && response.data.personalizedRecommendations && response.data.personalizedRecommendationsReason && response.data.customerSegments) {
+      // API 응답 데이터를 반영
       frequentOrders.value = response.data.frequentOrders;
       personalizedRecommendationsReason.value = response.data.personalizedRecommendationsReason;
       customer.value.personalizedRecommendations = response.data.personalizedRecommendations;
@@ -64,6 +68,7 @@ const fetchCustomerData = async (customerId) => {
     } else {
       console.error("Invalid response data:", response.data);
     }
+
   } catch (error) {
     console.error("API 요청 중 오류 발생:", error);
   }
@@ -125,7 +130,7 @@ const handleClose = () => {
 }
 
 .modal h2 {
-  margin-bottom: 60px;
+  margin-bottom: 55px;
   font-size: 1.5em;
   text-align: center;
 }
@@ -136,7 +141,7 @@ const handleClose = () => {
 
 .modal ul.item-list {
   list-style: none;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .modal ul.item-list li {
