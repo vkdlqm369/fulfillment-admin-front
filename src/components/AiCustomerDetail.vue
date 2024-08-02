@@ -125,7 +125,7 @@ const handleClose = () => {
 }
 
 .modal h2 {
-  margin-bottom: 20px;
+  margin-bottom: 60px;
   font-size: 1.5em;
   text-align: center;
 }
@@ -136,7 +136,7 @@ const handleClose = () => {
 
 .modal ul.item-list {
   list-style: none;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .modal ul.item-list li {
@@ -160,6 +160,7 @@ const handleClose = () => {
 
 .modal p.reason {
   font-size: 0.9em;
+  color: #3c84a5;
 }
 
 .cancel-button {
