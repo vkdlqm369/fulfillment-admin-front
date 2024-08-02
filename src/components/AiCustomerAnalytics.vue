@@ -1,11 +1,14 @@
 <template>
   <div>
     <header class="header">
-      <h2>Customer Analysis Dashboard</h2>
+      <h2 class="header-title">Customer Analysis Dashboard</h2>
+      <div class="header-buttons">
+        <button @click="loadTempTable">Load Temp Table</button>
+      </div>
     </header>
     <div class="table-container">
       <template v-if="filteredCustomers.length === 0">
-        <p class="no-data-message">No customers found.</p>
+        <p class="no-data-message">Load Temp Table 버튼을 눌러주세요</p>
       </template>
       <template v-else>
         <table class="modern-table">
@@ -24,8 +27,8 @@
               <td class="column-no">{{ index + 1 }}</td>
               <td class="column-name">{{ customer.name }}</td>
               <td class="column-phone">{{ formatPhoneNumber(customer.phoneNumber) }}</td>
-              <td class="column-orders">{{ customer.totalOrders }}</td>
-              <td class="column-analysis" :class="{'analysis-pending': !customer.aiCollected, 'analysis-completed': customer.aiCollected}">
+              <td class="column-orders">{{ customer.orderCount }}</td>
+              <td class="column-analysis" :class="{'analysis-pending': !customer.personalizedRecommendations, 'analysis-completed': customer.personalizedRecommendations}">
                 {{ getAnalysisText(customer) }}
               </td>
               <td class="column-time">{{ formatAnalyzedTime(customer.analyzedTime) }}</td>
@@ -34,42 +37,49 @@
         </table>
       </template>
     </div>
-    <AiCustomerDetail v-if="showModal" :customer="selectedCustomer" @close="closeModal" />
+    <AiCustomerDetail v-if="showModal" :customer="selectedCustomer" @close="handleCloseModal" />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import axios from 'axios'; // Axios를 가져옵니다
 import AiCustomerDetail from './AiCustomerDetail.vue';
 
 const customers = ref([]);
-
 const searchQuery = ref('');
 const selectedCustomer = ref(null);
 const showModal = ref(false);
 
+const loadTempTable = async () => {
+  // 임시 데이터를 로드하는 API 요청
+  const response = await fetch('/api/CustomersAiAnalysis');
+  const data = await response.json();
+  customers.value = data.orders;
+  saveToSessionStorage(data.orders);
+};
+
+const saveToSessionStorage = (data) => {
+  sessionStorage.setItem('customers', JSON.stringify(data));
+};
+
+const loadFromSessionStorage = () => {
+  const data = sessionStorage.getItem('customers');
+  if (data) {
+    customers.value = JSON.parse(data);
+  }
+};
+
 onMounted(() => {
-  // 예시 데이터를 로드
-  customers.value = [
-    { id: 1, name: '김준영', phoneNumber: '01038841210', totalOrders: 5, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
-    { id: 2, name: '이흥원', phoneNumber: '01093171421', totalOrders: 8, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
-    { id: 3, name: '한서우', phoneNumber: '01034567890', totalOrders: 3, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
-    { id: 4, name: '강민성', phoneNumber: '01045678901', totalOrders: 10, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
-    { id: 5, name: '최서현', phoneNumber: '01056789012', totalOrders: 2, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
-    { id: 6, name: '유민호', phoneNumber: '01067890123', totalOrders: 12, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
-    { id: 7, name: '윤도윤', phoneNumber: '01078901234', totalOrders: 7, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
-    { id: 8, name: '강지훈', phoneNumber: '01090123456', totalOrders: 15, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
-    { id: 9, name: '박민지', phoneNumber: '01001234567', totalOrders: 9, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' },
-    { id: 10, name: '이준서', phoneNumber: '01023456789', totalOrders: 6, aiCollected: false, analyzedTime: '2024-08-01T13:43:32.6889131', customerSegments: '식품 중시형' }
-  ];
+  loadFromSessionStorage();
 });
 
 const filteredCustomers = computed(() => {
-  return customers.value.filter(customer => customer.name.includes(searchQuery.value));
+  return Array.isArray(customers.value) ? customers.value.filter(customer => customer.name.includes(searchQuery.value)) : [];
 });
 
 const sortedCustomers = computed(() => {
-  return filteredCustomers.value.slice().sort((a, b) => b.totalOrders - a.totalOrders);
+  return filteredCustomers.value.slice().sort((a, b) => b.orderCount - a.orderCount);
 });
 
 const formatPhoneNumber = (phoneNumber) => {
@@ -77,28 +87,62 @@ const formatPhoneNumber = (phoneNumber) => {
 };
 
 const formatAnalyzedTime = (analyzedTime) => {
-  return analyzedTime.split('.')[0];
+  return analyzedTime ? analyzedTime.split('.')[0] : '';
 };
 
 const selectCustomer = (customer) => {
-  if (!customer.aiCollected) {
-    /*
-    API 호출
-    { method: 'GET' });
-    customer.aiCollected = true; // AI 분석 완료
-    DB 저장 로직을 추가
-    */
+  if (customer.orderCount < 3) {
+    console.log("주문 건수가 적어서 분석할 수 없습니다.");
+    return;
   }
+
   selectedCustomer.value = customer;
   showModal.value = true;
+
+  if (!customer.personalizedRecommendations) {
+    // 모달이 열리자마자 데이터를 비동기적으로 가져옵니다.
+    fetchCustomerData(customer.id);
+  }
 };
 
-const closeModal = () => {
+const fetchCustomerData = async (customerId) => {
+  try {
+    console.log("Fetching data for customer ID:", customerId);
+    const response = await axios.get(`/api/CustomersAiAnalysis/${customerId}`);
+    console.log("API response:", response); // 전체 API 응답 로그
+    if (response.data) {
+      const index = customers.value.findIndex(c => c.id === customerId);
+      if (index !== -1) {
+        // 데이터를 로컬 상태에 업데이트
+        customers.value[index].personalizedRecommendations = response.data.personalizedRecommendations;
+        customers.value[index].frequentOrders = response.data.frequentOrders;
+        customers.value[index].personalizedRecommendationsReason = response.data.personalizedRecommendationsReason;
+        customers.value[index].customerSegments = response.data.customerSegments;
+        customers.value[index].analyzedTime = new Date().toISOString();
+        saveToSessionStorage(customers.value);
+      }
+    } else {
+      console.error("Invalid response data:", response.data);
+    }
+  } catch (error) {
+    console.error("API 요청 중 오류 발생:", error);
+  }
+};
+
+const handleCloseModal = (updatedCustomer) => {
   showModal.value = false;
+  const index = customers.value.findIndex(c => c.id === updatedCustomer.id);
+  if (index !== -1) {
+    customers.value[index] = { ...updatedCustomer };
+    saveToSessionStorage(customers.value);
+  }
 };
 
 const getAnalysisText = (customer) => {
-  return customer.aiCollected ? '추천 상품: ' + customer.personalizedRecommendations.join(', ') : '주문 분석을 하시려면 해당 고객을 클릭해주세요';
+  if (customer.orderCount < 3) {
+    return '주문 건수가 적어서 분석할 수 없습니다. 주문 분석은 3회 이상 수집되어야 제공됩니다.';
+  }
+  return customer.personalizedRecommendations ? '추천 상품: ' + customer.personalizedRecommendations.join(', ') : '주문 분석을 하시려면 해당 고객을 클릭해주세요';
 };
 </script>
 
@@ -108,7 +152,7 @@ const getAnalysisText = (customer) => {
 .header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between; /* 제목과 버튼을 양쪽 끝으로 배치 */
   padding: 20px;
   background-color: #ffffff;
   border-radius: 12px;
@@ -119,6 +163,36 @@ const getAnalysisText = (customer) => {
   color: rgb(9, 77, 122);
   width: 100%; /* 화면에 맞게 너비 설정 */
   height: 75px; /* 고정된 높이 */
+}
+
+.header-title {
+  margin: 0; /* 기본 margin 제거 */
+}
+
+.header-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.header-buttons button {
+  margin-right: 10px;
+  padding: 10px 20px;
+  background-color: #2484c6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  font-family: 'Pretendard-SemiBold', sans-serif;
+}
+
+.header-buttons button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.header-buttons button:active {
+  background-color: #1f6391;
 }
 
 .table-container {

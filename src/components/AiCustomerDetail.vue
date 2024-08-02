@@ -1,33 +1,39 @@
 <template>
   <div class="modal-overlay">
     <div class="modal">
-      <h2>{{ customer.name }} 고객님의 주문 분석 ({{ customer.customerSegments }})</h2>
-      <section>
-        <h3>이전 구매목록</h3>
-        <ul class="item-list">
-          <li v-for="(order, index) in frequentOrders" :key="index">
-            {{ order }}
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h3>추천 상품</h3>
-        <ul class="item-list">
-          <li v-for="(recommendation, index) in personalizedRecommendations" :key="index">
-            {{ recommendation }}
-          </li>
-        </ul>
-        <p class="reason">{{ personalizedRecommendationsReason }}</p>
-      </section>
-      <div class="modal-footer">
-        <button class="cancel-button" @click="closeModal">닫기</button>
+      <h2 v-if="!isLoading">{{ customer.name }} 고객님의 주문 분석 ({{ customer.customerSegments }})</h2>
+      <div v-if="isLoading" class="loading">
+        <p>{{ loadingMessage }}</p>
+      </div>
+      <div v-else>
+        <section>
+          <h3>이전 구매목록</h3>
+          <ul class="item-list">
+            <li v-for="(order, index) in frequentOrders" :key="index">
+              {{ order }}
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h3>추천 상품</h3>
+          <ul class="item-list">
+            <li v-for="(recommendation, index) in customer.personalizedRecommendations" :key="index">
+              {{ recommendation }}
+            </li>
+          </ul>
+          <p class="reason">{{ personalizedRecommendationsReason }}</p>
+        </section>
+      </div>
+      <div class="modal-footer" v-if="!isLoading">
+        <button class="cancel-button" @click="handleClose">닫기</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
+import axios from 'axios';
 import { toRefs } from 'vue';
 
 const props = defineProps({
@@ -39,32 +45,57 @@ const emit = defineEmits(['close']);
 const { customer } = toRefs(props);
 
 const frequentOrders = ref([]);
-const personalizedRecommendations = ref([]);
 const personalizedRecommendationsReason = ref('');
+const isLoading = ref(true); // 로딩 상태 추가
+const loadingMessage = ref('Loading');
 
+const fetchCustomerData = async (customerId) => {
+  try {
+    console.log("Fetching data for customer ID:", customerId);
+    const response = await axios.get(`/api/CustomersAiAnalysis/${customerId}`);
+    console.log("API response data:", response);
+    if (response.data && response.data.frequentOrders && response.data.personalizedRecommendations && response.data.personalizedRecommendationsReason && response.data.customerSegments) {
+      frequentOrders.value = response.data.frequentOrders;
+      personalizedRecommendationsReason.value = response.data.personalizedRecommendationsReason;
+      customer.value.personalizedRecommendations = response.data.personalizedRecommendations;
+      customer.value.customerSegments = response.data.customerSegments;
+      customer.value.analyzedTime = new Date().toISOString();
+      isLoading.value = false; // 모든 데이터를 받아왔을 때 로딩 상태 해제
+    } else {
+      console.error("Invalid response data:", response.data);
+    }
+  } catch (error) {
+    console.error("API 요청 중 오류 발생:", error);
+  }
+};
+
+// customer가 변경될 때마다 데이터 재로딩
+watch(customer, (newCustomer) => {
+  if (newCustomer && newCustomer.id) {
+    isLoading.value = true; // 데이터 로딩 시작
+    if (newCustomer.personalizedRecommendations) {
+      // 이미 분석된 데이터가 있는 경우 로딩하지 않음
+      frequentOrders.value = newCustomer.frequentOrders;
+      personalizedRecommendationsReason.value = newCustomer.personalizedRecommendationsReason;
+      isLoading.value = false;
+    } else {
+      fetchCustomerData(newCustomer.id);
+    }
+  }
+}, { immediate: true });
+
+// 로딩 메시지 업데이트
 onMounted(() => {
-  const data = {
-    name: "강지훈",
-    frequentOrders: [
-      "바닐라라떼 4회 (바닐라 시럽 추가 1회, 휘핑크림 추가 1회, 저지방 우유 1회, 얼음 추가 1회)"
-    ],
-    personalizedRecommendations: [
-      "카라멜 마끼아또 저지방 우유",
-      "헤이즐넛 라떼 얼음 추가",
-      "초콜릿 모카 휘핑크림 추가"
-    ],
-    personalizedRecommendationsReason: "~~~ 고객님은 바닐라라떼를 다양한 옵션과 함께 선호하십니다. 비슷한 맛과 다양한 옵션을 즐기실 수 있는 카라멜 마끼아또 저지방 우유, 헤이즐넛 라떼 얼음 추가, 초콜릿 모카 휘핑크림 추가를 추천드립니다.",
-    customerSegments: "식품 중시형",
-    analyzedTime: "2024-08-01T13:43:32.6889131"
-  };
-
-  frequentOrders.value = data.frequentOrders;
-  personalizedRecommendations.value = data.personalizedRecommendations;
-  personalizedRecommendationsReason.value = data.personalizedRecommendationsReason;
+  loadingMessage.value = '주문 분석중';
+  setInterval(() => {
+    if (isLoading.value) {
+      loadingMessage.value = loadingMessage.value === '주문 분석중...' ? '주문 분석중' : loadingMessage.value + '.';
+    }
+  }, 500);
 });
 
-const closeModal = () => {
-  emit('close');
+const handleClose = () => {
+  emit('close', customer.value);
 };
 </script>
 
@@ -128,7 +159,6 @@ const closeModal = () => {
 }
 
 .modal p.reason {
-  
   font-size: 0.9em;
 }
 
@@ -153,6 +183,14 @@ const closeModal = () => {
 
 .cancel-button:disabled {
   background-color: #d3d3d3;
-  cursor: not-allowed; /*닫기 버튼 외에는 모달을 닫을 수 없도록 */
+  cursor: not-allowed;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 1.5em;
 }
 </style>
