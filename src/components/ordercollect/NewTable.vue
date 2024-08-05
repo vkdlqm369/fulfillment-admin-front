@@ -34,7 +34,7 @@
                   <td class="receiver-name">{{ group.rcvrNm }}</td>
                   <td class="receiver-address">{{ group.rcvrAddr }}</td>
                   <td class="receiver-contact">{{ formatPhoneNumber(group.rcvrMphnNo) }}</td>
-                  <td class="collection-time">{{ group.ordCollectDttm }}</td>
+                  <td class="collection-time">{{ formatordCollectDttm(group.ordCollectDttm) }}</td>
                 </tr>
               </template>
             </template>
@@ -57,9 +57,14 @@ const props = defineProps({
 
 const hoverOrder = ref(null);
 
+function formatordCollectDttm(ordCollectDttm) {
+  return ordCollectDttm.replace('T', ' ');
+}
+
 function formatPhoneNumber(phoneNumber) {
   return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'); //전화번호 형식 xxx-xxxx-xxxx로 변환
 }
+
 </script>
 
 <style scoped>
