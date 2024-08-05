@@ -3,29 +3,23 @@
     <v-main class="main-background">
       <Header v-if="!isPopupRouteApp" />
       <router-view></router-view>
-      <Footer v-if="!isPopupRouteApp" />
+      <Footer v-if="!isPopupRouteApp"/>
     </v-main>
   </v-app>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
 
-export default {
-  name: "App",
-  components: {
-    Header,
-    Footer
-  },
-  computed: {
-    isPopupRouteApp() {
-      const popupRoutes = ["OrderCollectPopup"]; // 팝업 창에서만 노출할 라우트 이름
-      return popupRoutes.includes(this.$route.name);
-    },
-  },
-};
+const route = useRoute();
 
+const popupRoutes = ["OrderCollectPopup"]; // 팝업 창에서만 노출할 라우트 이름
+const isPopupRouteApp = computed(() => popupRoutes.includes(route.name));
+const AiRoutes = ["AiCustomerAnalytics"]; // 
+const isAiRouteApp = computed(() => AiRoutes.includes(route.name));
 </script>
 
 <style>

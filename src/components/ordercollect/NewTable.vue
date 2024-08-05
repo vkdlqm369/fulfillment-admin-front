@@ -45,25 +45,21 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: { 
-    groupedData: { 
-      type: Array,
-      required: true
-    }
-  },
-  data() {
-    return {
-      hoverOrder: null
-    };
-  },
-  methods: {
-    formatPhoneNumber(phoneNumber) {
-      return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'); //전화번호 형식 xxx-xxxx-xxxx로 변환
-    }
+<script setup>
+import { ref, computed } from 'vue';
+
+const props = defineProps({
+  groupedData: {
+    type: Array,
+    required: true
   }
-};
+});
+
+const hoverOrder = ref(null);
+
+function formatPhoneNumber(phoneNumber) {
+  return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'); //전화번호 형식 xxx-xxxx-xxxx로 변환
+}
 </script>
 
 <style scoped>
@@ -81,6 +77,7 @@ export default {
   border-collapse: separate;
   border-spacing: 0;
   font-family: 'Pretendard-Regular', sans-serif;
+  text-align: center; /* 모든 요소 가운데 정렬 */
 }
 
 .modern-table th,

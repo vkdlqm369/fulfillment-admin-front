@@ -1,13 +1,17 @@
 <template>
   <div class="popup-results">
-    <p>[결과] 총 {{ totalCount }}건이 처리되었습니다.</p>
-    <p :class="{ success: true }">수집 성공: {{ successCount }}건</p>
-    <p :class="{ failure: true }">수집 실패: {{ failureCount }}건</p>
+    <p v-if="!loadingComplete">주문 수집 중입니다<span>{{ dots }}</span></p>
+    <div v-else>
+      <p>[결과] 총 {{ totalCount }}건이 처리되었습니다.</p>
+      <p :class="{ success: true }">수집 성공: {{ successCount }}건</p>
+      <p :class="{ failure: true }">수집 실패: {{ failureCount }}건</p>
+    </div>
   </div>
 </template>
 
 <script setup>
-//부모 컴포넌트로부터 전달받은 props Data( 동적 결과 데이터를 정의 )
+import { ref, watchEffect } from 'vue';
+
 const props = defineProps({
   successCount: {
     type: Number,
@@ -21,7 +25,27 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  loadingComplete: {
+    type: Boolean,
+    required: true,
+  },
 });
+//부모 컴포넌트로부터 전달받은 props Data( 동적 결과 데이터를 정의 )
+const dots = ref('.');
+let intervalId = setInterval(() => {
+  if (dots.value.length < 3) {
+    dots.value += '.';
+  } else {
+    dots.value = '.';
+  }
+}, 200);
+
+watchEffect(() => {
+  if (props.loadingComplete) {
+    clearInterval(intervalId);
+  }
+});
+
 </script>
 
 <style scoped>
@@ -37,6 +61,7 @@ const props = defineProps({
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: 'Pretendard-SemiBold', sans-serif;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  min-height: 115px;
 }
 
 .popup-results:hover {

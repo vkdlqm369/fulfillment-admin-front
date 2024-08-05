@@ -16,17 +16,32 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Header",
-  methods: {
-    goToMainPage() {
-      this.$router.push("/");
-    },
-    goToAICustomerAnalytics() {
-      this.$router.push("/ai-customer-analytics");
-    },
-  },
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
+
+const router = useRouter();
+const isLoading = ref(false);
+
+
+const goToMainPage = () => {
+  router.push("/");
+};
+
+const goToAICustomerAnalytics = async () => {
+  try {
+    isLoading.value = true;
+    const response = await axios.get("/api/CustomersAiAnalysis");
+    // 데이터를 세션 스토리지에 저장
+    sessionStorage.setItem('customers', JSON.stringify(response.data.orders));
+    // 데이터 로딩이 완료되면 페이지로 이동
+    router.push("/ai-customer-analytics");
+  } catch (error) {
+    console.error("데이터 로딩 실패:", error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
@@ -34,7 +49,7 @@ export default {
 .header {
   padding: 15px 20px;
   background-color: #ffffff;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
