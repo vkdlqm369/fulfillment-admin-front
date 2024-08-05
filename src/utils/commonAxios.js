@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import router from "@/router";
 
 const commonAxios = axios.create({
-  baseURL: "http://localhost:5173/api",
+  baseURL: "/api",
   withCredentials: true,
   headers: {},
 });
