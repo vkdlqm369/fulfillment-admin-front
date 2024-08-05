@@ -8,7 +8,7 @@
       </div>
       <div v-else>
         <section>
-          <h3 class="history">이전 구매목록</h3>
+          <h3 class="history">최다 구매 목록</h3>
           <ul class="item-list">
             <li v-for="(order, index) in frequentOrders" :key="index">
               {{ order }}
@@ -16,7 +16,7 @@
           </ul>
         </section>
         <section>
-          <h3 class="recommend">추천 상품</h3>
+          <h3 class="recommend">AI 추천 상품</h3>
           <ul class="item-list">
             <li v-for="(recommendation, index) in customer.personalizedRecommendations" :key="index">
               {{ recommendation }}
@@ -80,7 +80,7 @@ const updateReanalyzeTooltip = (analyzedTime) => {
   const duration = moment.duration(analyzedMoment.add(5, 'minutes').diff(now));
   const minutes = Math.floor(duration.asMinutes());
   const seconds = Math.floor(duration.asSeconds() % 60);
-  reanalyzeTooltip.value = `${minutes}분 ${seconds}초 뒤에 분석이 가능합니다`;
+  reanalyzeTooltip.value = `${minutes}분 ${seconds}초 뒤에 AI 재분석이 가능합니다`;
 };
 
 // 고객 데이터를 가져옴

@@ -28,7 +28,7 @@
               <th class="column-phone">휴대폰 번호</th>
               <th class="column-orders">주문 건수</th>
               <th class="column-analysis">AI 고객 추천 상품 리스트</th>
-              <th class="column-time">주문 분석 시간</th>
+              <th class="column-time">주문 분석 일시</th>
             </tr>
           </thead>
           <tbody>
@@ -178,11 +178,11 @@ const getAnalysisClass = (customer) => {
 // 고객의 주문 분석 상태에 따라 텍스트를 반환하는 함수
 const getAnalysisText = (customer) => {
   if (customer.orderCount < 3) {
-    return "주문 건수가 적어서 분석할 수 없습니다. 주문 분석은 3회 이상 수집되어야 합니다.";
+    return "분석을 위해 고객님의 주문건수가 최소 3건 이상 필요합니다.";
   }
   return customer.personalizedRecommendations
     ? "[추천 상품]  " + customer.personalizedRecommendations.join(", ")
-    : "주문 분석을 하시려면 해당 고객을 클릭해주세요";
+    : "해당 고객의 추천 상품 리스트 및 취향 분석이 가능한 상태입니다.";
 };
 </script>
 
@@ -199,7 +199,6 @@ const getAnalysisText = (customer) => {
   border: 1px solid #e0e0e0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: "Pretendard-Regular", sans-serif;
-  margin-bottom: 20px;
   color: rgb(9, 77, 122);
   width: 100%; /* 화면에 맞게 너비 설정 */
   height: 75px; /* 고정된 높이 */
@@ -240,7 +239,7 @@ const getAnalysisText = (customer) => {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   background: #fff;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 
 .modern-table {
@@ -332,11 +331,13 @@ const getAnalysisText = (customer) => {
 }
 
 .analysis-completed {
-  text-indent: 40px; /* 텍스트를 오른쪽으로 이동 */ /* 원하는 공백 크기만큼 설정 */
   text-align: left;
   font-size: 1em;
-  color: blue; /* 주문 분석 완료 */
+  color: #333; /* 좀 더 가독성 좋은 색상으로 변경 */
   font-weight: bold;
+  background-color: #f0f8ff; /* 배경색을 추가하여 강조 */
+  padding: 10px; /* 텍스트 주변에 여백 추가 */
+  border-radius: 5px; /* 모서리를 둥글게 처리 */
 }
 
 .analysis-low-orders {
