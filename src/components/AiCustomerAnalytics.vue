@@ -98,6 +98,7 @@ const filteredCustomers = computed(() => {
     : [];
 });
 
+
 // 필터링된 고객 데이터를 주문 건수 기준으로 정렬하는 함수
 const sortedCustomers = computed(() => {
   return filteredCustomers.value
@@ -110,8 +111,9 @@ const formatPhoneNumber = (phoneNumber) => {
 };
 
 const formatAnalyzedTime = (analyzedTime) => {
-  return analyzedTime ? analyzedTime.split(".")[0] : "";
+  return analyzedTime ? analyzedTime.split(".")[0].replace('T', ' ') : "";
 };
+
 
 // 고객을 선택할 때 호출되는 함수
 const selectCustomer = (customer) => {
@@ -184,6 +186,11 @@ const getAnalysisText = (customer) => {
     ? "[추천 상품]  " + customer.personalizedRecommendations.join(", ")
     : "해당 고객의 추천 상품 리스트 및 취향 분석이 가능한 상태입니다.";
 };
+
+function formatordCollectDttm(ordCollectDttm) {
+  return ordCollectDttm.replace('T', ' ');
+}
+
 </script>
 
 <style scoped>
@@ -305,6 +312,11 @@ const getAnalysisText = (customer) => {
   font-family: "Pretendard-Semibold", sans-serif;
 }
 
+.modern-table tbody {
+  cursor: pointer;
+}
+  
+
 .modern-table tbody tr {
   border-bottom: 1px solid #e0e0e0;
 }
@@ -345,6 +357,7 @@ const getAnalysisText = (customer) => {
   font-size: 1em;
   color: red; /* 주문 건수가 적어서 분석할 수 없습니다. */
   font-style: italic;
+  cursor: not-allowed;
 }
 
 .no-data-message {

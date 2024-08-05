@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <!-- 상단 헤드 영역 -->
-    <div class="header-left">
+    <div class="header-left" @click="goToMainPage">
       <img
         src="/src/assets/sabangnet_logo.png"
         alt="Sabangnet Logo"
@@ -67,6 +67,10 @@ const goToAICustomerAnalytics = async () => {
   margin: 0;
   font-size: 1.5em;
   font-family: "Pretendard-SemiBold", sans-serif;
+}
+
+.header-left:hover {
+  cursor: pointer; /* 호버 시 커서가 포인터로 변경 */
 }
 
 .header-left {

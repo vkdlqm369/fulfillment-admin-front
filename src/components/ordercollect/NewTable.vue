@@ -34,7 +34,7 @@
                   <td class="receiver-name">{{ group.rcvrNm }}</td>
                   <td class="receiver-address">{{ group.rcvrAddr }}</td>
                   <td class="receiver-contact">{{ formatPhoneNumber(group.rcvrMphnNo) }}</td>
-                  <td class="collection-time">{{ group.ordCollectDttm }}</td>
+                  <td class="collection-time">{{ formatordCollectDttm(group.ordCollectDttm) }}</td>
                 </tr>
               </template>
             </template>
@@ -57,9 +57,14 @@ const props = defineProps({
 
 const hoverOrder = ref(null);
 
+function formatordCollectDttm(ordCollectDttm) {
+  return ordCollectDttm.replace('T', ' ');
+}
+
 function formatPhoneNumber(phoneNumber) {
   return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'); //전화번호 형식 xxx-xxxx-xxxx로 변환
 }
+
 </script>
 
 <style scoped>
@@ -77,8 +82,11 @@ function formatPhoneNumber(phoneNumber) {
   border-collapse: separate;
   border-spacing: 0;
   font-family: 'Pretendard-Regular', sans-serif;
+  cursor: default;
   text-align: center; /* 모든 요소 가운데 정렬 */
 }
+
+
 
 .modern-table th,
 .modern-table td {
@@ -94,6 +102,11 @@ function formatPhoneNumber(phoneNumber) {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-family: 'Pretendard-Semibold', sans-serif;
+  
+}
+
+.modern-table:hover thead  {
+  cursor: default; /* 호버 시 커서가 포인터로 변경 */
 }
 
 .modern-table tbody tr {
