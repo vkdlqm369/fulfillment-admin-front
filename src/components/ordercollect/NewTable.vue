@@ -82,8 +82,11 @@ function formatPhoneNumber(phoneNumber) {
   border-collapse: separate;
   border-spacing: 0;
   font-family: 'Pretendard-Regular', sans-serif;
+  cursor: default;
   text-align: center; /* 모든 요소 가운데 정렬 */
 }
+
+
 
 .modern-table th,
 .modern-table td {
@@ -99,6 +102,11 @@ function formatPhoneNumber(phoneNumber) {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-family: 'Pretendard-Semibold', sans-serif;
+  
+}
+
+.modern-table:hover thead  {
+  cursor: default; /* 호버 시 커서가 포인터로 변경 */
 }
 
 .modern-table tbody tr {

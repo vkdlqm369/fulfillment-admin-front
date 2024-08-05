@@ -312,6 +312,11 @@ function formatordCollectDttm(ordCollectDttm) {
   font-family: "Pretendard-Semibold", sans-serif;
 }
 
+.modern-table tbody {
+  cursor: pointer;
+}
+  
+
 .modern-table tbody tr {
   border-bottom: 1px solid #e0e0e0;
 }
@@ -352,6 +357,7 @@ function formatordCollectDttm(ordCollectDttm) {
   font-size: 1em;
   color: red; /* 주문 건수가 적어서 분석할 수 없습니다. */
   font-style: italic;
+  cursor: not-allowed;
 }
 
 .no-data-message {
