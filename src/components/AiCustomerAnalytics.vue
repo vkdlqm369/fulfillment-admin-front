@@ -8,7 +8,7 @@
           class="header-logo"
         />
         <h2 class="header-title">
-          GPT-4 기반 고객 상품 추천 및 취향 분석 대시보드
+          GPT-4o 기반 고객 상품 추천 및 취향 분석 대시보드
         </h2>
         <p class="header-notice">
           기존 주문 분석 시간으로부터 30분 후에 고객을 클릭하면, AI 고객 추천 상품 리스트가 자동으로 갱신됩니다.
@@ -27,7 +27,7 @@
               <th class="column-name">이름</th>
               <th class="column-phone">휴대폰 번호</th>
               <th class="column-orders">주문 건수</th>
-              <th class="column-analysis">AI 고객 추천 상품 리스트</th>
+              <th class="column-analysis">고객 AI 추천 상품 리스트</th>
               <th class="column-time">주문 분석 일시</th>
             </tr>
           </thead>
