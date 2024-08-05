@@ -17,16 +17,31 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 const router = useRouter();
+const isLoading = ref(false);
+
 
 const goToMainPage = () => {
   router.push("/");
 };
 
-const goToAICustomerAnalytics = () => {
-  router.push("/ai-customer-analytics");
+const goToAICustomerAnalytics = async () => {
+  try {
+    isLoading.value = true;
+    const response = await axios.get("/api/CustomersAiAnalysis");
+    // 데이터를 세션 스토리지에 저장
+    sessionStorage.setItem('customers', JSON.stringify(response.data.orders));
+    // 데이터 로딩이 완료되면 페이지로 이동
+    router.push("/ai-customer-analytics");
+  } catch (error) {
+    console.error("데이터 로딩 실패:", error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
