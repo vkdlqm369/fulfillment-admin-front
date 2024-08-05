@@ -331,7 +331,7 @@ onMounted(async () => {
         <v-btn
           v-if="isMaster()"
           variant="tonal"
-          color="secondary_blue"
+          color="#6EACDE"
           class="fixed-h rounded-lg"
           style="font-weight: bold"
           @click="showApproveDialog"
@@ -388,7 +388,6 @@ onMounted(async () => {
           message="삭제가 완료되었습니다."
           @close="searchHandler"
           icon="mdi-check-bold"
-          iconColor="primary_green"
         />
 
         <TextSelection
