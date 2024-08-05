@@ -81,7 +81,7 @@ const headers = [
     headerProps: headerProps,
   },
   {
-    title: "활성화유무",
+    title: "활성화여부",
     value: "isUsed",
     maxWidth: "90px",
     headerProps: headerProps,
