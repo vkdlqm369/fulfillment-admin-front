@@ -160,7 +160,7 @@ const handleDialogClose = async () => {
       <CheckDialog
         v-model="updateDialog"
         message="
-        비밀번호 변경이 완료되었습니다
+        비밀번호 변경이 완료되었습니다 
         로그인 페이지로 이동합니다."
         @close="handleDialogClose"
         icon="mdi-check-bold"

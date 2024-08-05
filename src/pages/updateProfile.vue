@@ -12,14 +12,18 @@ const user = ref({});
 const id = ref("");
 
 const updateInfoDialog = ref(false);
-const validationDialog = ref(false);
-const message = ref("");
-const loading = ref(false);
+const validationDialog = ref(false)
+const message = ref('')
+const loading = ref(false)
+const userCheck = ref({});
+const noneChangeDialog = ref(false)
+
 
 const fetchUser = async (id) => {
   try {
     const response = await getMyInfo(id);
-    user.value = response.data;
+    user.value = response.data
+    userCheck.value = { ...response.data };
   } catch (error) {
     message.value = error.data.message;
     validationDialog.value = true;
@@ -45,23 +49,30 @@ onMounted(async () => {
 
 const submitForm = async () => {
   let requestBody = {
-    name: "",
-    email: "",
-    department: "",
-    memo: "",
-  };
-  requestBody = user.value;
+      name: "",
+      email: "",
+      department: "",
+      memo: ""
+    }
+  
+  requestBody = user.value
 
   try {
-    await updateProfile(requestBody);
-    console.log("업데이트 성공");
+    if (JSON.stringify(user.value) === JSON.stringify(userCheck.value)) {
+      noneChangeDialog.value = true;
+      return;
+    }
+
+    const response = await updateProfile(requestBody);
+    console.log("업데이트 성공")
     updateInfoDialog.value = true;
   } catch (error) {
-    console.log(error);
-    message.value = error.data.message;
+    message.value = error.response.data.message;
     validationDialog.value = true;
   }
-};
+}
+
+
 </script>
 
 <template>
@@ -235,24 +246,28 @@ const submitForm = async () => {
                   </v-row>
                 </v-container>
                 <v-row justify="center">
-                  <v-col cols="12" class="pa-5">
-                    <v-btn
-                      @click="submitForm"
-                      color="tertiary_blue"
-                      class="mt-5 mb-7"
-                      block
-                      size="large"
-                      >확인</v-btn
-                    >
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-        <CheckDialog
-          v-model="updateInfoDialog"
-          message="
+                    <v-col cols="8">
+                      <v-btn @click="submitForm" color="tertiary_blue" class="mt-2" block size="large">확인</v-btn>
+                    </v-col>
+                  </v-row>
+            </v-card-text>
+          </v-card>
+ 
+        </v-col>
+      </v-row>
+
+      <ChooseDialog 
+        v-model="noneChangeDialog" 
+        message="
+        수정된 정보가 없습니다. 
+        회원 정보 수정을 취소하시겠습니까?"
+        :to="'/mypage'"
+      ></ChooseDialog>
+
+
+      <CheckDialog 
+        v-model="updateInfoDialog" 
+        message="
         회원 정보 변경이 완료되었습니다
         마이 페이지로 이동합니다."
           :to="'/mypage'"
