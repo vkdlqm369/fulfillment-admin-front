@@ -252,6 +252,7 @@ const handleSubmit = async () => {
                         variant="outlined"
                         density="compact"
                         v-model="department"
+                        @keypress.enter.prevent
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -265,6 +266,7 @@ const handleSubmit = async () => {
                         variant="outlined"
                         density="compact"
                         v-model="memo"
+                        @keypress.enter.prevent
                       ></v-text-field>
                     </v-col>
                   </v-row>
