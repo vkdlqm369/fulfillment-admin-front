@@ -43,7 +43,6 @@ const submitForm = async () => {
 
     try {
       await updatePassword(requestBody);
-      console.log("업데이트 성공");
       updateDialog.value = true;
     } catch (error) {
       message.value = error.data.message;

@@ -26,7 +26,6 @@ function submitCheck(){
     message.value = validationMessage;
     validationDialog.value = true;
   } else {
-    console.log(userInfo.value)
     emit('updateOthers')
   }
 }
