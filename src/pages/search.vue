@@ -17,6 +17,7 @@ import {
   convertAuthority,
   convertIsUsed,
   convertTime,
+  removeBlank
 } from "@/utils/convertFormat";
 import { onMounted, computed } from "vue";
 import router from "@/router/index";
@@ -151,6 +152,9 @@ async function searchHandler(page = 1) {
 
   const params = new URLSearchParams();
 
+  inputMapForSearch.value = removeBlank(inputMapForSearch.value)
+  console.log(inputMapForSearch.value)
+
   for (let key in inputMapForSearch.value) {
     params.append(key, inputMapForSearch.value[key]);
   }
@@ -241,6 +245,7 @@ async function approveHandler() {
 }
 
 async function updateOthersHandler() {
+  
   try {
     let req = {
       id: "",
@@ -250,6 +255,9 @@ async function updateOthersHandler() {
       department: "",
       memo: "",
     };
+
+    
+
     req = userInfo.value;
     const response = await updateOtherUser(req);
     updateDialogs.value["userUpdate"] = false;
@@ -304,10 +312,10 @@ onMounted(async () => {
         <TextSelection
           v-model:selected="inputMapForSearch.isUsed"
           style="max-width: 140px"
-          labelName="활성화유뮤"
+          labelName="활성화여부"
           variant="outlined"
           :itemList="[
-            { name: '선택', value: '' },
+            { name: 'ALL', value: '' },
             { name: '활성화', value: 'TRUE' },
             { name: '비활성화', value: 'FALSE' },
           ]"
@@ -443,7 +451,7 @@ onMounted(async () => {
             v-if="!loading"
             v-model="inputMapForSearch.page"
             :length="numOfPage"
-            :total-visible="8"
+            total-visible="8"
             @click="searchHandler(inputMapForSearch.page)"
           ></v-pagination>
         </v-col>
@@ -468,8 +476,6 @@ onMounted(async () => {
     <CheckDialog
       v-model="validationDialog"
       :message="message"
-      icon="mdi-check-bold"
-      iconColor="secondary_blue"
     />
   </v-container>
 </template>

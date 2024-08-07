@@ -3,7 +3,7 @@ import TextBlank from "../components/TextBlank.vue";
 import TextSelection from "../components/TextSelection.vue";
 import SearchBtn from "../components/SearchBtn.vue";
 import { getHistory } from "@/utils/api";
-import { convertTime } from "@/utils/convertFormat";
+import { convertTime, removeBlank } from "@/utils/convertFormat";
 
 const tableItems = ref([]);
 
@@ -52,6 +52,8 @@ async function searchHandler(page = 1) {
   inputMapForSearch.value.page = page;
   tableItems.value = [];
   const params = new URLSearchParams();
+
+  inputMapForSearch.value = removeBlank(inputMapForSearch.value)
 
   for (let key in inputMapForSearch.value) {
     params.append(key, inputMapForSearch.value[key]);
@@ -153,7 +155,7 @@ async function searchHandler(page = 1) {
             v-if="!loading"
             v-model="inputMapForSearch.page"
             :length="numOfPage"
-            :total-visible="8"
+            total-visible="8"
             @click="searchHandler(inputMapForSearch.page)"
           ></v-pagination>
         </v-col>

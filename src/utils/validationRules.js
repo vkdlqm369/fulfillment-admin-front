@@ -32,7 +32,7 @@ export const passwordRulesWithoutNorm = [
   (value) => !!value || "비밀번호는 필수값입니다.",
 ];
 
-export const nameRules = [(value) => !!value || "관리자명은 필수값입니다."];
+export const nameRules = [(value) => !!value.trim() || "관리자명은 필수값입니다."];
 
 export const emailRules = [
   (value) => !!value || "이메일은 필수값입니다.",

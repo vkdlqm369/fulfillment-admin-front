@@ -11,7 +11,28 @@ const props = defineProps(["authority"]);
 const dialog = defineModel("dialog");
 const userInfo = defineModel("userInfo");
 const emit = defineEmits(["updateOthers"]);
+const validationDialog = ref(false)
+const message = ref('')
+
+function submitCheck(){
+  const fieldsWithRules = [
+    { value: userInfo.value.name, rules: nameRules },
+    { value: userInfo.value.email, rules: emailRules },
+  ];
+
+  const validationMessage = validateForm(fieldsWithRules);
+
+  if (validationMessage !== true) {
+    message.value = validationMessage;
+    validationDialog.value = true;
+  } else {
+    console.log(userInfo.value)
+    emit('updateOthers')
+  }
+}
 </script>
+
+
 
 <template>
   <v-dialog
@@ -39,21 +60,19 @@ const emit = defineEmits(["updateOthers"]);
               <!-- 회원 정보 섹션 -->
               <h3>회원정보</h3>
               <v-container fluid>
-                <v-row>
+                <v-row class="py-2">
                   <v-col cols="4">
-                    <v-list-subheader>
-                      <span>아이디</span>
-                    </v-list-subheader>
+                      <span class="gray--text">아이디</span>
                   </v-col>
                   <v-col cols="8">
                     <div>{{ userInfo.id }}</div>
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row class="py-1">
                   <v-col cols="4">
                     <v-list-subheader>
-                      <span>관리자명</span>
+                      <span class="gray--text">관리자명</span>
                     </v-list-subheader>
                   </v-col>
                   <v-col cols="8">
@@ -66,10 +85,10 @@ const emit = defineEmits(["updateOthers"]);
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row class="py-1">
                   <v-col cols="4">
                     <v-list-subheader>
-                      <span>이메일</span>
+                      <span class="gray--text">이메일</span>
                     </v-list-subheader>
                   </v-col>
                   <v-col cols="8">
@@ -83,10 +102,10 @@ const emit = defineEmits(["updateOthers"]);
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row class="py-1">
                   <v-col cols="4">
                     <v-list-subheader>
-                      <span>권한</span>
+                      <span class="gray--text">권한</span>
                     </v-list-subheader>
                   </v-col>
                   <v-col cols="8">
@@ -106,10 +125,10 @@ const emit = defineEmits(["updateOthers"]);
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row class="py-1" >
                   <v-col cols="4">
                     <v-list-subheader>
-                      <span>부서</span>
+                      <span class="gray--text">부서</span>
                     </v-list-subheader>
                   </v-col>
                   <v-col cols="8">
@@ -121,59 +140,51 @@ const emit = defineEmits(["updateOthers"]);
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row class="py-1">
                   <v-col cols="4">
                     <v-list-subheader>
-                      <span>메모</span>
+                      <span class="gray--text">메모</span>
                     </v-list-subheader>
                   </v-col>
                   <v-col cols="8">
                     <v-text-field
-                      variant="outlined"
+                      variant="outlined"  
                       density="compact"
                       v-model="userInfo.memo"
                     ></v-text-field>
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row class="py-2">
                   <v-col cols="4">
-                    <v-list-subheader>
-                      <span>활성화유무</span>
-                    </v-list-subheader>
+                      <span class="gray--text">활성화여부</span>
                   </v-col>
                   <v-col cols="8">
                     <div>{{ convertIsUsed(userInfo.isUsed) }}</div>
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row class="py-2">
                   <v-col cols="4">
-                    <v-list-subheader>
-                      <span>등록일</span>
-                    </v-list-subheader>
+                      <span class="gray--text">등록일</span>
                   </v-col>
                   <v-col cols="8">
                     <div>{{ convertTime(userInfo.registrationDate) }}</div>
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row class="py-2">
                   <v-col cols="4">
-                    <v-list-subheader>
-                      <span>최종 로그인 시간</span>
-                    </v-list-subheader>
+                      <span class="gray--text">최종 로그인 시간</span>
                   </v-col>
                   <v-col cols="8">
                     <div>{{ convertTime(userInfo.lastLoginTime) }}</div>
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row class="py-2">
                   <v-col cols="4">
-                    <v-list-subheader>
-                      <span>최종 로그인 IP</span>
-                    </v-list-subheader>
+                      <span class="gray--text">최종 로그인 IP</span>
                   </v-col>
                   <v-col cols="8">
                     <div>{{ userInfo.lastLoginIp }}</div>
@@ -186,7 +197,7 @@ const emit = defineEmits(["updateOthers"]);
                   color="primary_blue"
                   class="mt-2"
                   size="large"
-                  @click="emit('updateOthers')"
+                  @click="submitCheck"
                   >확인</v-btn
                 >
                 <v-btn
@@ -203,6 +214,8 @@ const emit = defineEmits(["updateOthers"]);
       </v-row>
     </v-container>
   </v-dialog>
+
+  <CheckDialog v-model="validationDialog" :message="message"/>
 </template>
 
 <style scoped>
@@ -210,5 +223,11 @@ const emit = defineEmits(["updateOthers"]);
   display: flex;
   justify-content: center;
   gap: 15px;
+}
+
+.gray--text {
+  color: #bdbdbd;
+  font-weight: bold;
+  font-size: 16px;
 }
 </style>

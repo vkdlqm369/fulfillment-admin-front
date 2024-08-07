@@ -1,8 +1,9 @@
 import commonAxios from "./commonAxios";
 import Cookies from "js-cookie";
+import { removeBlank } from "./convertFormat";
 
 export const postLogin = async (requestBody) => {
-  try {
+  try { 
     const res = await commonAxios.post("/login", requestBody);
     console.log("성공", res);
     Cookies.set("accessToken", res.headers.authorization);
@@ -18,6 +19,8 @@ export const postLogin = async (requestBody) => {
 
 export const postRegister = async (requestBody) => {
   try {
+    requestBody = removeBlank(requestBody)
+
     const res = await commonAxios.post("/register", requestBody);
     console.log("성공", res);
     return res.data;
@@ -62,6 +65,8 @@ export const getAuthority = async () => {
 
 export const deleteUser = async (requestBody) => {
   try {
+    requestBody = removeBlank(requestBody)
+
     const res = await commonAxios.delete("/delete", requestBody);
     console.log("성공", res);
     return res.data;
@@ -73,6 +78,8 @@ export const deleteUser = async (requestBody) => {
 
 export const updateOtherUser = async (requestBody) => {
   try {
+    requestBody = removeBlank(requestBody)
+
     const res = await commonAxios.patch("/update/others", requestBody);
     console.log("성공", res);
     return res.data;
@@ -84,6 +91,8 @@ export const updateOtherUser = async (requestBody) => {
 
 export const patchApprove = async (requestBody) => {
   try {
+    requestBody = removeBlank(requestBody)
+
     console.log(commonAxios.defaults);
     const res = await commonAxios.patch("/update/approve", {
       ids: requestBody,
@@ -98,9 +107,9 @@ export const patchApprove = async (requestBody) => {
 
 export const getMyInfo = async (id) => {
   try {
-    console.log(id);
+    id = id.trim()
+    
     const res = await commonAxios.get(`/mypage/${id}`);
-    console.log(res);
     return res.data;
   } catch (error) {
     console.error("사용자 정보 조회 오류가 발생했습니다.", error.response);
@@ -121,6 +130,8 @@ export const checkPassword = async (requestBody) => {
 
 export const updateProfile = async (requestBody) => {
   try {
+    requestBody = removeBlank(requestBody)
+
     const res = await commonAxios.patch("/update/me", requestBody);
     console.log(res);
     return res;
