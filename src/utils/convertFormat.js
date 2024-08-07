@@ -13,3 +13,12 @@ export function convertIsUsed(bool){
       return bool;
   return (bool) ? "활성화" : "비활성화"
 }
+
+export function removeBlank(map){
+  for (let key in map) {
+    if(typeof map[key] === 'string'){
+      map[key] = map[key].trim();
+    }
+  }
+  return map;
+}

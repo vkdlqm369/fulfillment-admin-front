@@ -67,13 +67,14 @@ router.beforeEach(async (to, from, next) => {
 
   if (accessToken) {
     if (to.path === "/" || to.path === "/login") {
-      next("/search"); // 로그인 상태에서 / 또는 /login 접근 시 /search로 리디렉션
+      router.back(); // 로그인 상태에서 / 또는 /login 접근 시 원래 페이지로 리디렉션
       return;
     }
+
     const response = await getAuthority();
     if (response.data.authority === "ADMIN") {
       if (to.path == "/register") {
-        next("/search");
+        router.back();
         return;
       }
     }

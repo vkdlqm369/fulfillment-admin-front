@@ -6,23 +6,22 @@ import {
   convertTime,
 } from "@/utils/convertFormat";
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { nameRules, emailRules } from "@/utils/validationRules";
 
 const user = ref({});
 const id = ref("");
 
 const updateInfoDialog = ref(false);
-const validationDialog = ref(false)
-const message = ref('')
-const loading = ref(false)
+const validationDialog = ref(false);
+const message = ref("");
+const loading = ref(false);
 const userCheck = ref({});
-const noneChangeDialog = ref(false)
-
+const noneChangeDialog = ref(false);
 
 const fetchUser = async (id) => {
   try {
     const response = await getMyInfo(id);
-    user.value = response.data
+    user.value = response.data;
     userCheck.value = { ...response.data };
   } catch (error) {
     message.value = error.data.message;
@@ -47,32 +46,39 @@ onMounted(async () => {
   }
 });
 
+const checkValue = () => {
+  const keys = ["name", "email", "department", "memo"];
+
+  for (const key of keys) {
+    if (user.value[key] !== userCheck.value[key]) {
+      return false;
+    }
+  }
+  return true;
+};
+
 const submitForm = async () => {
   let requestBody = {
-      name: "",
-      email: "",
-      department: "",
-      memo: ""
-    }
-  
-  requestBody = user.value
+    name: "",
+    email: "",
+    department: "",
+    memo: "",
+  };
 
+  requestBody = user.value;
   try {
-    if (JSON.stringify(user.value) === JSON.stringify(userCheck.value)) {
+    if (checkValue()) {
       noneChangeDialog.value = true;
       return;
     }
 
-    const response = await updateProfile(requestBody);
-    console.log("업데이트 성공")
+    await updateProfile(requestBody);
     updateInfoDialog.value = true;
   } catch (error) {
-    message.value = error.response.data.message;
+    message.value = error.data.message;
     validationDialog.value = true;
   }
-}
-
-
+};
 </script>
 
 <template>
@@ -246,28 +252,33 @@ const submitForm = async () => {
                   </v-row>
                 </v-container>
                 <v-row justify="center">
-                    <v-col cols="8">
-                      <v-btn @click="submitForm" color="tertiary_blue" class="mt-2" block size="large">확인</v-btn>
-                    </v-col>
-                  </v-row>
-            </v-card-text>
-          </v-card>
- 
-        </v-col>
-      </v-row>
+                  <v-col cols="8">
+                    <v-btn
+                      @click="submitForm"
+                      color="tertiary_blue"
+                      class="mt-2"
+                      block
+                      size="large"
+                      >확인</v-btn
+                    >
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
 
-      <ChooseDialog 
-        v-model="noneChangeDialog" 
-        message="
+        <ChooseDialog
+          v-model="noneChangeDialog"
+          message="
         수정된 정보가 없습니다. 
         회원 정보 수정을 취소하시겠습니까?"
-        :to="'/mypage'"
-      ></ChooseDialog>
+          :to="'/mypage'"
+        ></ChooseDialog>
 
-
-      <CheckDialog 
-        v-model="updateInfoDialog" 
-        message="
+        <CheckDialog
+          v-model="updateInfoDialog"
+          message="
         회원 정보 변경이 완료되었습니다
         마이 페이지로 이동합니다."
           :to="'/mypage'"
