@@ -19,12 +19,9 @@ const handleSubmit = async () => {
     const response = await checkPassword(requestBody);
     if (response) {
       emit("password-verified");
-    } else {
-      console.log("비밀번호 검증에 실패했습니다.");
     }
   } catch {
     fail.value = true;
-    console.log("비밀번호 검증에 실패했습니다.");
   }
 };
 </script>

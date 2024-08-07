@@ -25,7 +25,6 @@ const fetchUser = async (id) => {
     const response = await getMyInfo(id);
     user.value = response.data;
   } catch (error) {
-    console.error("사용자 정보를 가져오는 중 에러 발생");
   }
   loading.value = false;
 };

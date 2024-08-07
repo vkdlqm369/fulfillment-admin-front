@@ -73,10 +73,8 @@ const submitForm = async () => {
     }
 
     await updateProfile(requestBody);
-    console.log("업데이트 성공");
     updateInfoDialog.value = true;
   } catch (error) {
-    console.log(error);
     message.value = error.data.message;
     validationDialog.value = true;
   }
