@@ -15,7 +15,6 @@ export function convertIsUsed(bool){
 }
 
 export function removeBlank(map){
-  console.log(map)
   for (let key in map) {
     if(typeof map[key] === 'string'){
       map[key] = map[key].trim();

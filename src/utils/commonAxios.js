@@ -24,8 +24,6 @@ commonAxios.interceptors.request.use(
 commonAxios.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.error(error);
-
     if (error.response.status === 401) {
       Cookies.remove("accessToken");
       await router.push("/login");

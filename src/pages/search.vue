@@ -125,6 +125,7 @@ const approveDialogs = ref([
   { approve: false },
   { alreadyApproved: false },
   { nonSelect: false },
+  { approveSuccess: false }
 ]);
 
 const updateDialogs = ref([{ userUpdate: false }, { updateSuccess: false }]);
@@ -153,7 +154,6 @@ async function searchHandler(page = 1) {
   const params = new URLSearchParams();
 
   inputMapForSearch.value = removeBlank(inputMapForSearch.value)
-  console.log(inputMapForSearch.value)
 
   for (let key in inputMapForSearch.value) {
     params.append(key, inputMapForSearch.value[key]);
@@ -237,7 +237,7 @@ function showApproveDialog() {
 async function approveHandler() {
   try {
     const response = await patchApprove(selected.value);
-    searchHandler();
+    approveDialogs.value['approveSuccess'] = true;
   } catch (error) {
     message.value = error.data.message;
     validationDialog.value = true;
@@ -468,6 +468,14 @@ onMounted(async () => {
     <CheckDialog
       v-model="updateDialogs['updateSuccess']"
       message="수정이 완료되었습니다."
+      @close="searchHandler"
+      icon="mdi-check-bold"
+      iconColor="primary_green"
+    />
+
+    <CheckDialog
+      v-model="approveDialogs['approveSuccess']"
+      message="승인이 완료되었습니다."
       @close="searchHandler"
       icon="mdi-check-bold"
       iconColor="primary_green"
