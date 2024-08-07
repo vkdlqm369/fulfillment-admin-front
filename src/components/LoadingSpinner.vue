@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-  <v-overlay v-model="dialog" persistent>
+  <v-overlay persistent>
     <div class="spinner-container">
       <div class="spinner"></div>
     </div>

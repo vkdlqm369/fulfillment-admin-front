@@ -66,6 +66,7 @@ const handleSubmit = async () => {
           :rules="idRules"
           label="아이디"
           class="mb-3"
+          variant="outlined"
         ></v-text-field>
 
         <v-text-field
@@ -73,6 +74,7 @@ const handleSubmit = async () => {
           :rules="passwordRulesWithoutNorm"
           label="비밀번호"
           class="mb-7"
+          variant="outlined"
           :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
           :type="showPassword ? 'text' : 'password'"
           @click:append-inner="showPassword = !showPassword"
